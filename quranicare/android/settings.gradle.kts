@@ -18,7 +18,7 @@ pluginManagement {
     plugins {
         // Hanya deklarasikan plugin yang benar-benar diperlukan
         id("com.android.application") version "8.7.3"
-        id("com.google.gms.google-services") version "4.4.2"
+        id("com.google.gms.google-services") version "4.4.3"
         // Hapus baris Kotlin karena Flutter sudah inject otomatis
     }
 }
