@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/quran_service.dart';
 import '../services/journal_service.dart' as journal;
-import '../widgets/add_reflection_modal.dart';
+import '../widgets/add_reflection_modal_simple.dart';
 import '../widgets/reflection_list_widget.dart';
 
 class AlQuranScreen extends StatefulWidget {

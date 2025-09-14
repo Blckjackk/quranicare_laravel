@@ -26,15 +26,15 @@ class _AddReflectionModalState extends State<AddReflectionModal> {
   final JournalService _journalService = JournalService();
   
   String? _selectedMood;
-  final List<String> _selectedTags = [];
-  final List<String> _availableTags = [];
-  bool _isLoading = false;
+  // final List<String> _selectedTags = []; // Hapus tags
+  // final List<String> _availableTags = []; // Hapus tags
+  // bool _isLoading = false; // Hapus loading
   bool _isSubmitting = false;
 
   @override
   void initState() {
     super.initState();
-    _loadTagSuggestions();
+    // _loadTagSuggestions(); // Hapus loading tags
   }
 
   @override
@@ -42,26 +42,6 @@ class _AddReflectionModalState extends State<AddReflectionModal> {
     _titleController.dispose();
     _contentController.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadTagSuggestions() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final tags = await _journalService.getTagSuggestions();
-      setState(() {
-        _availableTags.clear();
-        _availableTags.addAll(tags);
-      });
-    } catch (e) {
-      print('Error loading tags: $e');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
   Future<void> _submitReflection() async {
@@ -79,7 +59,7 @@ class _AddReflectionModalState extends State<AddReflectionModal> {
         title: _titleController.text.trim(),
         content: _contentController.text.trim(),
         mood: _selectedMood,
-        tags: _selectedTags.isNotEmpty ? _selectedTags : null,
+        // tags: _selectedTags.isNotEmpty ? _selectedTags : null, // Hapus tags
       );
 
       widget.onReflectionAdded(reflection);

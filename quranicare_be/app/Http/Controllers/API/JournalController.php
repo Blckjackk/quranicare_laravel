@@ -65,10 +65,10 @@ class JournalController extends Controller
                 'quran_ayah_id' => 'required|exists:quran_ayahs,id',
                 'title' => 'required|string|max:255',
                 'content' => 'required|string',
-                'mood' => 'nullable|string|in:bahagia,sedih,tenang,bersyukur,khawatir,penuh_harap,terharu',
+                'mood_after' => 'nullable|string|in:senang,sedih,biasa_saja,marah,murung,tenang,bersyukur',
                 'tags' => 'nullable|array',
                 'tags.*' => 'string|max:50',
-                'reflection_date' => 'nullable|date'
+                'journal_date' => 'nullable|date'
             ]);
 
             if ($validator->fails()) {
@@ -86,9 +86,10 @@ class JournalController extends Controller
                 'quran_ayah_id' => $request->quran_ayah_id,
                 'title' => $request->title,
                 'content' => $request->content,
-                'mood' => $request->mood,
+                'mood_after' => $request->mood_after,
                 'tags' => $request->tags ?? [],
-                'reflection_date' => $request->reflection_date ?? now()->toDateString(),
+                'journal_date' => $request->journal_date ?? now()->toDateString(),
+                'is_private' => true,
                 'is_favorite' => false
             ]);
 
@@ -159,10 +160,10 @@ class JournalController extends Controller
             $validator = Validator::make($request->all(), [
                 'title' => 'sometimes|required|string|max:255',
                 'content' => 'sometimes|required|string',
-                'mood' => 'nullable|string|in:bahagia,sedih,tenang,bersyukur,khawatir,penuh_harap,terharu',
+                'mood_after' => 'nullable|string|in:senang,sedih,biasa_saja,marah,murung,tenang,bersyukur',
                 'tags' => 'nullable|array',
                 'tags.*' => 'string|max:50',
-                'reflection_date' => 'nullable|date'
+                'journal_date' => 'nullable|date'
             ]);
 
             if ($validator->fails()) {
@@ -174,7 +175,7 @@ class JournalController extends Controller
             }
 
             $journal->update($request->only([
-                'title', 'content', 'mood', 'tags', 'reflection_date'
+                'title', 'content', 'mood_after', 'tags', 'journal_date'
             ]));
 
             $journal->load(['ayah.surah']);
@@ -396,7 +397,7 @@ class JournalController extends Controller
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:255',
                 'content' => 'required|string|min:10',
-                'mood' => 'nullable|string|in:bahagia,sedih,tenang,bersyukur,khawatir,penuh_harap,terharu',
+                'mood_after' => 'nullable|string|in:senang,sedih,biasa_saja,marah,murung,tenang,bersyukur',
                 'tags' => 'nullable|array',
                 'tags.*' => 'string|max:50',
             ]);
@@ -418,9 +419,10 @@ class JournalController extends Controller
                 'quran_ayah_id' => $ayah,
                 'title' => $request->title,
                 'content' => $request->content,
-                'mood' => $request->mood,
+                'mood_after' => $request->mood_after,
                 'tags' => $request->tags ?? [],
-                'reflection_date' => now()->toDateString(),
+                'journal_date' => now()->toDateString(),
+                'is_private' => true,
                 'is_favorite' => false
             ]);
 
@@ -495,10 +497,10 @@ class JournalController extends Controller
                                    ->whereNotNull('quran_ayah_id')
                                    ->count(),
                 'mood_distribution' => Journal::where('user_id', $user->id)
-                                           ->whereNotNull('mood')
-                                           ->selectRaw('mood, COUNT(*) as count')
-                                           ->groupBy('mood')
-                                           ->pluck('count', 'mood'),
+                                           ->whereNotNull('mood_after')
+                                           ->selectRaw('mood_after, COUNT(*) as count')
+                                           ->groupBy('mood_after')
+                                           ->pluck('count', 'mood_after'),
                 'most_used_tags' => Journal::where('user_id', $user->id)
                                         ->whereNotNull('tags')
                                         ->pluck('tags')

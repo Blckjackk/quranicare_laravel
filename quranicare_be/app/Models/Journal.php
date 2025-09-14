@@ -14,16 +14,19 @@ class Journal extends Model
         'quran_ayah_id',
         'title',
         'content',
-        'mood',
+        'reflection',
+        'mood_after',
         'tags',
+        'is_private',
         'is_favorite',
-        'reflection_date'
+        'journal_date'
     ];
 
     protected $casts = [
         'tags' => 'array',
         'is_favorite' => 'boolean',
-        'reflection_date' => 'date'
+        'is_private' => 'boolean',
+        'journal_date' => 'date'
     ];
 
     // Relationships
@@ -45,7 +48,7 @@ class Journal extends Model
 
     public function scopeByMood($query, $mood)
     {
-        return $query->where('mood', $mood);
+        return $query->where('mood_after', $mood);
     }
 
     public function scopeByTag($query, $tag)

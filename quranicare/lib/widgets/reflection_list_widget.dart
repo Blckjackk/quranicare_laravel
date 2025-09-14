@@ -190,7 +190,7 @@ class ReflectionCard extends StatelessWidget {
                     border: Border.all(color: Colors.teal[200]!),
                   ),
                   child: Text(
-                    'QS. ${reflection.ayah!.surah?.name} : ${reflection.ayah!.ayahNumber}',
+                    'QS. ${reflection.ayah!.surah?.nameIndonesian} : ${reflection.ayah!.number}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.teal[700],
@@ -388,7 +388,7 @@ class ReflectionDetailModal extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'QS. ${reflection.ayah!.surah?.name} : ${reflection.ayah!.ayahNumber}',
+                      'QS. ${reflection.ayah!.surah?.nameIndonesian} : ${reflection.ayah!.number}',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -397,7 +397,7 @@ class ReflectionDetailModal extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      reflection.ayah!.arabicText,
+                      reflection.ayah!.textArabic,
                       style: const TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 18,
@@ -408,7 +408,7 @@ class ReflectionDetailModal extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      reflection.ayah!.translation,
+                      reflection.ayah!.textIndonesian,
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey[700],
