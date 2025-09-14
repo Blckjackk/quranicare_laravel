@@ -67,7 +67,6 @@ class BreathingExerciseService {
       
       return docRef.id;
     } catch (e) {
-      print('Error adding breathing exercise: $e');
       return null;
     }
   }
@@ -81,7 +80,6 @@ class BreathingExerciseService {
           .update(exercise.toMap());
       return true;
     } catch (e) {
-      print('Error updating breathing exercise: $e');
       return false;
     }
   }
@@ -98,7 +96,6 @@ class BreathingExerciseService {
       });
       return true;
     } catch (e) {
-      print('Error deleting breathing exercise: $e');
       return false;
     }
   }

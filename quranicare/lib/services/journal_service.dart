@@ -219,9 +219,7 @@ class JournalService {
         'is_private': true,
       };
 
-      print('🔍 DEBUG: Sending journal reflection request...');
-      print('📍 URL: $baseUrl/test/journal/ayah/$ayahId/reflection');
-      print('📦 Body: ${json.encode(body)}');
+      // Debug logging removed for production
 
       final response = await http.post(
         Uri.parse('$baseUrl/test/journal/ayah/$ayahId/reflection'),
@@ -231,9 +229,6 @@ class JournalService {
         },
         body: json.encode(body),
       );
-
-      print('📊 Response Status: ${response.statusCode}');
-      print('📄 Response Body: ${response.body}');
 
       if (response.statusCode == 201) {
         final data = json.decode(response.body);
@@ -247,7 +242,6 @@ class JournalService {
         throw Exception(errorData['message'] ?? 'Failed to create reflection');
       }
     } catch (e) {
-      print('❌ Error creating reflection: $e');
       throw Exception('Error creating reflection: $e');
     }
   }
@@ -255,8 +249,7 @@ class JournalService {
   // Get tag suggestions (uses test endpoint - no auth required)
   Future<List<String>> getTagSuggestions() async {
     try {
-      print('🔍 DEBUG: Getting tag suggestions...');
-      print('📍 URL: $baseUrl/test/journal/tags/suggestions');
+      // Getting tag suggestions...
       
       final response = await http.get(
         Uri.parse('$baseUrl/test/journal/tags/suggestions'),

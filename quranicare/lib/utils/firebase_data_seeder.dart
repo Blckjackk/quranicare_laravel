@@ -14,7 +14,7 @@ class FirebaseDataSeeder {
         await _auth.signInAnonymously();
       }
 
-      print('Seeding breathing exercises data...');
+      // Seeding breathing exercises data...
 
       // Sample Breathing Exercises
       final exercises = [
@@ -133,12 +133,9 @@ class FirebaseDataSeeder {
             .collection('breathing_exercises')
             .doc(exercise.id)
             .set(exercise.toMap());
-        print('Added exercise: ${exercise.name}');
       }
 
-      print('Successfully seeded ${exercises.length} breathing exercises');
     } catch (e) {
-      print('Error seeding breathing exercises: $e');
       rethrow;
     }
   }
@@ -176,7 +173,6 @@ class FirebaseDataSeeder {
           .collection('breathing_categories')
           .doc(category['id'] as String)
           .set(category);
-      print('Added category: ${category['name']}');
     }
   }
 
@@ -195,9 +191,7 @@ class FirebaseDataSeeder {
         await doc.reference.delete();
       }
 
-      print('Cleared all breathing exercises data');
     } catch (e) {
-      print('Error clearing breathing exercises: $e');
       rethrow;
     }
   }
