@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'sign_up_screen.dart';
-import 'verification_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});

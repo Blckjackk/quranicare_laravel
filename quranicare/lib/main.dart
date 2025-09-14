@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'screens/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'test_firebase_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/notification_screen.dart';
 import 'screens/mood_tracker_screen.dart';
 import 'screens/breathing_exercise_screen.dart';
+import 'screens/breathing_exercise_test_screen.dart';
 import 'screens/audio_relax_screen.dart';
 import 'screens/jurnal_refleksi_screen.dart';
 import 'screens/doa_dzikir_screen.dart';
@@ -17,7 +20,11 @@ import 'screens/auth/verification_screen.dart';
 import 'screens/auth/forgot_password_screen.dart';
 import 'screens/auth/create_profile_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -41,6 +48,7 @@ class MyApp extends StatelessWidget {
       home: const HomeScreen(),
       routes: {
         '/home': (context) => const HomeScreen(),
+        '/firebase-test': (context) => const TestFirebaseScreen(),
         '/onboarding': (context) => const OnboardingScreen(),
         '/signin': (context) => const SignInScreen(),
         '/signup': (context) => const SignUpScreen(),
@@ -49,6 +57,7 @@ class MyApp extends StatelessWidget {
         '/notification': (context) => const NotificationScreen(),
         '/mood-tracker': (context) => const MoodTrackerScreen(),
         '/breathing-exercise': (context) => const BreathingExerciseScreen(),
+        '/breathing-test': (context) => const BreathingExerciseTestScreen(),
         '/audio-relax': (context) => const AudioRelaxScreen(),
         '/jurnal-refleksi': (context) => const JurnalRefleksiScreen(),
         '/doa-dzikir': (context) => const DoaDzikirScreen(),

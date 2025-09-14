@@ -61,12 +61,6 @@ class _VerificationScreenState extends State<VerificationScreen>
     }
   }
 
-  void _onBackspace(int index) {
-    if (index > 0 && _controllers[index].text.isEmpty) {
-      _focusNodes[index - 1].requestFocus();
-    }
-  }
-
   void _onKeypadPressed(String value) {
     // Find first empty field
     int emptyIndex = _controllers.indexWhere((controller) => controller.text.isEmpty);

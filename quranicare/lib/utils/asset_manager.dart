@@ -2,8 +2,6 @@ class AssetManager {
   // Base paths
   static const String _basePath = 'assets';
   static const String _imagesPath = '$_basePath/images';
-  static const String _audioPath = '$_basePath/audio';
-  static const String _dataPath = '$_basePath/data';
 
   // App Icons & Logos
   static const String appIcon = '$_imagesPath/app_icon.png';
