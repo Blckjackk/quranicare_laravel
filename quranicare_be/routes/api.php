@@ -9,6 +9,8 @@ use App\Http\Controllers\API\AudioController;
 use App\Http\Controllers\API\QuranController;
 use App\Http\Controllers\API\JournalController;
 use App\Http\Controllers\API\DzikirController;
+use App\Http\Controllers\DzikirDoaController;
+use App\Http\Controllers\DzikirCategoryController;
 use App\Http\Controllers\API\QalbuChatController;
 use App\Http\Controllers\API\PsychologyController;
 use App\Http\Controllers\API\UserController;
@@ -202,7 +204,23 @@ Route::prefix('test')->group(function () {
 });
 
 // ============================================================================
-// 5. ADMIN ROUTES (Future Implementation)
+// 5. DZIKIR DOA ROUTES (Public Access)
+// ============================================================================
+Route::prefix('dzikir-doa')->group(function () {
+    Route::get('/', [DzikirDoaController::class, 'index']);
+    Route::get('featured', [DzikirDoaController::class, 'featured']);
+    Route::get('search', [DzikirDoaController::class, 'search']);
+    Route::get('category/{categoryId}', [DzikirDoaController::class, 'getByCategory']);
+    Route::get('{id}', [DzikirDoaController::class, 'show']);
+});
+
+Route::prefix('dzikir-categories')->group(function () {
+    Route::get('/', [DzikirCategoryController::class, 'index']);
+    Route::get('{id}', [DzikirCategoryController::class, 'show']);
+});
+
+// ============================================================================
+// 6. ADMIN ROUTES (Future Implementation)
 // ============================================================================
 Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
     // Admin routes akan ditambahkan nanti

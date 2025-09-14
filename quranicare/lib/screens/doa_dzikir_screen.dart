@@ -1,7 +1,207 @@
 import 'package:flutter/material.dart';
+import '../models/dzikir_doa.dart';
+import '../services/dzikir_doa_service.dart';
 
-class DoaDzikirScreen extends StatelessWidget {
+class DoaDzikirScreen extends StatefulWidget {
   const DoaDzikirScreen({super.key});
+
+  @override
+  State<DoaDzikirScreen> createState() => _DoaDzikirScreenState();
+}
+
+class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
+  final DzikirDoaService _dzikirService = DzikirDoaService();
+  List<DzikirDoa> _dzikirDoaList = [];
+  bool _isLoading = true;
+  String _errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDzikirDoa();
+  }
+
+  Future<void> _loadDzikirDoa() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = '';
+      });
+
+      final result = await _dzikirService.getAllDzikirDoa();
+      setState(() {
+        _dzikirDoaList = result['dzikir_doa'] as List<DzikirDoa>;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  Widget _buildContent() {
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Color(0xFF8FA68E),
+        ),
+      );
+    }
+
+    if (_errorMessage.isNotEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Colors.red.withOpacity(0.6),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Gagal memuat data',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF2D5A5A),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              _errorMessage,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.red.withOpacity(0.8),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _loadDzikirDoa,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF8FA68E),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: const Text(
+                'Coba Lagi',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_dzikirDoaList.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.menu_book_outlined,
+              size: 64,
+              color: const Color(0xFF8FA68E).withOpacity(0.6),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Belum ada dzikir doa',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF2D5A5A),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Data dzikir doa akan segera tersedia',
+              style: TextStyle(
+                fontSize: 14,
+                color: const Color(0xFF8FA68E).withOpacity(0.8),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: _loadDzikirDoa,
+      color: const Color(0xFF8FA68E),
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: _dzikirDoaList.length,
+        itemBuilder: (context, index) {
+          final item = _dzikirDoaList[index];
+          return Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                Container(
+                  width: 4,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF8FA68E),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DoaDzikirDetailScreen(doaDzikir: item),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF2D5A5A).withOpacity(0.06),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              item.title,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF2D5A5A),
+                              ),
+                            ),
+                          ),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Color(0xFF8FA68E),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,97 +228,31 @@ class DoaDzikirScreen extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: doaDzikirList.length,
-                itemBuilder: (context, index) {
-                  final item = doaDzikirList[index];
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 4,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF8FA68E),
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DoaDzikirDetailScreen(doaDzikir: item),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(0xFF2D5A5A).withOpacity(0.06),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      item.title,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xFF2D5A5A),
-                                      ),
-                                    ),
-                                  ),
-                                  const Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 16,
-                                    color: Color(0xFF8FA68E),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+              child: _buildContent(),
             ),
             // Show more indicator
-            Container(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Text(
-                    'Lainnya',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: const Color(0xFF8FA68E),
-                      fontWeight: FontWeight.w500,
+            if (!_isLoading && _dzikirDoaList.isNotEmpty)
+              Container(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Text(
+                      'Lainnya',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: const Color(0xFF8FA68E),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    color: const Color(0xFF8FA68E),
-                    size: 20,
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Icon(
+                      Icons.keyboard_arrow_down,
+                      color: const Color(0xFF8FA68E),
+                      size: 20,
+                    ),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -182,7 +316,7 @@ class DoaDzikirScreen extends StatelessWidget {
 }
 
 class DoaDzikirDetailScreen extends StatelessWidget {
-  final DoaDzikirItem doaDzikir;
+  final DzikirDoa doaDzikir;
 
   const DoaDzikirDetailScreen({super.key, required this.doaDzikir});
 
@@ -272,41 +406,44 @@ class DoaDzikirDetailScreen extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              // Transliteration
-              if (doaDzikir.transliteration.isNotEmpty)
+              // Transliteration and Translation
+              if (doaDzikir.latinText?.isNotEmpty == true || doaDzikir.indonesianTranslation.isNotEmpty)
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        doaDzikir.transliteration,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontStyle: FontStyle.italic,
-                          color: Color(0xFF2D5A5A),
-                          height: 1.5,
+                      if (doaDzikir.latinText?.isNotEmpty == true)
+                        Text(
+                          doaDzikir.latinText!,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontStyle: FontStyle.italic,
+                            color: Color(0xFF2D5A5A),
+                            height: 1.5,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        doaDzikir.meaning,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF8FA68E),
-                          fontWeight: FontWeight.w600,
-                          height: 1.5,
+                      if (doaDzikir.latinText?.isNotEmpty == true && doaDzikir.indonesianTranslation.isNotEmpty)
+                        const SizedBox(height: 12),
+                      if (doaDzikir.indonesianTranslation.isNotEmpty)
+                        Text(
+                          doaDzikir.indonesianTranslation,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF8FA68E),
+                            fontWeight: FontWeight.w600,
+                            height: 1.5,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
 
               const SizedBox(height: 16),
 
-              // Explanation section
-              if (doaDzikir.explanation.isNotEmpty)
+              // Benefits section
+              if (doaDzikir.benefits?.isNotEmpty == true)
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
@@ -325,7 +462,7 @@ class DoaDzikirDetailScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Penjelasan Makna',
+                        'Manfaat dan Hikmah',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -334,7 +471,7 @@ class DoaDzikirDetailScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        doaDzikir.explanation,
+                        doaDzikir.benefits!,
                         style: const TextStyle(
                           fontSize: 14,
                           color: Color(0xFF2D5A5A),
@@ -345,6 +482,119 @@ class DoaDzikirDetailScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+
+              // Context section
+              if (doaDzikir.context?.isNotEmpty == true) ...[
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF2D5A5A).withOpacity(0.06),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Konteks dan Penjelasan',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF2D5A5A),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        doaDzikir.context!,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF2D5A5A),
+                          height: 1.6,
+                        ),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+
+              // Source section
+              if (doaDzikir.source?.isNotEmpty == true) ...[
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0F8F8),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: const Color(0xFF8FA68E).withOpacity(0.3),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.library_books,
+                        color: const Color(0xFF8FA68E),
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Sumber: ${doaDzikir.source}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF2D5A5A),
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+
+              // Repeat count if available
+              if (doaDzikir.repeatCount != null && doaDzikir.repeatCount! > 0) ...[
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE8F5E8),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: const Color(0xFF8FA68E).withOpacity(0.3),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.repeat,
+                        color: const Color(0xFF8FA68E),
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Dianjurkan dibaca ${doaDzikir.repeatCount} kali',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF2D5A5A),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
 
               const SizedBox(height: 100), // Space for bottom navigation
             ],
@@ -409,101 +659,3 @@ class DoaDzikirDetailScreen extends StatelessWidget {
     );
   }
 }
-
-// Data model
-class DoaDzikirItem {
-  final String title;
-  final String arabicText;
-  final String transliteration;
-  final String meaning;
-  final String explanation;
-
-  DoaDzikirItem({
-    required this.title,
-    required this.arabicText,
-    required this.transliteration,
-    required this.meaning,
-    required this.explanation,
-  });
-}
-
-// Sample data based on the mockups
-final List<DoaDzikirItem> doaDzikirList = [
-  DoaDzikirItem(
-    title: 'Dzikir Al Matsurat Pagi',
-    arabicText: '',
-    transliteration: '',
-    meaning: '',
-    explanation: '',
-  ),
-  DoaDzikirItem(
-    title: 'Dzikir Al Matsurat Sore',
-    arabicText: '',
-    transliteration: '',
-    meaning: '',
-    explanation: '',
-  ),
-  DoaDzikirItem(
-    title: 'Doa Penenang Hati',
-    arabicText: '',
-    transliteration: '',
-    meaning: '',
-    explanation: '',
-  ),
-  DoaDzikirItem(
-    title: 'Doa agar Dijauhkan dari Berbagai Keburukan',
-    arabicText: '',
-    transliteration: '',
-    meaning: '',
-    explanation: '',
-  ),
-  DoaDzikirItem(
-    title: 'Doa agar Diberikan Petunjuk',
-    arabicText: '',
-    transliteration: '',
-    meaning: '',
-    explanation: '',
-  ),
-  DoaDzikirItem(
-    title: 'Doa untuk Kesedihan yang Mendalam',
-    arabicText: '',
-    transliteration: '',
-    meaning: '',
-    explanation: '',
-  ),
-  DoaDzikirItem(
-    title: 'Doa Meminta Ketenangan Hati',
-    arabicText: '',
-    transliteration: '',
-    meaning: '',
-    explanation: '',
-  ),
-  DoaDzikirItem(
-    title: 'Doa agar Diberikan Cahaya Batin',
-    arabicText: '',
-    transliteration: '',
-    meaning: '',
-    explanation: '',
-  ),
-  DoaDzikirItem(
-    title: 'Doa Nabi Yunus',
-    arabicText: 'لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ',
-    transliteration: 'Lā ilāha illā anta subḥānaka innī kuntu minaz-ẓālimīn(a)',
-    meaning: 'Tidak ada tuhan selain Engkau. Maha Suci Engkau. Sesungguhnya aku termasuk orang-orang zalim.',
-    explanation: 'Dari segi kesehatan mental, doa ini mengajarkan beberapa prinsip penting yang sejalan dengan terapi modern. Pertama, pengakuan diri akan kesalahan dengan "innī kuntu minadh-dhālimīn" ditunjukkan dalam kalimat "innī kuntu minadh dhālimīn" di mana Nabi Yunus mengakui kesalahannya. Kedua, konsep melepaskan kontrol berlebihan ditemukan dalam "laa ilāha illa anta subḥānaka" yang mengajarkan bahwa dalam kegelisahan sekalipun, masih ada jalan keluar melalui introspeksi, penyerahan diri, dan kepercayaan spiritual. Prinsip-prinsip ini terbukti efektif dalam membantu seseorang keluar dari depresi, kecemasan, dan krisis mental lainnya.\n\nDoa ini juga menunjukkan transformasi dari victim mentality menjadi personal responsibility, serta mempertahankan harapan bahkan dalam situasi yang tampak mustahil. Bagi kesehatan mental, doa Nabi Yunus mengajarkan bahwa dalam kegelisahan sekalipun, masih ada jalan keluar melalui introspeksi, jujur, penyerahan diri, dan kepercayaan spiritual. Prinsip-prinsip ini terbukti efektif dalam membantu seseorang keluar dari depresi, kecemasan, dan krisis mental lainnya.',
-  ),
-  DoaDzikirItem(
-    title: 'Doa Nabi Adam',
-    arabicText: '',
-    transliteration: '',
-    meaning: '',
-    explanation: '',
-  ),
-  DoaDzikirItem(
-    title: 'Doa Nabi Sulaiman',
-    arabicText: '',
-    transliteration: '',
-    meaning: '',
-    explanation: '',
-  ),
-];
