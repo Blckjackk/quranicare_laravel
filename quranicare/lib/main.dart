@@ -46,9 +46,9 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const SplashScreen(),
+      // home: const SplashScreen(),
       // home: const AdminLoginScreen(),
-      // home: const HomeScreen(),
+      home: const HomeScreen(),
       routes: {
         '/home': (context) => const HomeScreen(),
         '/firebase-test': (context) => const TestFirebaseScreen(),

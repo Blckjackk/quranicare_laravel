@@ -31,4 +31,9 @@ return [
         ],
     ],
 
+    // Qalbu Chatbot (Python) base URI
+    'chatbot' => [
+        'base_uri' => env('CHATBOT_BASE_URI', 'http://127.0.0.1:5000'),
+    ],
+
 ];

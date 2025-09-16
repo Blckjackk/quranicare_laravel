@@ -17,6 +17,7 @@ use App\Http\Controllers\BreathingExerciseController;
 use App\Http\Controllers\API\QalbuChatController;
 use App\Http\Controllers\API\PsychologyController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\QalbuChatbotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,7 +84,16 @@ Route::prefix('public')->group(function () {
 });
 
 // ============================================================================
-// 3. PROTECTED ROUTES (Authentication Required)
+// 3. PUBLIC QALBU CHATBOT PROXY (No Authentication)
+// ============================================================================
+// Expose chatbot proxy publicly so mobile/web can call without auth during chat
+Route::prefix('qalbu')->group(function () {
+    Route::post('chatbot', [QalbuChatbotController::class, 'chat']);
+    Route::post('chatbot/feedback', [QalbuChatbotController::class, 'feedback']);
+});
+
+// ============================================================================
+// 4. PROTECTED ROUTES (Authentication Required)
 // ============================================================================
 Route::middleware('auth:sanctum')->group(function () {
     
@@ -159,7 +169,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{dzikir}/favorite', [DzikirController::class, 'toggleFavorite']);
     });
 
-    // 3.8 AI Chat (Qalbu Assistant)
+    // 4.1 AI Chat (Qalbu Assistant)
     Route::prefix('qalbu')->group(function () {
         Route::get('conversations', [QalbuChatController::class, 'getConversations']);
         Route::post('conversations', [QalbuChatController::class, 'createConversation']);
