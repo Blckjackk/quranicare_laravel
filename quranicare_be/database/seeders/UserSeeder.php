@@ -25,6 +25,15 @@ class UserSeeder extends Seeder
                 'bio' => 'Mahasiswa teknik informatika yang sedang belajar untuk menjadi Muslim yang lebih baik'
             ],
             [
+                'name' => 'admin',
+                'email' => 'admin@gmail.com',
+                'password' => Hash::make('admin123'),
+                'birth_date' => Carbon::parse('1995-06-15'),
+                'gender' => 'male',
+                'phone_number' => '+6281234567801',
+                'bio' => 'Mahasiswa teknik informatika yang sedang belajar untuk menjadi Muslim yang lebih baik'
+            ],
+            [
                 'name' => 'Fatimah Azzahra',
                 'email' => 'fatimah.azzahra@email.com',
                 'password' => Hash::make('password123'),

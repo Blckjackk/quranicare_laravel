@@ -42,6 +42,8 @@ class AuthService {
   // User Login
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
+      print('AuthService: Attempting login for $email');
+      
       final response = await http.post(
         Uri.parse('$baseUrl/auth/login'),
         headers: await _getHeaders(),
@@ -51,30 +53,83 @@ class AuthService {
         }),
       );
 
+      print('AuthService: Response status: ${response.statusCode}');
+      print('AuthService: Response body: ${response.body}');
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         
-        if (data['success'] == true) {
-          await saveToken(data['data']['token']);
-          return {
-            'success': true,
-            'user': data['data']['user'],
-            'message': data['message'] ?? 'Login successful',
-          };
+        // Handle both success: true and success: 1 cases
+        final isSuccess = data['success'] == true || 
+                         data['success'] == 1 || 
+                         data['success'] == 'true';
+        
+        if (isSuccess && data['data'] != null) {
+          // Try both 'token' and 'access_token' fields
+          final token = data['data']['token']?.toString() ?? 
+                       data['data']['access_token']?.toString();
+          final user = data['data']['user'];
+          
+          if (token != null && token.isNotEmpty) {
+            await saveToken(token);
+            return {
+              'success': true,
+              'user': user ?? {},
+              'message': data['message']?.toString() ?? 'Login successful',
+            };
+          } else {
+            return {
+              'success': false,
+              'message': 'Invalid token received',
+            };
+          }
         } else {
           return {
             'success': false,
-            'message': data['message'] ?? 'Login failed',
+            'message': data['message']?.toString() ?? 'Login failed',
+            'errors': data['errors'],
           };
         }
+      } else if (response.statusCode == 422) {
+        // Validation errors
+        final data = jsonDecode(response.body);
+        String errorMessage = 'Validation failed';
+        
+        if (data['errors'] != null && data['errors'] is Map) {
+          final errors = data['errors'] as Map<String, dynamic>;
+          final errorMessages = <String>[];
+          errors.forEach((key, value) {
+            if (value is List && value.isNotEmpty) {
+              errorMessages.add(value.first.toString());
+            }
+          });
+          if (errorMessages.isNotEmpty) {
+            errorMessage = errorMessages.join(', ');
+          }
+        } else if (data['message'] != null) {
+          errorMessage = data['message'].toString();
+        }
+        
+        return {
+          'success': false,
+          'message': errorMessage,
+          'errors': data['errors'],
+        };
+      } else if (response.statusCode == 401) {
+        final data = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': data['message']?.toString() ?? 'Invalid credentials',
+        };
       } else {
         final data = jsonDecode(response.body);
         return {
           'success': false,
-          'message': data['message'] ?? 'Login failed',
+          'message': data['message']?.toString() ?? 'Login failed with status ${response.statusCode}',
         };
       }
     } catch (e) {
+      print('AuthService: Login error: $e');
       return {
         'success': false,
         'message': 'Connection error: $e',
