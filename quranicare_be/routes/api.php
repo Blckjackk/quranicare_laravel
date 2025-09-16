@@ -11,6 +11,9 @@ use App\Http\Controllers\API\JournalController;
 use App\Http\Controllers\API\DzikirController;
 use App\Http\Controllers\DzikirDoaController;
 use App\Http\Controllers\DzikirCategoryController;
+use App\Http\Controllers\AudioRelaxController;
+use App\Http\Controllers\AudioCategoryController;
+use App\Http\Controllers\BreathingExerciseController;
 use App\Http\Controllers\API\QalbuChatController;
 use App\Http\Controllers\API\PsychologyController;
 use App\Http\Controllers\API\UserController;
@@ -220,7 +223,43 @@ Route::prefix('dzikir-categories')->group(function () {
 });
 
 // ============================================================================
-// 6. ADMIN ROUTES (Future Implementation)
+// 6. AUDIO RELAX ROUTES (Public Access)
+// ============================================================================
+Route::prefix('audio-relax')->group(function () {
+    Route::get('popular', [AudioRelaxController::class, 'popular']);
+    Route::get('search', [AudioRelaxController::class, 'search']);
+    Route::get('category/{categoryId}', [AudioRelaxController::class, 'getByCategory']);
+    Route::get('{id}', [AudioRelaxController::class, 'show']);
+    Route::post('{id}/play', [AudioRelaxController::class, 'updatePlayCount']);
+    Route::post('{id}/rate', [AudioRelaxController::class, 'rateAudio']);
+});
+
+Route::prefix('audio-categories')->group(function () {
+    Route::get('/', [AudioCategoryController::class, 'index']);
+    Route::get('{id}', [AudioCategoryController::class, 'show']);
+});
+
+// ============================================================================
+// 7. BREATHING EXERCISE ROUTES (Integrated with Database)
+// ============================================================================
+Route::prefix('breathing-exercise')->group(function () {
+    // Public routes - get categories and exercises
+    Route::get('categories', [BreathingExerciseController::class, 'getCategories']);
+    Route::get('categories/{categoryId}/exercises', [BreathingExerciseController::class, 'getExercisesByCategory']);
+    Route::get('exercises/{exerciseId}', [BreathingExerciseController::class, 'getExercise']);
+    
+    // Protected routes - sessions and user data
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('sessions', [BreathingExerciseController::class, 'startSession']);
+        Route::put('sessions/{sessionId}/progress', [BreathingExerciseController::class, 'updateSessionProgress']);
+        Route::post('sessions/{sessionId}/complete', [BreathingExerciseController::class, 'completeSession']);
+        Route::get('users/{userId}/sessions', [BreathingExerciseController::class, 'getUserSessions']);
+        Route::get('users/{userId}/stats', [BreathingExerciseController::class, 'getUserStats']);
+    });
+});
+
+// ============================================================================
+// 8. ADMIN ROUTES (Future Implementation)
 // ============================================================================
 Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
     // Admin routes akan ditambahkan nanti
