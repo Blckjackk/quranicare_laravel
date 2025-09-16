@@ -395,6 +395,75 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // Admin routes (if needed)
-Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
-    // Admin routes will be added here
+Route::prefix('admin')->group(function () {
+    // Admin Authentication
+    Route::post('login', [App\Http\Controllers\Admin\AdminAuthController::class, 'login']);
+    
+    Route::middleware(['auth:sanctum', 'admin.auth'])->group(function () {
+        // Admin Profile & Auth
+        Route::post('logout', [App\Http\Controllers\Admin\AdminAuthController::class, 'logout']);
+        Route::get('profile', [App\Http\Controllers\Admin\AdminAuthController::class, 'profile']);
+        Route::put('profile', [App\Http\Controllers\Admin\AdminAuthController::class, 'updateProfile']);
+        
+        // Dashboard
+        Route::get('dashboard', [App\Http\Controllers\Admin\AdminDashboardController::class, 'index']);
+        Route::get('system-info', [App\Http\Controllers\Admin\AdminDashboardController::class, 'getSystemInfo']);
+        
+        // Dzikir & Doa Management
+        Route::prefix('dzikir-doa')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\AdminDzikirDoaController::class, 'index']);
+            Route::post('/', [App\Http\Controllers\Admin\AdminDzikirDoaController::class, 'store']);
+            Route::get('{id}', [App\Http\Controllers\Admin\AdminDzikirDoaController::class, 'show']);
+            Route::put('{id}', [App\Http\Controllers\Admin\AdminDzikirDoaController::class, 'update']);
+            Route::delete('{id}', [App\Http\Controllers\Admin\AdminDzikirDoaController::class, 'destroy']);
+            
+            // Categories
+            Route::get('categories/list', [App\Http\Controllers\Admin\AdminDzikirDoaController::class, 'getCategories']);
+            Route::post('categories', [App\Http\Controllers\Admin\AdminDzikirDoaController::class, 'storeCategory']);
+            Route::put('categories/{id}', [App\Http\Controllers\Admin\AdminDzikirDoaController::class, 'updateCategory']);
+            Route::delete('categories/{id}', [App\Http\Controllers\Admin\AdminDzikirDoaController::class, 'destroyCategory']);
+        });
+        
+        // Audio Relax Management
+        Route::prefix('audio-relax')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\AdminAudioRelaxController::class, 'index']);
+            Route::post('/', [App\Http\Controllers\Admin\AdminAudioRelaxController::class, 'store']);
+            Route::get('{id}', [App\Http\Controllers\Admin\AdminAudioRelaxController::class, 'show']);
+            Route::put('{id}', [App\Http\Controllers\Admin\AdminAudioRelaxController::class, 'update']);
+            Route::delete('{id}', [App\Http\Controllers\Admin\AdminAudioRelaxController::class, 'destroy']);
+            
+            // Categories
+            Route::get('categories/list', [App\Http\Controllers\Admin\AdminAudioRelaxController::class, 'getCategories']);
+            Route::post('categories', [App\Http\Controllers\Admin\AdminAudioRelaxController::class, 'storeCategory']);
+            Route::put('categories/{id}', [App\Http\Controllers\Admin\AdminAudioRelaxController::class, 'updateCategory']);
+            Route::delete('categories/{id}', [App\Http\Controllers\Admin\AdminAudioRelaxController::class, 'destroyCategory']);
+        });
+        
+        // Psychology Materials Management
+        Route::prefix('psychology')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\AdminPsychologyController::class, 'index']);
+            Route::post('/', [App\Http\Controllers\Admin\AdminPsychologyController::class, 'store']);
+            Route::get('{id}', [App\Http\Controllers\Admin\AdminPsychologyController::class, 'show']);
+            Route::put('{id}', [App\Http\Controllers\Admin\AdminPsychologyController::class, 'update']);
+            Route::delete('{id}', [App\Http\Controllers\Admin\AdminPsychologyController::class, 'destroy']);
+            
+            // Categories
+            Route::get('categories/list', [App\Http\Controllers\Admin\AdminPsychologyController::class, 'getCategories']);
+            Route::post('categories', [App\Http\Controllers\Admin\AdminPsychologyController::class, 'storeCategory']);
+            Route::put('categories/{id}', [App\Http\Controllers\Admin\AdminPsychologyController::class, 'updateCategory']);
+            Route::delete('categories/{id}', [App\Http\Controllers\Admin\AdminPsychologyController::class, 'destroyCategory']);
+        });
+        
+        // Notifications Management
+        Route::prefix('notifications')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\AdminNotificationController::class, 'index']);
+            Route::post('/', [App\Http\Controllers\Admin\AdminNotificationController::class, 'store']);
+            Route::post('broadcast', [App\Http\Controllers\Admin\AdminNotificationController::class, 'broadcast']);
+            Route::get('stats', [App\Http\Controllers\Admin\AdminNotificationController::class, 'getStats']);
+            Route::get('users', [App\Http\Controllers\Admin\AdminNotificationController::class, 'getUsers']);
+            Route::get('{id}', [App\Http\Controllers\Admin\AdminNotificationController::class, 'show']);
+            Route::put('{id}', [App\Http\Controllers\Admin\AdminNotificationController::class, 'update']);
+            Route::delete('{id}', [App\Http\Controllers\Admin\AdminNotificationController::class, 'destroy']);
+        });
+    });
 });
