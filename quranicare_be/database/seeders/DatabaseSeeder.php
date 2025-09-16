@@ -31,6 +31,9 @@ class DatabaseSeeder extends Seeder
             // Audio relaxation content
             AudioRelaxSeeder::class,
             
+            // Notifications system
+            NotificationSeeder::class,
+            
             // Complete Quran data (this might take some time due to API calls)
             QuranSeeder::class,
         ];
@@ -58,7 +61,8 @@ class DatabaseSeeder extends Seeder
         $this->command->info('🤲 Dzikir Collections: 6 categories with authentic Islamic prayers');
         $this->command->info('📚 Psychology Materials: 6 categories with Islamic psychology content');
         $this->command->info('🎵 Audio Relaxation: 5 categories with Islamic audio content');
-        $this->command->info('📖 Quran Data: Complete 114 surahs with verses (from API)');
+        $this->command->info('� Notifications: 8 sample notifications created');
+        $this->command->info('�📖 Quran Data: Complete 114 surahs with verses (from API)');
         $this->command->info('');
         $this->command->info('🔑 Admin Login Credentials:');
         $this->command->info('   Email: superadmin@quranicare.com');

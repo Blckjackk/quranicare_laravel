@@ -399,7 +399,7 @@ Route::prefix('admin')->group(function () {
     // Admin Authentication
     Route::post('login', [App\Http\Controllers\Admin\AdminAuthController::class, 'login']);
     
-    Route::middleware(['auth:sanctum', 'admin.auth'])->group(function () {
+    Route::middleware(['auth:admin', 'admin.auth'])->group(function () {
         // Admin Profile & Auth
         Route::post('logout', [App\Http\Controllers\Admin\AdminAuthController::class, 'logout']);
         Route::get('profile', [App\Http\Controllers\Admin\AdminAuthController::class, 'profile']);

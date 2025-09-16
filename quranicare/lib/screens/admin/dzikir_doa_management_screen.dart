@@ -14,8 +14,6 @@ class _DzikirDoaManagementScreenState extends State<DzikirDoaManagementScreen> {
   
   List<Map<String, dynamic>> _dzikirDoaList = [];
   bool _isLoading = true;
-  int _currentPage = 1;
-  final int _perPage = 10;
 
   @override
   void initState() {
@@ -35,24 +33,29 @@ class _DzikirDoaManagementScreenState extends State<DzikirDoaManagementScreen> {
     });
 
     try {
-      final result = await _adminService.apiCall(
-        'dzikir-doa',
-        'GET',
-        queryParams: {
-          'page': _currentPage.toString(),
-          'per_page': _perPage.toString(),
-          if (search != null && search.isNotEmpty) 'search': search,
-        },
-      );
-
-      if (result['success']) {
-        setState(() {
-          _dzikirDoaList = List<Map<String, dynamic>>.from(result['data']);
-          _isLoading = false;
-        });
-      } else {
-        throw Exception(result['message']);
+      // Use the new dedicated method from AdminService
+      List<Map<String, dynamic>> data = await _adminService.getDzikirDoa();
+      
+      // Apply search filter if provided
+      if (search != null && search.isNotEmpty) {
+        data = data.where((item) {
+          final title = (item['title'] ?? '').toString().toLowerCase();
+          final category = (item['category']?['name'] ?? '').toString().toLowerCase();
+          final arabicText = (item['arabic_text'] ?? '').toString().toLowerCase();
+          final translation = (item['indonesian_translation'] ?? '').toString().toLowerCase();
+          final searchLower = search.toLowerCase();
+          
+          return title.contains(searchLower) || 
+                 category.contains(searchLower) ||
+                 arabicText.contains(searchLower) ||
+                 translation.contains(searchLower);
+        }).toList();
       }
+
+      setState(() {
+        _dzikirDoaList = data;
+        _isLoading = false;
+      });
     } catch (e) {
       setState(() {
         _isLoading = false;
@@ -79,9 +82,9 @@ class _DzikirDoaManagementScreenState extends State<DzikirDoaManagementScreen> {
   Future<void> _showAddEditDialog({Map<String, dynamic>? item}) async {
     final titleController = TextEditingController(text: item?['title'] ?? '');
     final arabicController = TextEditingController(text: item?['arabic_text'] ?? '');
-    final translationController = TextEditingController(text: item?['translation'] ?? '');
+    final translationController = TextEditingController(text: item?['indonesian_translation'] ?? '');
     final benefitsController = TextEditingController(text: item?['benefits'] ?? '');
-    final categoryController = TextEditingController(text: item?['category'] ?? '');
+    final categoryController = TextEditingController(text: item?['category']?['name'] ?? '');
 
     final result = await showDialog<bool>(
       context: context,
@@ -157,15 +160,15 @@ class _DzikirDoaManagementScreenState extends State<DzikirDoaManagementScreen> {
                 final data = {
                   'title': titleController.text,
                   'arabic_text': arabicController.text,
-                  'translation': translationController.text,
+                  'indonesian_translation': translationController.text,
                   'benefits': benefitsController.text,
                   'category': categoryController.text,
                 };
 
                 if (item == null) {
-                  await _adminService.apiCall('dzikir-doa', 'POST', body: data);
+                  await _adminService.createDzikirDoa(data);
                 } else {
-                  await _adminService.apiCall('dzikir-doa/${item['id']}', 'PUT', body: data);
+                  await _adminService.updateDzikirDoa(item['id'], data);
                 }
 
                 Navigator.of(context).pop(true);
@@ -215,7 +218,7 @@ class _DzikirDoaManagementScreenState extends State<DzikirDoaManagementScreen> {
 
     if (shouldDelete == true) {
       try {
-        await _adminService.apiCall('dzikir-doa/$id', 'DELETE');
+        await _adminService.deleteDzikirDoa(id);
         _loadDzikirDoaList(search: _searchController.text);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -365,7 +368,7 @@ class _DzikirDoaManagementScreenState extends State<DzikirDoaManagementScreen> {
                                 ],
                               ),
                               const SizedBox(height: 8),
-                              if (item['category'] != null && item['category'].isNotEmpty)
+                              if (item['category'] != null && item['category']['name'] != null && item['category']['name'].isNotEmpty)
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
@@ -373,10 +376,10 @@ class _DzikirDoaManagementScreenState extends State<DzikirDoaManagementScreen> {
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
-                                    item['category'],
-                                    style: TextStyle(
+                                    item['category']['name'],
+                                    style: const TextStyle(
                                       fontSize: 12,
-                                      color: const Color(0xFF8FA68E),
+                                      color: Color(0xFF8FA68E),
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -400,10 +403,10 @@ class _DzikirDoaManagementScreenState extends State<DzikirDoaManagementScreen> {
                                   textAlign: TextAlign.right,
                                 ),
                               ),
-                              if (item['translation'] != null && item['translation'].isNotEmpty) ...[
+                              if (item['indonesian_translation'] != null && item['indonesian_translation'].isNotEmpty) ...[
                                 const SizedBox(height: 8),
                                 Text(
-                                  item['translation'],
+                                  item['indonesian_translation'],
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey[700],
