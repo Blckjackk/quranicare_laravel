@@ -1,0 +1,10 @@
+# Core service
+Flask==3.0.3
+flask-cors==5.0.0
+
+# Database
+mysql-connector-python==9.0.0
+
+# NLP / ML
+numpy==2.1.1
+scikit-learn==1.5.2
