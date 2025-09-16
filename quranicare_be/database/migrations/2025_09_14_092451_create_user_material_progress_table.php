@@ -21,9 +21,9 @@ return new class extends Migration
             $table->boolean('bookmarked')->default(false);
             $table->integer('rating')->nullable(); // 1-5 stars
             $table->text('notes')->nullable(); // User's personal notes
-            $table->timestamp('started_at');
+            $table->timestamp('started_at')->useCurrent();
             $table->timestamp('completed_at')->nullable();
-            $table->timestamp('last_accessed_at');
+            $table->timestamp('last_accessed_at')->useCurrent();
             $table->timestamps();
             
             $table->unique(['user_id', 'psychology_material_id']);

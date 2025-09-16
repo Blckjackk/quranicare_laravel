@@ -20,6 +20,7 @@ import 'screens/auth/sign_up_screen.dart';
 import 'screens/auth/verification_screen.dart';
 import 'screens/auth/forgot_password_screen.dart';
 import 'screens/auth/create_profile_screen.dart';
+import 'screens/admin/admin_login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,8 +46,9 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      // home: const SplashScreen(),
-      home: const HomeScreen(),
+      home: const SplashScreen(),
+      // home: const AdminLoginScreen(),
+      // home: const HomeScreen(),
       routes: {
         '/home': (context) => const HomeScreen(),
         '/firebase-test': (context) => const TestFirebaseScreen(),
@@ -65,6 +67,7 @@ class MyApp extends StatelessWidget {
         '/quranic-psychology': (context) => const QuranicPsychologyScreen(),
         '/qalbu-chat': (context) => const QalbuChatScreen(),
         '/alquran': (context) => const AlQuranScreen(),
+        '/admin-login': (context) => const AdminLoginScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/verification') {

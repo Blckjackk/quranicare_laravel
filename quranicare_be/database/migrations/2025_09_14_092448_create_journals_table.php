@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('journals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('quran_ayah_id')->nullable()->constrained()->onDelete('set null');
+            $table->unsignedBigInteger('quran_ayah_id')->nullable(); // Reference to quran ayah without foreign key
             $table->string('title');
             $table->text('content');
             $table->text('reflection')->nullable(); // Personal reflection on the ayah

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'sign_up_screen.dart';
+import '../../services/admin_service.dart';
+import '../../services/auth_service.dart';
+import '../admin/admin_dashboard_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -12,8 +15,11 @@ class _SignInScreenState extends State<SignInScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final AdminService _adminService = AdminService();
+  final AuthService _authService = AuthService();
   bool _obscurePassword = true;
   bool _isLoading = false;
+  bool _isAdminLogin = false;
   String? _emailError;
 
   @override
@@ -41,15 +47,77 @@ class _SignInScreenState extends State<SignInScreen> {
         _isLoading = true;
       });
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-      
-      setState(() {
-        _isLoading = false;
-      });
+      try {
+        if (_isAdminLogin) {
+          // Admin Login
+          final result = await _adminService.login(
+            _emailController.text.trim(),
+            _passwordController.text,
+          );
 
-      // Navigate to home screen
-      Navigator.pushReplacementNamed(context, '/home');
+          if (mounted) {
+            setState(() {
+              _isLoading = false;
+            });
+
+            if (result['success']) {
+              // Navigate to admin dashboard
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AdminDashboardScreen(admin: result['admin']),
+                ),
+              );
+            } else {
+              // Show admin login error
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(result['message']),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          }
+        } else {
+          // Regular User Login
+          final result = await _authService.login(
+            _emailController.text.trim(),
+            _passwordController.text,
+          );
+
+          if (mounted) {
+            setState(() {
+              _isLoading = false;
+            });
+
+            if (result['success']) {
+              // Navigate to user home screen
+              Navigator.pushReplacementNamed(context, '/home');
+            } else {
+              // Show user login error
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(result['message']),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+          
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Login error: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
     }
   }
 
@@ -347,7 +415,55 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 20),
+
+                  // Admin Login Toggle
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: _isAdminLogin,
+                          onChanged: (value) {
+                            setState(() {
+                              _isAdminLogin = value ?? false;
+                            });
+                          },
+                          activeColor: const Color(0xFF8FA68E),
+                          checkColor: Colors.white,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.admin_panel_settings,
+                                color: _isAdminLogin 
+                                    ? const Color(0xFF8FA68E) 
+                                    : Colors.grey[600],
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Login as Admin',
+                                style: TextStyle(
+                                  color: _isAdminLogin 
+                                      ? const Color(0xFF8FA68E) 
+                                      : Colors.grey[700],
+                                  fontWeight: _isAdminLogin 
+                                      ? FontWeight.w600 
+                                      : FontWeight.normal,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
 
                   // Sign In Button
                   SizedBox(
@@ -376,9 +492,16 @@ class _SignInScreenState extends State<SignInScreen> {
                           : Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text(
-                                  'Sign In',
-                                  style: TextStyle(
+                                if (_isAdminLogin) 
+                                  const Icon(
+                                    Icons.admin_panel_settings,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ),
+                                if (_isAdminLogin) const SizedBox(width: 8),
+                                Text(
+                                  _isAdminLogin ? 'Sign In as Admin' : 'Sign In',
+                                  style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                     letterSpacing: 0.5,
@@ -441,7 +564,101 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 30),
+
+                  // Admin Login Hint
+                  if (_isAdminLogin)
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF8FA68E).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: const Color(0xFF8FA68E).withOpacity(0.3),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.admin_panel_settings,
+                                color: const Color(0xFF8FA68E),
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Admin Login',
+                                style: TextStyle(
+                                  color: const Color(0xFF8FA68E),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Email: admin@quranicare.com\nPassword: admin123',
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontSize: 12,
+                              fontFamily: 'monospace',
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  // User Login Hint
+                  if (!_isAdminLogin)
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF2D5A5A).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: const Color(0xFF2D5A5A).withOpacity(0.3),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.person,
+                                color: const Color(0xFF2D5A5A),
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'User Login',
+                                style: TextStyle(
+                                  color: const Color(0xFF2D5A5A),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Email: abdullah.rahman@email.com\nPassword: password123',
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontSize: 12,
+                              fontFamily: 'monospace',
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  const SizedBox(height: 10),
                 ],
               ),
             ),

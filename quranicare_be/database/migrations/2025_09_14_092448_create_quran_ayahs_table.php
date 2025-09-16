@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('quran_ayahs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('quran_surah_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('quran_surah_id'); // Reference without foreign key
             $table->integer('number'); // Ayah number within surah
             $table->text('text_arabic');
             $table->text('text_indonesian');
