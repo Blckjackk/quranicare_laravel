@@ -21,12 +21,20 @@ class QalbuChatbotController extends Controller
 
     public function chat(Request $request)
     {
+        // Debug log
+        Log::info('Chatbot request received', [
+            'headers' => $request->headers->all(),
+            'body' => $request->all(),
+            'raw_body' => $request->getContent(),
+        ]);
+
         $v = Validator::make($request->all(), [
             'user_id' => 'required|integer',
             'message' => 'required|string',
             'conversation_id' => 'nullable|integer',
         ]);
         if ($v->fails()) {
+            Log::error('Validation failed', ['errors' => $v->errors()]);
             return response()->json(['errors' => $v->errors()], 422);
         }
 
@@ -69,24 +77,47 @@ class QalbuChatbotController extends Controller
         ];
 
         try {
-            $resp = Http::timeout(8)->post(rtrim($this->chatbotBaseUrl, '/') . '/chat', $payload);
+            $resp = Http::timeout(15)->post(rtrim($this->chatbotBaseUrl, '/') . '/chat', $payload);
         } catch (\Throwable $e) {
-            Log::error('Chatbot service error', ['error' => $e->getMessage()]);
+            Log::error('Chatbot service error', [
+                'error' => $e->getMessage(),
+                'payload' => $payload,
+                'url' => $this->chatbotBaseUrl
+            ]);
+            
+            // Save user message even if AI fails
+            QalbuMessage::create([
+                'qalbu_conversation_id' => $conversation->id,
+                'sender' => 'user',
+                'message' => $messageText,
+                'ai_sources' => null,
+                'suggested_actions' => null,
+                'ai_response_type' => null,
+                'is_helpful' => null,
+                'user_feedback' => null,
+            ]);
+            
             return response()->json([
-                'reply' => 'Maaf, layanan chatbot sedang tidak tersedia. Coba lagi beberapa saat.',
-                'ai_response_type' => 'text',
+                'reply' => 'Maaf, layanan chatbot sedang tidak tersedia. Tim kami sedang memperbaikinya. Silakan coba lagi dalam beberapa menit. 🔧',
+                'ai_response_type' => 'fallback',
                 'ai_sources' => [],
-                'meta' => ['reason' => 'gateway_unavailable'],
+                'meta' => ['reason' => 'service_unavailable'],
                 'conversation_id' => $conversation->id,
             ], 200);
         }
 
         if (!$resp->ok()) {
+            Log::error('Python service error', [
+                'status' => $resp->status(),
+                'body' => $resp->body(),
+                'payload' => $payload
+            ]);
+            
             return response()->json([
-                'reply' => 'Maaf, terjadi masalah saat memproses pesan Anda. Coba lagi.',
-                'ai_response_type' => 'text',
+                'reply' => 'Mohon maaf, sedang ada gangguan teknis. Silakan coba kirim pesan lagi. 🙏',
+                'ai_response_type' => 'fallback',
                 'ai_sources' => [],
-                'meta' => ['reason' => 'upstream_error', 'status' => $resp->status()],
+                'meta' => ['reason' => 'service_error', 'status' => $resp->status()],
                 'conversation_id' => $conversation->id,
             ], 200);
         }

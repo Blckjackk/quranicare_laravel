@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:quranicare/services/chat_service.dart';
 
 class QalbuChatScreen extends StatefulWidget {
   const QalbuChatScreen({super.key});
@@ -14,14 +13,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
   final ScrollController _scrollController = ScrollController();
   List<ChatMessage> messages = [];
   bool _isTyping = false;
-
-  // API base (Android emulator friendly). Change via --dart-define=API_BASE_URL=...
-  static const String _defaultApiBase = 'http://10.0.2.2:8000/api';
-  static const String _apiBase = String.fromEnvironment('API_BASE_URL', defaultValue: _defaultApiBase);
-
-  int? _conversationId;
-  final int _userId = 1; // TODO: replace with actual logged-in user id
-  String? _authToken; // TODO: set if using Bearer token
+  final ChatService _chatService = ChatService();
 
   @override
   void initState() {
@@ -45,6 +37,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
     ];
   }
 
+
   Future<void> _sendMessage() async {
     if (_messageController.text.trim().isEmpty) return;
 
@@ -64,7 +57,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
     _scrollToBottom();
 
     try {
-      final aiText = await _sendToBackend(text);
+      final aiText = await _chatService.sendMessage(text);
       if (!mounted) return;
       setState(() {
         messages.add(ChatMessage(text: aiText, isUser: false, timestamp: DateTime.now()));
@@ -85,28 +78,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
     }
   }
 
-  Future<String> _sendToBackend(String message) async {
-    final uri = Uri.parse('$_apiBase/qalbu/chatbot');
-    final headers = <String, String>{'Content-Type': 'application/json'};
-    if (_authToken != null && _authToken!.isNotEmpty) {
-      headers['Authorization'] = 'Bearer $_authToken';
-    }
-
-    final body = jsonEncode({
-      'user_id': _userId,
-      'message': message,
-      'conversation_id': _conversationId,
-    });
-
-    final resp = await http.post(uri, headers: headers, body: body).timeout(const Duration(seconds: 12));
-    if (resp.statusCode != 200) {
-      throw Exception('Bad status ${resp.statusCode}');
-    }
-    final data = jsonDecode(resp.body) as Map<String, dynamic>;
-    _conversationId = (data['conversation_id'] is int) ? data['conversation_id'] as int : _conversationId;
-    final reply = (data['reply'] as String?) ?? '...';
-    return reply;
-  }
+  // _sendToBackend dihapus, digantikan oleh ChatService
 
   void _scrollToBottom() {
     Future.delayed(const Duration(milliseconds: 100), () {

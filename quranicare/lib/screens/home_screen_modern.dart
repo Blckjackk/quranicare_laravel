@@ -17,49 +17,49 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late Animation<double> _cardAnimation;
 
   final List<MoodData> _moods = [
-    MoodData(emoji: AssetManager.moodSad, color: const Color(0xFFFF7043), label: 'Sedih'), // Orange-red like screenshot
-    MoodData(emoji: AssetManager.moodDown, color: const Color(0xFFFFA726), label: 'Down'), // Yellow-orange
-    MoodData(emoji: AssetManager.moodNeutral, color: const Color(0xFFFFCA28), label: 'Biasa'), // Yellow
-    MoodData(emoji: AssetManager.moodHappy, color: const Color(0xFF66BB6A), label: 'Senang'), // Light green
-    MoodData(emoji: AssetManager.moodHappy, color: const Color(0xFF42A5F5), label: 'Bahagia'), // Blue like sunglasses
+    MoodData(emoji: AssetManager.moodSad, color: const Color(0xFF6366f1), label: 'Sedih'),
+    MoodData(emoji: AssetManager.moodDown, color: const Color(0xFF8b5cf6), label: 'Down'),
+    MoodData(emoji: AssetManager.moodNeutral, color: const Color(0xFF06b6d4), label: 'Biasa'),
+    MoodData(emoji: AssetManager.moodHappy, color: const Color(0xFF10b981), label: 'Senang'),
+    MoodData(emoji: AssetManager.moodHappy, color: const Color(0xFFf59e0b), label: 'Bahagia'),
   ];
 
   final List<FeatureData> _features = [
     FeatureData(
       icon: Icons.air,
-      color: const Color(0xFF7CB342),
+      color: const Color(0xFF06b6d4),
       title: 'Breathing Islami',
       subtitle: 'Teknik nafas untuk ketenangan',
       iconData: Icons.air,
       assetPath: AssetManager.heartIcon,
-      gradientColors: [Color(0xFF7CB342), Color(0xFF689F38)],
+      gradientColors: [Color(0xFF06b6d4), Color(0xFF0891b2)],
     ),
     FeatureData(
       icon: Icons.headphones_outlined,
-      color: const Color(0xFF7CB342),
+      color: const Color(0xFF8b5cf6),
       title: 'Audio Relax',
       subtitle: 'Murottal & musik relaksasi',
       iconData: Icons.headphones_outlined,
       assetPath: AssetManager.headphoneIcon,
-      gradientColors: [Color(0xFF7CB342), Color(0xFF689F38)],
+      gradientColors: [Color(0xFF8b5cf6), Color(0xFF7c3aed)],
     ),
     FeatureData(
       icon: Icons.menu_book_outlined,
-      color: const Color(0xFF7CB342),
+      color: const Color(0xFF10b981),
       title: 'Jurnal Refleksi',
       subtitle: 'Refleksi dari Al-Quran',
       iconData: Icons.menu_book_outlined,
       assetPath: AssetManager.quranIcon,
-      gradientColors: [Color(0xFF7CB342), Color(0xFF689F38)],
+      gradientColors: [Color(0xFF10b981), Color(0xFF059669)],
     ),
     FeatureData(
       icon: Icons.circle_outlined,
-      color: const Color(0xFF7CB342),
+      color: const Color(0xFFf59e0b),
       title: 'Dzikir & Doa',
       subtitle: 'Kumpulan dzikir harian',
       iconData: Icons.circle_outlined,
       assetPath: AssetManager.tasbihIcon,
-      gradientColors: [Color(0xFF7CB342), Color(0xFF689F38)],
+      gradientColors: [Color(0xFFf59e0b), Color(0xFFd97706)],
     ),
   ];
 
@@ -170,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           color: Color(0xFF333333),
         ),
       ),
-      trailing: const Icon(Icons.chevron_right, color: Color(0xFF7CB342)),
+      trailing: const Icon(Icons.chevron_right, color: Color(0xFF2C6E49)),
       onTap: onTap,
     );
   }
@@ -178,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE8F5E8), // Soft green background like in screenshot
+      backgroundColor: const Color(0xFFF8FAFC),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -202,12 +202,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [Color(0xFF7CB342), Color(0xFF689F38)], // Soft natural green like screenshot
+                            colors: [Color(0xFF1e293b), Color(0xFF334155)],
                           ),
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF7CB342).withOpacity(0.15),
+                              color: const Color(0xFF1e293b).withOpacity(0.15),
                               blurRadius: 20,
                               offset: const Offset(0, 8),
                             ),
@@ -220,12 +220,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               height: 64,
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [Color(0xFF7CB342), Color(0xFF689F38)], // Soft natural green
+                                  colors: [Color(0xFF6366f1), Color(0xFF8b5cf6)],
                                 ),
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFF7CB342).withOpacity(0.3),
+                                    color: const Color(0xFF6366f1).withOpacity(0.3),
                                     blurRadius: 12,
                                     offset: const Offset(0, 4),
                                   ),
@@ -359,12 +359,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   height: 48,
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(
-                                      colors: [Color(0xFF2C6E49), Color(0xFF1B5E20)], // Islamic green
+                                      colors: [Color(0xFF6366f1), Color(0xFF8b5cf6)],
                                     ),
                                     borderRadius: BorderRadius.circular(16),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: const Color(0xFF2C6E49).withOpacity(0.3),
+                                        color: const Color(0xFF6366f1).withOpacity(0.3),
                                         blurRadius: 12,
                                         offset: const Offset(0, 4),
                                       ),
@@ -530,7 +530,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             height: 28,
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [Color(0xFF7CB342), Color(0xFF689F38)], // Soft natural green accent
+                                colors: [Color(0xFF6366f1), Color(0xFF8b5cf6)],
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                               ),
@@ -543,7 +543,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF7CB342), // Soft natural green for title
+                              color: Color(0xFF1e293b),
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -611,26 +611,49 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    // Direct image without background container
-                                    feature.assetPath != null 
-                                      ? Image.asset(
-                                          feature.assetPath!,
-                                          width: 64,
-                                          height: 64,
-                                          fit: BoxFit.contain,
-                                          errorBuilder: (context, error, stackTrace) {
-                                            return Icon(
-                                              feature.iconData,
-                                              color: const Color(0xFF2C6E49),
-                                              size: 48,
-                                            );
-                                          },
-                                        )
-                                      : Icon(
-                                          feature.iconData,
-                                          color: const Color(0xFF2C6E49),
-                                          size: 48,
+                                    Container(
+                                      width: 64,
+                                      height: 64,
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: feature.gradientColors,
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
                                         ),
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: feature.color.withOpacity(0.3),
+                                            blurRadius: 16,
+                                            offset: const Offset(0, 6),
+                                          ),
+                                        ],
+                                      ),
+                                      child: feature.assetPath != null 
+                                        ? ClipRRect(
+                                            borderRadius: BorderRadius.circular(20),
+                                            child: Image.asset(
+                                              feature.assetPath!,
+                                              width: 64,
+                                              height: 64,
+                                              fit: BoxFit.cover,
+                                              color: Colors.white,
+                                              colorBlendMode: BlendMode.srcIn,
+                                              errorBuilder: (context, error, stackTrace) {
+                                                return Icon(
+                                                  feature.iconData,
+                                                  color: Colors.white,
+                                                  size: 32,
+                                                );
+                                              },
+                                            ),
+                                          )
+                                        : Icon(
+                                            feature.iconData,
+                                            color: Colors.white,
+                                            size: 32,
+                                          ),
+                                    ),
 
                                     const SizedBox(height: 16),
 
@@ -690,12 +713,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [Color(0xFF7CB342), Color(0xFF689F38)], // Soft natural green theme
+                            colors: [Color(0xFF1e293b), Color(0xFF334155)],
                           ),
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF7CB342).withOpacity(0.25),
+                              color: const Color(0xFF1e293b).withOpacity(0.25),
                               blurRadius: 25,
                               offset: const Offset(0, 10),
                             ),
@@ -710,12 +733,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 height: 72,
                                 decoration: BoxDecoration(
                                   gradient: const LinearGradient(
-                                    colors: [Color(0xFF7CB342), Color(0xFF689F38)], // Soft natural green
+                                    colors: [Color(0xFF10b981), Color(0xFF059669)],
                                   ),
                                   borderRadius: BorderRadius.circular(24),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color(0xFF7CB342).withOpacity(0.4),
+                                      color: const Color(0xFF10b981).withOpacity(0.4),
                                       blurRadius: 20,
                                       offset: const Offset(0, 8),
                                     ),
@@ -762,12 +785,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                                   decoration: BoxDecoration(
                                     gradient: const LinearGradient(
-                                      colors: [Color(0xFF7CB342), Color(0xFF689F38)], // Soft natural green
+                                      colors: [Color(0xFF10b981), Color(0xFF059669)],
                                     ),
                                     borderRadius: BorderRadius.circular(16),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: const Color(0xFF7CB342).withOpacity(0.3),
+                                        color: const Color(0xFF10b981).withOpacity(0.3),
                                         blurRadius: 12,
                                         offset: const Offset(0, 6),
                                       ),

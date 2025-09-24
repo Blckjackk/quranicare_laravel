@@ -58,6 +58,7 @@ dependencies:
   intl: ^0.19.0  # untuk formatting date/time
   shared_preferences: ^2.3.2  # untuk local storage
   timeago: ^3.7.0  # untuk format waktu relatif (contoh: "2 menit yang lalu")
+  url_launcher: ^6.3.0  # untuk membuka URL eksternal
 
 dev_dependencies:
   flutter_test:

@@ -1,30 +1,22 @@
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ChatService {
-  // Use LAN IP for physical device; 10.0.2.2 for Android emulator
-  final String baseUrl;
+  final String baseUrl = "http://127.0.0.1:8000/api";
 
-  ChatService({String? baseUrl}) : baseUrl = baseUrl ?? const String.fromEnvironment('CHAT_BASE_URL', defaultValue: 'http://10.0.2.2:5000');
-
-  Future<Map<String, dynamic>> sendMessage(String message, {String? emotion, int? conversationId}) async {
-    final url = Uri.parse("$baseUrl/chat");
-    final body = {
-      "message": message,
-      "user_emotion": emotion,
-      "conversation_id": conversationId
-    };
-
+  Future<String> sendMessage(String message) async {
     final response = await http.post(
-      url,
+      Uri.parse("$baseUrl/chat"),
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode(body),
+      body: jsonEncode({"message": message}),
     );
-
     if (response.statusCode == 200) {
-      return jsonDecode(response.body) as Map<String, dynamic>;
+      final data = jsonDecode(response.body);
+      return data['reply'];
+    } else {
+      throw Exception("Failed: {response.body}");
     }
-    throw Exception("Failed to send message: ${response.statusCode} ${response.body}");
   }
 }
 
