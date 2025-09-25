@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/asset_manager.dart';
+import 'edit_my_profile_screen.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -49,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       title: 'Jurnal Refleksi',
       subtitle: 'Refleksi dari Al-Quran',
       iconData: Icons.menu_book_outlined,
-      assetPath: AssetManager.quranIcon,
+      assetPath: AssetManager.heartIcon, // Changed from quranIcon to heartIcon
       gradientColors: [Color(0xFF7CB342), Color(0xFF689F38)],
     ),
     FeatureData(
@@ -66,6 +68,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    
+    // Debug: Print asset paths
+    print('=== DEBUG ASSET PATHS ===');
+    for (var feature in _features) {
+      print('${feature.title}: ${feature.assetPath}');
+    }
+    print('========================');
+    
     _headerAnimationController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -140,14 +150,87 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             ),
             const SizedBox(height: 24),
-            _buildProfileOption(Icons.person, 'Edit Profile', () {}),
-            _buildProfileOption(Icons.settings, 'Pengaturan', () {}),
-            _buildProfileOption(Icons.help, 'Bantuan', () {}),
-            _buildProfileOption(Icons.info, 'Tentang Aplikasi', () {}),
+            _buildProfileOption(Icons.person, 'Edit Profile', () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditMyProfileScreen(),
+                ),
+              );
+            }),
+            _buildProfileOption(Icons.settings, 'Pengaturan', () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SettingsScreen(),
+                ),
+              );
+            }),
+            _buildProfileOption(Icons.help, 'Bantuan', () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Fitur Bantuan akan segera hadir!'),
+                  backgroundColor: const Color(0xFF7CB342),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              );
+            }),
+            _buildProfileOption(Icons.info, 'Tentang Aplikasi', () {
+              Navigator.pop(context);
+              _showAboutDialog();
+            }),
             const SizedBox(height: 20),
           ],
         ),
       ),
+    );
+  }
+
+  void _showAboutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            'Tentang QuranCare',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF2D5A5A),
+            ),
+          ),
+          content: const Text(
+            'QuranCare adalah aplikasi yang membantu Anda melacak mood harian dan menjalankan aktivitas spiritual dengan lebih teratur.\n\nDikembangkan dengan ❤️ untuk ummi tersayang.',
+            style: TextStyle(
+              color: Color(0xFF64748b),
+              height: 1.5,
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF7CB342),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -505,6 +588,49 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 ],
                               ),
                             ),
+
+                            // New Mood Selector Button
+                            const SizedBox(height: 12),
+                            Center(
+                              child: ElevatedButton.icon(
+                                onPressed: () async {
+                                  final selectedMood = await Navigator.pushNamed(
+                                    context,
+                                    '/mood-tracker',
+                                  );
+                                  if (selectedMood != null) {
+                                    // Update home screen mood if needed
+                                    // You can handle the returned mood here
+                                    print('Selected mood: $selectedMood');
+                                  }
+                                },
+                                icon: const Icon(
+                                  Icons.casino_rounded,
+                                  size: 18,
+                                  color: Colors.white,
+                                ),
+                                label: const Text(
+                                  'Pilih dengan Spin',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF2C6E49),
+                                  elevation: 4,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  shadowColor: const Color(0xFF2C6E49).withOpacity(0.3),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -611,26 +737,48 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    // Direct image without background container
-                                    feature.assetPath != null 
-                                      ? Image.asset(
-                                          feature.assetPath!,
-                                          width: 64,
-                                          height: 64,
-                                          fit: BoxFit.contain,
-                                          errorBuilder: (context, error, stackTrace) {
-                                            return Icon(
+                                    // Feature image with better error handling
+                                    Container(
+                                      width: 64,
+                                      height: 64,
+                                      child: feature.assetPath != null 
+                                        ? Image.asset(
+                                            feature.assetPath!,
+                                            width: 64,
+                                            height: 64,
+                                            fit: BoxFit.contain,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              print('Error loading image: ${feature.assetPath}');
+                                              print('Error: $error');
+                                              return Container(
+                                                width: 64,
+                                                height: 64,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xFF2C6E49).withOpacity(0.1),
+                                                  borderRadius: BorderRadius.circular(12),
+                                                ),
+                                                child: Icon(
+                                                  feature.iconData,
+                                                  color: const Color(0xFF2C6E49),
+                                                  size: 32,
+                                                ),
+                                              );
+                                            },
+                                          )
+                                        : Container(
+                                            width: 64,
+                                            height: 64,
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF2C6E49).withOpacity(0.1),
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            child: Icon(
                                               feature.iconData,
                                               color: const Color(0xFF2C6E49),
-                                              size: 48,
-                                            );
-                                          },
-                                        )
-                                      : Icon(
-                                          feature.iconData,
-                                          color: const Color(0xFF2C6E49),
-                                          size: 48,
-                                        ),
+                                              size: 32,
+                                            ),
+                                          ),
+                                    ),
 
                                     const SizedBox(height: 16),
 

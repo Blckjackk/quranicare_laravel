@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
+import '../widgets/mood_selector_widget.dart';
+import '../services/mood_service.dart';
 
 class MoodTrackerScreen extends StatefulWidget {
   const MoodTrackerScreen({super.key});
@@ -10,116 +11,105 @@ class MoodTrackerScreen extends StatefulWidget {
 
 class _MoodTrackerScreenState extends State<MoodTrackerScreen>
     with TickerProviderStateMixin {
-  late AnimationController _rotationController;
-  late AnimationController _pulseController;
-  late Animation<double> _rotationAnimation;
-  late Animation<double> _pulseAnimation;
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
 
-  int selectedMoodIndex = 2; // Default to neutral (middle)
-  bool isSpinning = false;
-
-  final List<MoodOption> moods = [
-    MoodOption(
-      emoji: '😢',
-      label: 'Sangat Sedih',
-      color: const Color(0xFFFF6B6B),
-      angle: 0,
-    ),
-    MoodOption(
-      emoji: '😔',
-      label: 'Sedih',
-      color: const Color(0xFFFF8E53),
-      angle: 72,
-    ),
-    MoodOption(
-      emoji: '😐',
-      label: 'Biasa Saja',
-      color: const Color(0xFFFFD93D),
-      angle: 144,
-    ),
-    MoodOption(
-      emoji: '😊',
-      label: 'Senang',
-      color: const Color(0xFF6BCF7F),
-      angle: 216,
-    ),
-    MoodOption(
-      emoji: '😁',
-      label: 'Sangat Senang',
-      color: const Color(0xFF4ECDC4),
-      angle: 288,
-    ),
-  ];
+  MoodOption? _selectedMood;
+  bool _isLoading = false;
+  final MoodService _moodService = MoodService();
 
   @override
   void initState() {
     super.initState();
-    _rotationController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+    
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
     
-    _pulseController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    )..repeat(reverse: true);
-
-    _rotationAnimation = Tween<double>(
-      begin: 0,
-      end: 2 * math.pi,
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
     ).animate(CurvedAnimation(
-      parent: _rotationController,
-      curve: Curves.elasticOut,
+      parent: _fadeController,
+      curve: Curves.easeIn,
     ));
 
-    _pulseAnimation = Tween<double>(
-      begin: 0.95,
-      end: 1.05,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+    _fadeController.forward();
   }
 
   @override
   void dispose() {
-    _rotationController.dispose();
-    _pulseController.dispose();
+    _fadeController.dispose();
     super.dispose();
   }
 
-  void _spinWheel() {
-    if (isSpinning) return;
-    
+  void _onMoodSelected(MoodOption mood) {
     setState(() {
-      isSpinning = true;
-    });
-
-    _rotationController.reset();
-    _rotationController.forward().then((_) {
-      // Random selection after spin
-      final random = math.Random();
-      setState(() {
-        selectedMoodIndex = random.nextInt(moods.length);
-        isSpinning = false;
-      });
+      _selectedMood = mood;
     });
   }
 
-  void _saveMood() {
-    // Save mood logic here
+  void _saveMood() async {
+    if (_selectedMood == null) {
+      _showErrorSnackBar('Silakan pilih mood terlebih dahulu');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // TODO: Get token from auth service/storage - for demo purposes using placeholder
+      const String userToken = 'demo_token'; 
+      
+      final result = await _moodService.saveMood(
+        token: userToken,
+        mood: _selectedMood!,
+        moodDate: DateTime.now(),
+        moodTime: DateTime.now(),
+      );
+
+      if (result['success']) {
+        _showSuccessSnackBar('Mood "${_selectedMood!.label}" berhasil disimpan!');
+        Navigator.pop(context, _selectedMood);
+      } else {
+        _showErrorSnackBar(result['message'] ?? 'Gagal menyimpan mood');
+      }
+    } catch (e) {
+      _showErrorSnackBar('Terjadi kesalahan: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Mood "${moods[selectedMoodIndex].label}" berhasil disimpan!'),
-        backgroundColor: const Color(0xFF8FA68E),
+        content: Text(message),
+        backgroundColor: const Color(0xFF16A34A),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
       ),
     );
-    
-    Navigator.pop(context, moods[selectedMoodIndex]);
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: const Color(0xFFDC2626),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
   }
 
   @override
@@ -139,279 +129,174 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
+          child: AnimatedBuilder(
+            animation: _fadeAnimation,
+            builder: (context, child) {
+              return Opacity(
+                opacity: _fadeAnimation.value,
+                child: Column(
                   children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        width: 40,
-                        height: 40,
+                    // Header
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF2D5A5A).withOpacity(0.1),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.arrow_back_ios_new,
+                                color: Color(0xFF2D5A5A),
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // Title
+                    const Text(
+                      'Bagaimana Perasaan\nKamu Hari Ini??',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2D5A5A),
+                        height: 1.2,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    // Current Mood Display
+                    if (_selectedMood != null)
+                      Container(
+                        width: 120,
+                        height: 120,
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
+                          color: _selectedMood!.color.withOpacity(0.2),
+                          shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF2D5A5A).withOpacity(0.1),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
+                              color: _selectedMood!.color.withOpacity(0.3),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
                             ),
                           ],
                         ),
-                        child: const Icon(
-                          Icons.arrow_back_ios_new,
-                          color: Color(0xFF2D5A5A),
-                          size: 20,
+                        child: Center(
+                          child: Text(
+                            _selectedMood!.emoji,
+                            style: const TextStyle(fontSize: 60),
+                          ),
+                        ),
+                      ),
+                    
+                    if (_selectedMood == null)
+                      Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.2),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.grey.withOpacity(0.5),
+                            width: 2,
+                          ),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            '😐',
+                            style: TextStyle(
+                              fontSize: 60,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                    const SizedBox(height: 20),
+
+                    Text(
+                      _selectedMood?.label ?? 'Pilih mood Anda',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: _selectedMood?.color ?? Colors.grey,
+                      ),
+                    ),
+
+                    const SizedBox(height: 60),
+
+                    // Mood Selector Widget
+                    Expanded(
+                      child: Center(
+                        child: MoodSelectorWidget(
+                          onMoodSelected: _onMoodSelected,
+                          initialMood: _selectedMood,
+                        ),
+                      ),
+                    ),
+
+                    // Save Button
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _saveMood,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _selectedMood?.color ?? const Color(0xFF8FA68E),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            elevation: 8,
+                            shadowColor: (_selectedMood?.color ?? const Color(0xFF8FA68E)).withOpacity(0.3),
+                          ),
+                          child: _isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text(
+                                  'Simpan Mood Saya',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                         ),
                       ),
                     ),
                   ],
                 ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Title
-              const Text(
-                'Bagaimana Perasaan\nKamu Hari Ini??',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2D5A5A),
-                  height: 1.2,
-                ),
-                textAlign: TextAlign.center,
-              ),
-
-              const SizedBox(height: 40),
-
-              // Current Mood Display
-              AnimatedBuilder(
-                animation: _pulseAnimation,
-                builder: (context, child) {
-                  return Transform.scale(
-                    scale: _pulseAnimation.value,
-                    child: Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: moods[selectedMoodIndex].color.withOpacity(0.2),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: moods[selectedMoodIndex].color.withOpacity(0.3),
-                            blurRadius: 20,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          moods[selectedMoodIndex].emoji,
-                          style: const TextStyle(fontSize: 60),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 20),
-
-              Text(
-                moods[selectedMoodIndex].label,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: moods[selectedMoodIndex].color,
-                ),
-              ),
-
-              const SizedBox(height: 60),
-
-              // Mood Wheel
-              Expanded(
-                child: Center(
-                  child: GestureDetector(
-                    onTap: _spinWheel,
-                    child: AnimatedBuilder(
-                      animation: _rotationAnimation,
-                      builder: (context, child) {
-                        return Transform.rotate(
-                          angle: _rotationAnimation.value,
-                          child: Container(
-                            width: 280,
-                            height: 280,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0xFF2D5A5A),
-                                  blurRadius: 20,
-                                  offset: Offset(0, 10),
-                                ),
-                              ],
-                            ),
-                            child: CustomPaint(
-                              painter: MoodWheelPainter(
-                                moods: moods,
-                                selectedIndex: selectedMoodIndex,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-
-              // Pointer indicator
-              Container(
-                width: 20,
-                height: 20,
-                margin: const EdgeInsets.only(bottom: 20),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF8FA68E),
-                  shape: BoxShape.circle,
-                ),
-              ),
-
-              // Save Button
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _saveMood,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF8FA68E),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      elevation: 8,
-                      shadowColor: const Color(0xFF8FA68E).withOpacity(0.3),
-                    ),
-                    child: const Text(
-                      'Simpan Mood Saya',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),
     );
   }
-}
-
-class MoodOption {
-  final String emoji;
-  final String label;
-  final Color color;
-  final double angle;
-
-  MoodOption({
-    required this.emoji,
-    required this.label,
-    required this.color,
-    required this.angle,
-  });
-}
-
-class MoodWheelPainter extends CustomPainter {
-  final List<MoodOption> moods;
-  final int selectedIndex;
-
-  MoodWheelPainter({
-    required this.moods,
-    required this.selectedIndex,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
-    
-    const sweepAngle = 2 * math.pi / 5; // 72 degrees per section
-    
-    for (int i = 0; i < moods.length; i++) {
-      final mood = moods[i];
-      final startAngle = i * sweepAngle - math.pi / 2; // Start from top
-      
-      // Draw sector
-      final paint = Paint()
-        ..color = mood.color
-        ..style = PaintingStyle.fill;
-      
-      final path = Path();
-      path.addArc(
-        Rect.fromCircle(center: center, radius: radius),
-        startAngle,
-        sweepAngle,
-      );
-      path.lineTo(center.dx, center.dy);
-      path.close();
-      
-      canvas.drawPath(path, paint);
-      
-      // Draw border
-      final borderPaint = Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3;
-      
-      canvas.drawPath(path, borderPaint);
-      
-      // Draw emoji
-      final emojiAngle = startAngle + sweepAngle / 2;
-      final emojiRadius = radius * 0.7;
-      final emojiX = center.dx + emojiRadius * math.cos(emojiAngle);
-      final emojiY = center.dy + emojiRadius * math.sin(emojiAngle);
-      
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: mood.emoji,
-          style: const TextStyle(fontSize: 32),
-        ),
-        textDirection: TextDirection.ltr,
-      );
-      textPainter.layout();
-      textPainter.paint(
-        canvas,
-        Offset(
-          emojiX - textPainter.width / 2,
-          emojiY - textPainter.height / 2,
-        ),
-      );
-    }
-    
-    // Draw center circle
-    final centerPaint = Paint()
-      ..color = Colors.white
-      ..style = PaintingStyle.fill;
-    
-    canvas.drawCircle(center, 30, centerPaint);
-    
-    final centerBorderPaint = Paint()
-      ..color = const Color(0xFF8FA68E)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4;
-    
-    canvas.drawCircle(center, 30, centerBorderPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
