@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/asset_manager.dart';
-import 'edit_my_profile_screen.dart';
-import 'settings_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -115,7 +114,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       case 0: break;
       case 1: Navigator.pushNamed(context, '/alquran'); break;
       case 2: Navigator.pushNamed(context, '/qalbu-chat'); break;
-      case 3: _showProfileMenu(); break;
+      case 3: 
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ProfileScreen(),
+          ),
+        );
+        break;
     }
   }
 
@@ -123,139 +129,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     setState(() {
       _selectedMood = index;
     });
-  }
-
-  void _showProfileMenu() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(25),
-            topRight: Radius.circular(25),
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 16),
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            const SizedBox(height: 24),
-            _buildProfileOption(Icons.person, 'Edit Profile', () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const EditMyProfileScreen(),
-                ),
-              );
-            }),
-            _buildProfileOption(Icons.settings, 'Pengaturan', () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsScreen(),
-                ),
-              );
-            }),
-            _buildProfileOption(Icons.help, 'Bantuan', () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Fitur Bantuan akan segera hadir!'),
-                  backgroundColor: const Color(0xFF7CB342),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              );
-            }),
-            _buildProfileOption(Icons.info, 'Tentang Aplikasi', () {
-              Navigator.pop(context);
-              _showAboutDialog();
-            }),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showAboutDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: const Text(
-            'Tentang QuranCare',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF2D5A5A),
-            ),
-          ),
-          content: const Text(
-            'QuranCare adalah aplikasi yang membantu Anda melacak mood harian dan menjalankan aktivitas spiritual dengan lebih teratur.\n\nDikembangkan dengan ❤️ untuk ummi tersayang.',
-            style: TextStyle(
-              color: Color(0xFF64748b),
-              height: 1.5,
-            ),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF7CB342),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildProfileOption(IconData icon, String title, VoidCallback onTap) {
-    return ListTile(
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: const Color(0xFF2C6E49).withOpacity(0.1),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Icon(icon, color: const Color(0xFF2C6E49), size: 20),
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: Color(0xFF333333),
-        ),
-      ),
-      trailing: const Icon(Icons.chevron_right, color: Color(0xFF7CB342)),
-      onTap: onTap,
-    );
   }
 
   @override

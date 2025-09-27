@@ -5,12 +5,15 @@ import '../widgets/mood_selector_widget.dart';
 
 class MoodService {
   // Base URL - sesuaikan dengan backend Anda
-  static const String baseUrl = 'http://localhost:8000/api';
+  static const String baseUrl = 'http://127.0.0.1:8000/api';
   
   // Singleton pattern
   static final MoodService _instance = MoodService._internal();
   factory MoodService() => _instance;
   MoodService._internal();
+  
+  // Debug mode untuk logging
+  bool get isDebugMode => true;
 
   // Headers untuk request
   Map<String, String> _getHeaders({String? token}) {
@@ -64,6 +67,91 @@ class MoodService {
       return {
         'success': false,
         'message': 'Error: ${e.toString()}',
+      };
+    }
+  }
+
+  /// Menyimpan mood ke database berdasarkan type saja
+  Future<Map<String, dynamic>> saveMoodByType({
+    required String token,
+    required String moodType,
+    String? notes,
+    DateTime? moodDate,
+    DateTime? moodTime,
+  }) async {
+    try {
+      final url = Uri.parse('$baseUrl/mood');
+      
+      final body = {
+        'mood_type': moodType,
+        'notes': notes,
+        'mood_date': (moodDate ?? DateTime.now()).toIso8601String().split('T')[0],
+        'mood_time': (moodTime ?? DateTime.now()).toIso8601String().split('T')[1].split('.')[0],
+      };
+
+      if (isDebugMode) {
+        print('🔄 Sending mood data:');
+        print('URL: $url');
+        print('Headers: ${_getHeaders(token: token)}');
+        print('Body: ${jsonEncode(body)}');
+      }
+
+      final response = await http.post(
+        url,
+        headers: _getHeaders(token: token),
+        body: jsonEncode(body),
+      );
+
+      if (isDebugMode) {
+        print('📡 Response status: ${response.statusCode}');
+        print('📡 Response body: ${response.body}');
+      }
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        return {
+          'success': true,
+          'data': data,
+          'message': 'Mood berhasil disimpan',
+        };
+      } else {
+        return {
+          'success': false,
+          'message': data['message'] ?? 'Gagal menyimpan mood',
+          'errors': data['errors'] ?? {},
+          'status_code': response.statusCode,
+        };
+      }
+    } catch (e) {
+      if (isDebugMode) {
+        print('❌ Error saving mood: $e');
+      }
+      return {
+        'success': false,
+        'message': 'Error: ${e.toString()}',
+      };
+    }
+  }
+
+  /// Test connection to backend
+  Future<Map<String, dynamic>> testConnection() async {
+    try {
+      final url = Uri.parse('$baseUrl/mood/today');
+      final response = await http.get(
+        url,
+        headers: _getHeaders(token: 'test'),
+      );
+      
+      return {
+        'success': response.statusCode < 500,
+        'status_code': response.statusCode,
+        'message': 'Backend ${response.statusCode < 500 ? 'accessible' : 'error'}',
+      };
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Connection failed: $e',
       };
     }
   }

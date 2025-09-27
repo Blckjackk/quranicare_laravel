@@ -270,7 +270,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Ringkasan untuk ${DateFormat('EEEE, dd MMMM yyyy', 'id').format(_selectedDate)}',
+                        'Ringkasan untuk ${DateFormat('EEEE, dd MMMM yyyy').format(_selectedDate)}',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

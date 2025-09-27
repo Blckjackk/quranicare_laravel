@@ -60,6 +60,19 @@ class MoodController extends Controller
         $today = Carbon::now()->toDateString();
         $now = Carbon::now()->toTimeString();
 
+        // Check if user has already selected mood today
+        $existingMoodToday = Mood::where('user_id', $user->id)
+            ->where('mood_date', $today)
+            ->exists();
+
+        if ($existingMoodToday) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda sudah memilih mood hari ini',
+                'error_code' => 'MOOD_ALREADY_SELECTED_TODAY'
+            ], 422);
+        }
+
         $mood = Mood::create([
             'user_id' => $user->id,
             'mood_type' => $request->mood_type,

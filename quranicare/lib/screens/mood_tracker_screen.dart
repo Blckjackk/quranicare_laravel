@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../widgets/mood_selector_widget.dart';
+import '../widgets/mood_spinner_widget.dart';
 import '../services/mood_service.dart';
+import '../services/auth_service.dart';
 
 class MoodTrackerScreen extends StatefulWidget {
   const MoodTrackerScreen({super.key});
@@ -16,7 +17,10 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
 
   MoodOption? _selectedMood;
   bool _isLoading = false;
+  bool _canSelectMood = true;
+  bool _hasSelectedToday = false;
   final MoodService _moodService = MoodService();
+  final AuthService _authService = AuthService();
 
   @override
   void initState() {
@@ -36,7 +40,61 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
     ));
 
     _fadeController.forward();
+    _checkTodayMood();
   }
+
+  void _checkTodayMood() async {
+    try {
+      // Get token from auth service
+      final userToken = await _authService.getToken();
+      
+      if (userToken == null) {
+        print('⚠️ No auth token available');
+        setState(() {
+          _hasSelectedToday = false;
+          _canSelectMood = true;
+        });
+        return;
+      }
+      
+      // Test connection first
+      final connectionTest = await _moodService.testConnection();
+      print('🔍 Connection test: ${connectionTest['message']}');
+      
+      final result = await _moodService.getTodayMoods(token: userToken);
+      
+      if (result['success'] && result['data'] != null) {
+        final data = result['data'];
+        final totalEntries = data['total_entries'] ?? 0;
+        
+        setState(() {
+          _hasSelectedToday = totalEntries > 0;
+          _canSelectMood = totalEntries == 0;
+        });
+        
+        if (totalEntries > 0) {
+          print('✅ User already selected mood today (${totalEntries} entries)');
+        } else {
+          print('⭕ User hasn\'t selected mood today');
+        }
+      } else {
+        print('⚠️ Failed to get today moods: ${result['message']}');
+        setState(() {
+          _hasSelectedToday = false;
+          _canSelectMood = true;
+        });
+      }
+    } catch (e) {
+      print('❌ Error checking today mood: $e');
+      // If error, allow selection
+      setState(() {
+        _hasSelectedToday = false;
+        _canSelectMood = true;
+      });
+    }
+  }
+
+
 
   @override
   void dispose() {
@@ -50,9 +108,16 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
     });
   }
 
+
+
   void _saveMood() async {
     if (_selectedMood == null) {
       _showErrorSnackBar('Silakan pilih mood terlebih dahulu');
+      return;
+    }
+
+    if (!_canSelectMood) {
+      _showErrorSnackBar('Anda sudah memilih mood hari ini');
       return;
     }
 
@@ -61,23 +126,64 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
     });
 
     try {
-      // TODO: Get token from auth service/storage - for demo purposes using placeholder
-      const String userToken = 'demo_token'; 
+      // Get token from auth service
+      final userToken = await _authService.getToken();
       
-      final result = await _moodService.saveMood(
+      if (userToken == null) {
+        _showErrorSnackBar('Tidak ada token autentikasi. Silakan login kembali.');
+        return;
+      }
+      
+      print('💾 Saving mood: ${_selectedMood!.type} (${_selectedMood!.label})');
+      
+      final result = await _moodService.saveMoodByType(
         token: userToken,
-        mood: _selectedMood!,
+        moodType: _selectedMood!.type,
         moodDate: DateTime.now(),
         moodTime: DateTime.now(),
+        notes: 'Dipilih menggunakan spinner wheel',
       );
+
+      print('📋 Save result: ${result['success']} - ${result['message']}');
 
       if (result['success']) {
         _showSuccessSnackBar('Mood "${_selectedMood!.label}" berhasil disimpan!');
-        Navigator.pop(context, _selectedMood);
+        
+        // Update state to prevent multiple selections
+        setState(() {
+          _hasSelectedToday = true;
+          _canSelectMood = false;
+        });
+        
+        // Don't pop immediately, let user see the success message
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) {
+            Navigator.pop(context, _selectedMood);
+          }
+        });
       } else {
-        _showErrorSnackBar(result['message'] ?? 'Gagal menyimpan mood');
+        String errorMsg = result['message'] ?? 'Gagal menyimpan mood';
+        
+        if (result['status_code'] == 422 && result['errors'] != null) {
+          // Handle validation errors
+          final errors = result['errors'];
+          if (errors is Map) {
+            final errorMessages = <String>[];
+            errors.forEach((key, value) {
+              if (value is List && value.isNotEmpty) {
+                errorMessages.add(value.first.toString());
+              }
+            });
+            if (errorMessages.isNotEmpty) {
+              errorMsg = errorMessages.join(', ');
+            }
+          }
+        }
+        
+        _showErrorSnackBar(errorMsg);
       }
     } catch (e) {
+      print('❌ Exception saving mood: $e');
       _showErrorSnackBar('Terjadi kesalahan: $e');
     } finally {
       setState(() {
@@ -244,12 +350,13 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
 
                     const SizedBox(height: 60),
 
-                    // Mood Selector Widget
+                    // Mood Spinner Widget
                     Expanded(
                       child: Center(
-                        child: MoodSelectorWidget(
+                        child: MoodSpinnerWidget(
                           onMoodSelected: _onMoodSelected,
                           initialMood: _selectedMood,
+                          canSpin: _canSelectMood,
                         ),
                       ),
                     ),
@@ -257,37 +364,96 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
                     // Save Button
                     Padding(
                       padding: const EdgeInsets.all(20),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _isLoading ? null : _saveMood,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _selectedMood?.color ?? const Color(0xFF8FA68E),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            elevation: 8,
-                            shadowColor: (_selectedMood?.color ?? const Color(0xFF8FA68E)).withOpacity(0.3),
-                          ),
-                          child: _isLoading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Text(
-                                  'Simpan Mood Saya',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                      child: Column(
+                        children: [
+                          // Show selected mood info
+                          if (_selectedMood != null && _canSelectMood)
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 15),
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: _selectedMood!.color.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: _selectedMood!.color,
+                                  width: 2,
                                 ),
-                        ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  if (_selectedMood!.imagePath != null)
+                                    ClipOval(
+                                      child: Image.asset(
+                                        _selectedMood!.imagePath!,
+                                        width: 30,
+                                        height: 30,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Text(
+                                            _selectedMood!.emoji,
+                                            style: const TextStyle(fontSize: 20),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  else
+                                    Text(
+                                      _selectedMood!.emoji,
+                                      style: const TextStyle(fontSize: 20),
+                                    ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Mood: ${_selectedMood!.label}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: _selectedMood!.color,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          
+                          // Save button
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: (_isLoading || !_canSelectMood || _selectedMood == null) ? null : _saveMood,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: _selectedMood?.color ?? const Color(0xFF8FA68E),
+                                foregroundColor: Colors.white,
+                                disabledBackgroundColor: Colors.grey.shade400,
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25),
+                                ),
+                                elevation: 8,
+                                shadowColor: (_selectedMood?.color ?? const Color(0xFF8FA68E)).withOpacity(0.3),
+                              ),
+                              child: _isLoading
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : Text(
+                                      !_canSelectMood 
+                                          ? 'Sudah Memilih Hari Ini' 
+                                          : _selectedMood == null 
+                                              ? 'Pilih Mood Dulu'
+                                              : 'Simpan Mood Saya',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

@@ -271,7 +271,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      // Edit Profile Button
+                      // Daily Recap Button (First in order)
+                      _buildProfileMenuItem(
+                        icon: Icons.calendar_today_outlined,
+                        title: 'Daily Recap',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const DailyRecapScreen(),
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Sakinah Tracker Button (Second in order)
+                      _buildProfileMenuItem(
+                        icon: Icons.favorite_outline,
+                        title: 'Sakinah Tracker',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SakinahTrackerScreen(),
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Edit Profile Button (Third in order)
                       _buildProfileMenuItem(
                         icon: Icons.person_outline,
                         title: 'Edit Profile',
@@ -287,7 +319,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       const SizedBox(height: 16),
 
-                      // Settings Button  
+                      // Settings Button (Fourth in order)
                       _buildProfileMenuItem(
                         icon: Icons.settings_outlined,
                         title: 'Setting',
@@ -296,39 +328,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => const SettingsScreen(),
-                            ),
-                          );
-                        },
-                      ),
-
-                      const SizedBox(height: 40),
-
-                      // Additional Menu Items (based on images)
-                      _buildProfileMenuItem(
-                        icon: Icons.calendar_today_outlined,
-                        title: 'Daily Recap',
-                        subtitle: 'Lihat aktivitas harian Anda',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const DailyRecapScreen(),
-                            ),
-                          );
-                        },
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      _buildProfileMenuItem(
-                        icon: Icons.favorite_outline,
-                        title: 'Sakinah Tracker',
-                        subtitle: 'Pantau perjalanan spiritual Anda',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SakinahTrackerScreen(),
                             ),
                           );
                         },
