@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\DoaDzikir;
 use App\Models\UserDoaDzikirSession;
+use App\Events\UserActivityEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -166,6 +167,13 @@ class DoaDzikirController extends Controller
 
             $session->load('doaDzikir');
 
+            // Log aktivitas untuk Sakinah Tracker
+            event(new UserActivityEvent('dzikir_started', [
+                'session_id' => $session->id,
+                'dzikir_name' => $session->doaDzikir->nama,
+                'target_count' => $session->target_count
+            ]));
+
             return response()->json([
                 'success' => true,
                 'message' => 'Sesi dzikir dimulai',
@@ -257,6 +265,17 @@ class DoaDzikirController extends Controller
                 'completed' => true,
                 'completed_at' => now(),
             ]);
+
+            // Log aktivitas completion untuk Sakinah Tracker
+            event(new UserActivityEvent('dzikir_completed', [
+                'session_id' => $session->id,
+                'dzikir_name' => $session->doaDzikir->nama,
+                'completed_count' => $request->completed_count,
+                'target_count' => $session->target_count,
+                'duration_seconds' => $request->duration_seconds,
+                'mood_before' => $session->mood_before,
+                'mood_after' => $request->mood_after
+            ]));
 
             return response()->json([
                 'success' => true,

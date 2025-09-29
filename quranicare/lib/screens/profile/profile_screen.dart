@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'daily_recap_screen.dart';
+import '../daily_recap_screen.dart';
 import 'sakinah_tracker_screen.dart';
 import 'edit_profile_screen.dart';
 import 'settings_screen.dart';

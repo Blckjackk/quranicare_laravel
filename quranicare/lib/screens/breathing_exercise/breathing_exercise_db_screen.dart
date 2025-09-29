@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import '../services/breathing_exercise_db_service.dart';
-import '../models/breathing_exercise_db.dart';
-import '../widgets/custom_youtube_player.dart';
+import '../../services/breathing_exercise_db_service.dart';
+import '../../models/breathing_exercise_db.dart';
+import '../../widgets/custom_youtube_player.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class BreathingExerciseDbScreen extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'profile_screen.dart';
-import 'mood_tracker_screen.dart';
+import '../profile/profile_screen.dart';
+import '../mood_tracker_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

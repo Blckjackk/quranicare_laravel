@@ -20,6 +20,8 @@ use App\Http\Controllers\API\QalbuChatController;
 use App\Http\Controllers\API\PsychologyController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\QalbuChatbotController;
+use App\Http\Controllers\Api\SakinahTrackerController;
+use App\Http\Controllers\Api\QuranReadingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -240,6 +242,24 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('stats', [DoaDzikirController::class, 'getUserStats']);
     });
 
+    // 5.7.2 Quran Reading Sessions
+    Route::prefix('quran-reading')->group(function () {
+        Route::post('sessions', [QuranReadingController::class, 'startSession']);
+        Route::post('sessions/{session}/complete', [QuranReadingController::class, 'completeSession']);
+        Route::get('sessions/history', [QuranReadingController::class, 'getUserSessions']);
+        Route::get('stats', [QuranReadingController::class, 'getUserStats']);
+    });
+
+    // 5.7.3 Sakinah Tracker (Activity Tracking & Daily Recap)
+    Route::prefix('sakinah-tracker')->group(function () {
+        Route::get('daily/{date?}', [SakinahTrackerController::class, 'getDailyActivities']);
+        Route::get('monthly/{year}/{month}', [SakinahTrackerController::class, 'getMonthlyRecap']);
+        Route::get('weekly', [SakinahTrackerController::class, 'getWeeklyStats']);
+        Route::get('calendar/{year}/{month}', [SakinahTrackerController::class, 'getCalendarData']);
+        Route::get('activity-summary', [SakinahTrackerController::class, 'getActivitySummary']);
+        Route::get('streak', [SakinahTrackerController::class, 'getStreak']);
+    });
+
     // 5.8 AI Chat (Qalbu Assistant)
     Route::prefix('qalbu')->group(function () {
         Route::get('conversations', [QalbuChatController::class, 'getConversations']);
@@ -317,6 +337,46 @@ Route::prefix('dzikir-categories')->group(function () {
 });
 
 // ============================================================================
+// 7.5 TEST SAKINAH TRACKER (Public for testing)
+// ============================================================================
+Route::get('test-sakinah-tracker', function() {
+    $user = \App\Models\User::first();
+    if (!$user) {
+        return response()->json(['error' => 'No user found'], 404);
+    }
+    
+    $activities = \App\Models\UserActivityLog::where('user_id', $user->id)
+        ->whereDate('activity_date', today())
+        ->get();
+    
+    $monthlyStats = \App\Models\UserActivityLog::where('user_id', $user->id)
+        ->whereMonth('activity_date', now()->month)
+        ->selectRaw('activity_type, COUNT(*) as count, SUM(duration_seconds) as total_duration')
+        ->groupBy('activity_type')
+        ->get();
+    
+    return response()->json([
+        'user' => $user->name,
+        'date' => today()->format('Y-m-d'),
+        'today_activities_count' => $activities->count(),
+        'activities_today' => $activities->groupBy('activity_type')->map(function($group) {
+            return [
+                'count' => $group->count(),
+                'total_duration' => $group->sum('duration_seconds'),
+                'activities' => $group->map(function($activity) {
+                    return [
+                        'title' => $activity->activity_title,
+                        'time' => $activity->activity_time,
+                        'icon' => $activity->activity_icon
+                    ];
+                })
+            ];
+        }),
+        'monthly_stats' => $monthlyStats
+    ]);
+});
+
+// ============================================================================
 // 8. AUDIO RELAX ROUTES (Public Access)
 // ============================================================================
 Route::prefix('audio-relax')->group(function () {
@@ -353,7 +413,53 @@ Route::prefix('breathing-exercise')->group(function () {
 });
 
 // ============================================================================
-// 10. ADMIN ROUTES (Future Implementation)
+// 10. SAKINAH TRACKER API - Activity Tracking & Analytics
+// ============================================================================
+Route::prefix('sakinah-tracker')->middleware('auth:sanctum')->group(function () {
+    // Daily & Monthly Views
+    Route::get('daily-recap', [SakinahTrackerController::class, 'getDailyRecap']);
+    Route::get('monthly-stats', [SakinahTrackerController::class, 'getMonthlyStats']);
+    
+    // Activity Logging
+    Route::post('log-activity', [SakinahTrackerController::class, 'logActivity']);
+    Route::get('activity-history', [SakinahTrackerController::class, 'getActivityHistory']);
+    
+    // Streaks & Motivation
+    Route::get('streaks', [SakinahTrackerController::class, 'getStreaks']);
+    Route::get('dashboard-summary', [SakinahTrackerController::class, 'getDashboardSummary']);
+    
+    // Insights & Analytics
+    Route::get('insights', [SakinahTrackerController::class, 'getInsights']);
+    
+    // Data Migration (one-time)
+    Route::post('sync-existing-data', [SakinahTrackerController::class, 'syncExistingData']);
+});
+
+// ============================================================================
+// 11. QURAN READING SESSIONS (New Tracking)
+// ============================================================================
+Route::prefix('quran-sessions')->middleware('auth:sanctum')->group(function () {
+    // Start reading session
+    Route::post('start', function (Request $request) {
+        // Endpoint untuk start Quran reading session
+        // Akan diimplementasi setelah UI ready
+    });
+    
+    // Complete reading session
+    Route::post('{sessionId}/complete', function (Request $request, $sessionId) {
+        // Endpoint untuk complete Quran reading session
+        // Akan diimplementasi setelah UI ready
+    });
+    
+    // Get user's reading history
+    Route::get('history', function (Request $request) {
+        // Get user's Quran reading sessions
+        // Akan diimplementasi setelah UI ready
+    });
+});
+
+// ============================================================================
+// 12. ADMIN ROUTES (Future Implementation)
 // ============================================================================
 Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
     // Admin routes akan ditambahkan nanti

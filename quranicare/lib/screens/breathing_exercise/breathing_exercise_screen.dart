@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import '../utils/asset_manager.dart';
+import '../../utils/asset_manager.dart';
 
 class BreathingExerciseScreen extends StatefulWidget {
   const BreathingExerciseScreen({super.key});

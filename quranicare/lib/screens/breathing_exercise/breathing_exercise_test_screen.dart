@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../services/breathing_exercise_service.dart';
-import '../models/breathing_exercise.dart';
+import '../../services/breathing_exercise_service.dart';
+import '../../models/breathing_exercise.dart';
 
 /// Contoh penggunaan BreathingExerciseService
 /// Tambahkan widget ini untuk testing Firebase operations

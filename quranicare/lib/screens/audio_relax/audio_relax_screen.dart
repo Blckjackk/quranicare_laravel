@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'; // For kIsWeb
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../models/audio_relax.dart';
-import '../services/audio_relax_service.dart';
-import '../services/quran_api_service.dart';
-import '../services/audio_player_service.dart';
-import '../services/web_audio_helper.dart';
+import '../../models/audio_relax.dart';
+import '../../services/audio_relax_service.dart';
+import '../../services/quran_api_service.dart';
+import '../../services/audio_player_service.dart';
+import '../../services/web_audio_helper.dart';
 
 class AudioRelaxScreen extends StatefulWidget {
   const AudioRelaxScreen({super.key});
