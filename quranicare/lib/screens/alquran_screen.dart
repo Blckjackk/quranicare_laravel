@@ -77,11 +77,10 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF2D5A5A), // Teal gelap
-              Color(0xFF4A6741), // Green gelap
-              Color(0xFFF0F8F8), // Light teal
+              Color(0xFFF0F8F8), // Light mint green (same as homepage)
+              Color(0xFFE8F5E8), // Soft green background (same as homepage)
             ],
-            stops: [0.0, 0.3, 1.0],
+            stops: [0.0, 1.0],
           ),
         ),
         child: SafeArea(
@@ -97,11 +96,11 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withOpacity(0.9),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                            icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2D5A5A)),
                             onPressed: () => Navigator.pop(context),
                           ),
                         ),
@@ -115,14 +114,14 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                                 style: TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: Color(0xFF2D5A5A),
                                 ),
                               ),
                               Text(
                                 'Hidayah & Petunjuk Hidup',
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.white70,
+                                  color: Color(0xFF2D5A5A),
                                 ),
                               ),
                             ],
@@ -130,11 +129,11 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                         ),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withOpacity(0.9),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.bookmark_border, color: Colors.white),
+                            icon: const Icon(Icons.bookmark_border, color: Color(0xFF2D5A5A)),
                             onPressed: () {
                               // TODO: Navigate to bookmarks
                             },
@@ -650,11 +649,10 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF2D5A5A),
-              Color(0xFF4A6741),
-              Color(0xFFF0F8F8),
+              Color(0xFFF0F8F8), // Light mint green (same as homepage)
+              Color(0xFFE8F5E8), // Soft green background (same as homepage)
             ],
-            stops: [0.0, 0.3, 1.0],
+            stops: [0.0, 1.0],
           ),
         ),
         child: SafeArea(
@@ -669,11 +667,11 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: Colors.white.withOpacity(0.9),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+                            icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2D5A5A)),
                             onPressed: () => Navigator.pop(context),
                           ),
                         ),
@@ -687,14 +685,14 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                                 style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  color: Color(0xFF2D5A5A),
                                 ),
                               ),
                               Text(
                                 '${widget.surah.place} • ${widget.surah.numberOfAyahs} ayat',
                                 style: const TextStyle(
                                   fontSize: 14,
-                                  color: Colors.white70,
+                                  color: Color(0xFF2D5A5A),
                                 ),
                               ),
                             ],
@@ -705,7 +703,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
-                            color: Colors.white,
+                            color: Color(0xFF2D5A5A),
                             fontFamily: 'Arabic',
                           ),
                           textDirection: TextDirection.rtl,

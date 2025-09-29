@@ -37,7 +37,6 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
     ];
   }
 
-
   Future<void> _sendMessage() async {
     if (_messageController.text.trim().isEmpty) return;
 
@@ -78,8 +77,6 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
     }
   }
 
-  // _sendToBackend dihapus, digantikan oleh ChatService
-
   void _scrollToBottom() {
     Future.delayed(const Duration(milliseconds: 100), () {
       if (_scrollController.hasClients) {
@@ -110,7 +107,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              // Modern Header
+              // Modern Header matching Al-Quran style
               Container(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
                 child: Column(
@@ -158,7 +155,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                           ),
                           child: IconButton(
                             icon: const Icon(Icons.psychology_outlined, color: Color(0xFF2D5A5A)),
-                            onPressed: () {}, // Empty action for now
+                            onPressed: () {},
                           ),
                         ),
                       ],
@@ -166,40 +163,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                   ],
                 ),
               ),
-              // Online status indicator
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF2D5A5A).withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: const Color(0xFF2D5A5A).withOpacity(0.3),
-                    width: 1,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF2D5A5A),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    const Text(
-                      'Online',
-                      style: TextStyle(
-                        color: Color(0xFF2D5A5A),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Chat messages area
               Expanded(
                 child: Container(
                   margin: const EdgeInsets.only(top: 8),
@@ -216,6 +180,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                   ),
                 ),
               ),
+              // Input area
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -345,7 +310,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
                   blurRadius: 5,
-                  offset: const Offset(0, 1),
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -366,15 +331,23 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
   }
 
   Widget _buildDot(int index) {
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 600 + (index * 200)),
-      curve: Curves.easeInOut,
-      width: 8,
-      height: 8,
-      decoration: BoxDecoration(
-        color: const Color(0xFF2D5A5A).withOpacity(0.7),
-        shape: BoxShape.circle,
-      ),
+    return AnimatedBuilder(
+      animation: AnimationController(
+        duration: const Duration(milliseconds: 600),
+        vsync: this,
+      )..repeat(),
+      builder: (context, child) {
+        final animationValue = (DateTime.now().millisecondsSinceEpoch / 200) % 3;
+        final isActive = (animationValue.floor() == index);
+        return Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: isActive ? const Color(0xFF2D5A5A) : Colors.grey[300],
+            shape: BoxShape.circle,
+          ),
+        );
+      },
     );
   }
 
@@ -384,7 +357,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
       margin: const EdgeInsets.only(bottom: 16),
       child: Row(
         mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!isUser) ...[
             Container(
@@ -424,7 +397,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                   BoxShadow(
                     color: Colors.black.withOpacity(0.05),
                     blurRadius: 5,
-                    offset: const Offset(0, 1),
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
@@ -436,7 +409,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                     style: TextStyle(
                       fontSize: 15,
                       height: 1.4,
-                      color: isUser ? Colors.white : const Color(0xFF2D5A5A),
+                      color: isUser ? Colors.white : const Color(0xFF2C2C2C),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -444,9 +417,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                     _formatTime(message.timestamp),
                     style: TextStyle(
                       fontSize: 12,
-                      color: isUser 
-                          ? Colors.white.withOpacity(0.7)
-                          : Colors.grey[500],
+                      color: isUser ? Colors.white.withOpacity(0.7) : Colors.grey[500],
                     ),
                   ),
                 ],
@@ -456,20 +427,20 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
           if (isUser) ...[
             const SizedBox(width: 12),
             Container(
-              width: 36,
-              height: 36,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
-                color: const Color(0xFF2D5A5A).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(18),
+                color: Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: const Color(0xFF2D5A5A).withOpacity(0.2),
-                  width: 2,
+                  width: 1,
                 ),
               ),
               child: const Icon(
-                Icons.person,
+                Icons.person_outline,
                 color: Color(0xFF2D5A5A),
-                size: 18,
+                size: 20,
               ),
             ),
           ],
@@ -481,23 +452,16 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
   String _formatTime(DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
-
-    if (difference.inDays > 0) {
-      return '${difference.inDays} hari lalu';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours} jam lalu';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes} menit lalu';
-    } else {
+    
+    if (difference.inMinutes < 1) {
       return 'Baru saja';
+    } else if (difference.inMinutes < 60) {
+      return '${difference.inMinutes} menit lalu';
+    } else if (difference.inHours < 24) {
+      return '${difference.inHours} jam lalu';
+    } else {
+      return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
     }
-  }
-
-  @override
-  void dispose() {
-    _messageController.dispose();
-    _scrollController.dispose();
-    super.dispose();
   }
 }
 

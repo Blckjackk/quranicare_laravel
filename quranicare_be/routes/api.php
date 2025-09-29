@@ -12,6 +12,7 @@ use App\Http\Controllers\API\JournalController;
 use App\Http\Controllers\API\DzikirController;
 use App\Http\Controllers\DzikirDoaController;
 use App\Http\Controllers\DzikirCategoryController;
+use App\Http\Controllers\API\DoaDzikirController;
 use App\Http\Controllers\AudioRelaxController;
 use App\Http\Controllers\AudioCategoryController;
 use App\Http\Controllers\BreathingExerciseController;
@@ -221,13 +222,22 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('reflections/stats', [JournalController::class, 'getReflectionStats']);
     });
 
-    // 5.7 Dzikir & Spiritual Practices
+    // 5.7 Dzikir & Spiritual Practices (Old Structure)
     Route::prefix('dzikir')->group(function () {
         Route::post('sessions', [DzikirController::class, 'startSession']);
         Route::put('sessions/{session}', [DzikirController::class, 'updateSession']);
         Route::post('sessions/{session}/complete', [DzikirController::class, 'completeSession']);
         Route::get('sessions/history', [DzikirController::class, 'getSessionHistory']);
         Route::post('{dzikir}/favorite', [DzikirController::class, 'toggleFavorite']);
+    });
+
+    // 5.7.1 Doa Dzikir Sessions (New Structure)
+    Route::prefix('doa-dzikir')->group(function () {
+        Route::post('sessions', [DoaDzikirController::class, 'startSession']);
+        Route::put('sessions/{session}', [DoaDzikirController::class, 'updateSession']);
+        Route::post('sessions/{session}/complete', [DoaDzikirController::class, 'completeSession']);
+        Route::get('sessions/history', [DoaDzikirController::class, 'getUserSessions']);
+        Route::get('stats', [DoaDzikirController::class, 'getUserStats']);
     });
 
     // 5.8 AI Chat (Qalbu Assistant)
@@ -278,14 +288,27 @@ Route::prefix('test')->group(function () {
 });
 
 // ============================================================================
-// 7. DZIKIR DOA ROUTES (Public Access)
+// 7. DOA DZIKIR ROUTES (Public Access) - New API Structure
+// ============================================================================
+Route::prefix('doa-dzikir')->group(function () {
+    Route::get('/', [DoaDzikirController::class, 'index']);
+    Route::get('groups', [DoaDzikirController::class, 'groups']);
+    Route::get('tags', [DoaDzikirController::class, 'tags']);
+    Route::get('{id}', [DoaDzikirController::class, 'show']);
+});
+
+// ============================================================================
+// 7.1 DZIKIR DOA ROUTES (Old Structure - Backward Compatibility) 
 // ============================================================================
 Route::prefix('dzikir-doa')->group(function () {
-    Route::get('/', [DzikirDoaController::class, 'index']);
-    Route::get('featured', [DzikirDoaController::class, 'featured']);
-    Route::get('search', [DzikirDoaController::class, 'search']);
-    Route::get('category/{categoryId}', [DzikirDoaController::class, 'getByCategory']);
-    Route::get('{id}', [DzikirDoaController::class, 'show']);
+    // Redirect to new API structure
+    Route::get('/', [DoaDzikirController::class, 'index']);
+    Route::get('groups', [DoaDzikirController::class, 'groups']);
+    Route::get('tags', [DoaDzikirController::class, 'tags']);
+    Route::get('featured', [DoaDzikirController::class, 'index']);
+    Route::get('search', [DoaDzikirController::class, 'index']); 
+    Route::get('category/{categoryId}', [DoaDzikirController::class, 'index']);
+    Route::get('{id}', [DoaDzikirController::class, 'show']);
 });
 
 Route::prefix('dzikir-categories')->group(function () {
