@@ -43,7 +43,6 @@ class SakinahTrackerService {
       final response = await http.get(url, headers: _headers);
       
       print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
       
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -51,16 +50,16 @@ class SakinahTrackerService {
           final activities = (data['data'] as List)
               .map((activity) => UserActivity.fromJson(activity))
               .toList();
-          print('Parsed ${activities.length} activities');
+          print('✅ Loaded ${activities.length} real activities from API');
           return activities;
         }
       } else if (response.statusCode == 401) {
-        print('Unauthorized - using mock data for demonstration');
+        print('🔐 Unauthorized - using mock data');
         return _getMockActivitiesForDate(date);
       }
       
-      print('No valid data found, returning empty list');
-      return [];
+      print('⚠️ No valid data found, using mock data');
+      return _getMockActivitiesForDate(date);
     } catch (e) {
       print('Error getting daily activities: $e');
       // Return mock data for testing when server is not available
@@ -194,70 +193,123 @@ class SakinahTrackerService {
 
   // Mock data for testing when server is not available
   List<UserActivity> _getMockActivitiesForDate(DateTime date) {
-    // Only provide mock data for recent dates
     final now = DateTime.now();
     final daysDifference = now.difference(date).inDays;
     
-    if (daysDifference > 7 || daysDifference < -1) {
-      return []; // No activities for dates too far in the past or future
-    }
+    // Generate realistic mock data based on the date pattern
+    // Using date hash to ensure consistent data for each date
+    final dayOfMonth = date.day;
+    final dayOfWeek = date.weekday;
     
-    // Generate mock activities based on date
     List<UserActivity> mockActivities = [];
     
-    if (daysDifference <= 3) { // Recent days have more activities
-      mockActivities = [
-        UserActivity(
-          id: 1,
-          activityType: 'quran_reading',
-          activityName: 'Membaca Al-Qur\'an',
-          activityDate: date,
-          metadata: {
-            'surah_name': 'Al-Fatiha',
-            'verses_count': 7,
-            'session_duration': 15
-          },
-          createdAt: DateTime(date.year, date.month, date.day, 8, 30),
-        ),
-        UserActivity(
-          id: 2,
-          activityType: 'dzikir_session',
-          activityName: 'Dzikir Pagi',
-          activityDate: date,
-          metadata: {
-            'dzikir_type': 'Tasbih',
-            'repetition_count': 33,
-            'session_duration': 10
-          },
-          createdAt: DateTime(date.year, date.month, date.day, 9, 15),
-        ),
-        if (daysDifference == 0) // Today has more activities
-          UserActivity(
-            id: 3,
-            activityType: 'mood_tracking',
-            activityName: 'Mencatat mood',
-            activityDate: date,
-            metadata: {
-              'mood_type': 'senang',
-              'mood_level': 4
-            },
-            createdAt: DateTime(date.year, date.month, date.day, 20, 0),
-          ),
-      ];
-    } else if (daysDifference <= 5) {
-      mockActivities = [
-        UserActivity(
-          id: 4,
-          activityType: 'breathing_exercise',
-          activityName: 'Latihan Pernapasan',
-          activityDate: date,
-          metadata: {
-            'exercise_name': '4-7-8 Breathing',
-            'duration': 5
-          },
-          createdAt: DateTime(date.year, date.month, date.day, 12, 0),
-        ),
-      ];
+    // Weekend pattern (Friday = 5, Saturday = 6, Sunday = 7)
+    bool isWeekend = dayOfWeek >= 5;
+    
+    // More activities on weekends and certain dates
+    int baseActivityCount = isWeekend ? 4 : 2;
+    if (dayOfMonth % 7 == 0) baseActivityCount += 2; // Special days
+    if (dayOfMonth <= 3) baseActivityCount += 1; // Beginning of month
+    
+    // Generate activities based on patterns
+    if (baseActivityCount >= 1) {
+      mockActivities.add(UserActivity(
+        id: dayOfMonth * 10 + 1,
+        activityType: 'quran_reading',
+        activityName: 'Membaca Al-Qur\'an',
+        activityDate: date,
+        metadata: {
+          'surah_name': _getRandomSurah(dayOfMonth),
+          'verses_count': (dayOfMonth % 10) + 5,
+          'session_duration': (dayOfMonth % 20) + 10
+        },
+        createdAt: DateTime(date.year, date.month, date.day, 6 + (dayOfMonth % 3), 30),
+      ));
+    }
+    
+    if (baseActivityCount >= 2) {
+      mockActivities.add(UserActivity(
+        id: dayOfMonth * 10 + 2,
+        activityType: 'dzikir_session',
+        activityName: 'Sesi Dzikir',
+        activityDate: date,
+        metadata: {
+          'dzikir_type': _getRandomDzikir(dayOfMonth),
+          'repetition_count': (dayOfMonth % 50) + 33,
+          'session_duration': (dayOfMonth % 15) + 5
+        },
+        createdAt: DateTime(date.year, date.month, date.day, 9, 15 + (dayOfMonth % 30)),
+      ));
+    }
+    
+    if (baseActivityCount >= 3) {
+      mockActivities.add(UserActivity(
+        id: dayOfMonth * 10 + 3,
+        activityType: _getRandomActivityType(dayOfMonth),
+        activityName: _getRandomActivityName(dayOfMonth),
+        activityDate: date,
+        metadata: _getRandomMetadata(dayOfMonth),
+        createdAt: DateTime(date.year, date.month, date.day, 12 + (dayOfMonth % 6), (dayOfMonth * 7) % 60),
+      ));
+    }
+    
+    if (baseActivityCount >= 4) {
+      mockActivities.add(UserActivity(
+        id: dayOfMonth * 10 + 4,
+        activityType: 'mood_tracking',
+        activityName: 'Pelacakan Mood',
+        activityDate: date,
+        metadata: {
+          'mood_type': _getRandomMood(dayOfMonth),
+          'mood_level': (dayOfMonth % 5) + 1
+        },
+        createdAt: DateTime(date.year, date.month, date.day, 19, (dayOfMonth * 3) % 60),
+      ));
+    }
+    
+    if (baseActivityCount >= 5) {
+      mockActivities.add(UserActivity(
+        id: dayOfMonth * 10 + 5,
+        activityType: 'breathing_exercise',
+        activityName: 'Latihan Pernapasan',
+        activityDate: date,
+        metadata: {
+          'exercise_name': _getRandomBreathingExercise(dayOfMonth),
+          'duration': (dayOfMonth % 10) + 5,
+          'completed_cycles': (dayOfMonth % 15) + 10
+        },
+        createdAt: DateTime(date.year, date.month, date.day, 14, (dayOfMonth * 2) % 60),
+      ));
+    }
+    
+    if (baseActivityCount >= 6) {
+      mockActivities.add(UserActivity(
+        id: dayOfMonth * 10 + 6,
+        activityType: 'journal_entry',
+        activityName: 'Menulis Jurnal',
+        activityDate: date,
+        metadata: {
+          'title': 'Refleksi Hari Ini',
+          'word_count': (dayOfMonth * 5) + 50,
+          'tags': ['refleksi', 'syukur']
+        },
+        createdAt: DateTime(date.year, date.month, date.day, 21, (dayOfMonth * 4) % 60),
+      ));
+    }
+    
+    if (baseActivityCount >= 7) {
+      mockActivities.add(UserActivity(
+        id: dayOfMonth * 10 + 7,
+        activityType: 'audio_listening',
+        activityName: 'Mendengarkan Audio',
+        activityDate: date,
+        metadata: {
+          'audio_title': _getRandomAudio(dayOfMonth),
+          'duration': (dayOfMonth % 20) + 15,
+          'artist': 'Various Artists'
+        },
+        createdAt: DateTime(date.year, date.month, date.day, 16, (dayOfMonth * 6) % 60),
+      ));
     }
     
     return mockActivities;
@@ -312,23 +364,116 @@ class SakinahTrackerService {
       // Don't add activities for future dates
       if (date.isAfter(today)) continue;
       
-      // Generate activity count based on day pattern
-      int activityCount = 0;
-      if (day % 7 == 0) { // Sundays - less activity
-        activityCount = day <= 21 ? 1 : 0;
-      } else if (day % 3 == 0) { // Every 3rd day
-        activityCount = 2;
-      } else if (day <= today.day && day > today.day - 7) { // Recent week
-        activityCount = 3;
-      } else if (day % 2 == 0) { // Even days
-        activityCount = 1;
-      }
+      // Generate activity count using same logic as _getMockActivitiesForDate
+      final dayOfWeek = date.weekday;
+      bool isWeekend = dayOfWeek >= 5; // Friday, Saturday, Sunday
       
-      if (activityCount > 0) {
-        calendarData[dateKey] = activityCount;
+      int baseActivityCount = isWeekend ? 4 : 2;
+      if (day % 7 == 0) baseActivityCount += 2; // Special days
+      if (day <= 3) baseActivityCount += 1; // Beginning of month
+      if (day > today.day - 7 && day <= today.day) baseActivityCount += 1; // Recent week
+      
+      // Add some randomness but keep it consistent for same date
+      final variance = (day * 3) % 3;
+      int finalCount = (baseActivityCount + variance).clamp(0, 7);
+      
+      if (finalCount > 0) {
+        calendarData[dateKey] = finalCount;
       }
     }
     
     return calendarData;
+  }
+
+  // Helper methods for generating realistic mock data
+  String _getRandomSurah(int seed) {
+    List<String> surahs = [
+      'Al-Fatiha', 'Al-Baqarah', 'Ali Imran', 'An-Nisa', 'Al-Maidah',
+      'Al-An\'am', 'Al-A\'raf', 'Al-Anfal', 'At-Taubah', 'Yunus',
+      'Hud', 'Yusuf', 'Ar-Ra\'d', 'Ibrahim', 'Al-Hijr', 'An-Nahl'
+    ];
+    return surahs[seed % surahs.length];
+  }
+
+  String _getRandomDzikir(int seed) {
+    List<String> dzikirs = [
+      'Tasbih', 'Tahmid', 'Takbir', 'Tahlil', 'Istighfar',
+      'Shalawat', 'Doa Pagi', 'Doa Petang', 'Asmaul Husna'
+    ];
+    return dzikirs[seed % dzikirs.length];
+  }
+
+  String _getRandomActivityType(int seed) {
+    List<String> types = [
+      'audio_listening', 'journal_entry', 'qalbuchat_session', 'psychology_assessment'
+    ];
+    return types[seed % types.length];
+  }
+
+  String _getRandomActivityName(int seed) {
+    Map<String, List<String>> names = {
+      'audio_listening': ['Tilawah Al-Quran', 'Murottal', 'Ceramah', 'Musik Relaksasi'],
+      'journal_entry': ['Refleksi Harian', 'Syukur Hari Ini', 'Evaluasi Diri', 'Catatan Ibadah'],
+      'qalbuchat_session': ['Konsultasi AI', 'Sharing Curhat', 'Bimbingan Spiritual', 'Tanya Jawab'],
+      'psychology_assessment': ['Tes Mood', 'Evaluasi Mental', 'Self Assessment', 'Wellness Check']
+    };
+    
+    String activityType = _getRandomActivityType(seed);
+    List<String> nameList = names[activityType] ?? ['Aktivitas'];
+    return nameList[seed % nameList.length];
+  }
+
+  Map<String, dynamic> _getRandomMetadata(int seed) {
+    String activityType = _getRandomActivityType(seed);
+    
+    switch (activityType) {
+      case 'audio_listening':
+        return {
+          'audio_title': _getRandomAudio(seed),
+          'duration': (seed % 30) + 10,
+          'artist': 'Qari Internasional'
+        };
+      case 'journal_entry':
+        return {
+          'title': 'Refleksi ${seed % 10 + 1}',
+          'word_count': (seed * 7) + 80,
+          'tags': ['refleksi', 'syukur', 'muhasabah']
+        };
+      case 'qalbuchat_session':
+        return {
+          'message_count': (seed % 8) + 3,
+          'session_duration': (seed % 15) + 5,
+          'topic': 'Bimbingan Spiritual'
+        };
+      case 'psychology_assessment':
+        return {
+          'assessment_type': 'Mood Assessment',
+          'score': (seed % 5) + 1,
+          'completion_time': (seed % 10) + 2
+        };
+      default:
+        return {};
+    }
+  }
+
+  String _getRandomMood(int seed) {
+    List<String> moods = ['senang', 'tenang', 'bersyukur', 'biasa_saja', 'murung'];
+    return moods[seed % moods.length];
+  }
+
+  String _getRandomBreathingExercise(int seed) {
+    List<String> exercises = [
+      '4-7-8 Breathing', 'Box Breathing', 'Deep Breathing', 
+      'Belly Breathing', 'Counted Breathing'
+    ];
+    return exercises[seed % exercises.length];
+  }
+
+  String _getRandomAudio(int seed) {
+    List<String> audios = [
+      'Tilawah Surah Al-Kahfi', 'Murottal Merdu', 'Ceramah Singkat',
+      'Dzikir Pagi', 'Asmaul Husna', 'Shalawat Nabi', 'Suara Hujan'
+    ];
+    return audios[seed % audios.length];
   }
 }

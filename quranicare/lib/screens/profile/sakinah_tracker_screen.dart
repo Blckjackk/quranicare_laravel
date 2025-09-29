@@ -80,11 +80,24 @@ class _SakinahTrackerScreenState extends State<SakinahTrackerScreen> {
   }
 
   Color _getActivityColor(int activityCount) {
-    if (activityCount == 0) return const Color(0xFFE5E7EB);
-    if (activityCount <= 2) return const Color(0xFFBEF264); // Light green
-    if (activityCount <= 5) return const Color(0xFF84CC16); // Medium green
-    if (activityCount <= 8) return const Color(0xFF65A30D); // Dark green
-    return const Color(0xFF166534); // Darkest green
+    if (activityCount == 0) {
+      return const Color(0xFFE5E7EB); // Abu-abu terang untuk tidak ada aktivitas
+    }
+    
+    // Gradasi hijau berdasarkan intensitas aktivitas
+    const baseColor = Color(0xFF8FA68E); // Warna hijau utama app
+    
+    if (activityCount == 1) {
+      return baseColor.withOpacity(0.2); // Sangat transparan
+    } else if (activityCount == 2) {
+      return baseColor.withOpacity(0.4); // Sedikit lebih terlihat
+    } else if (activityCount <= 4) {
+      return baseColor.withOpacity(0.6); // Medium transparan
+    } else if (activityCount <= 6) {
+      return baseColor.withOpacity(0.8); // Hampir penuh
+    } else {
+      return baseColor; // Hijau penuh untuk 7+ aktivitas
+    }
   }
 
   @override
