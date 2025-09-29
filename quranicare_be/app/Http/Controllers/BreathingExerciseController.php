@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BreathingCategory;
 use App\Models\BreathingExercise;
 use App\Models\BreathingSession;
+use App\Events\UserActivityEvent;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -103,6 +104,19 @@ class BreathingExerciseController extends Controller
 
             $session->load('breathingExercise.breathingCategory');
 
+            // Log activity
+            event(new UserActivityEvent(
+                $request->user_id,
+                'breathing_exercise',
+                'Memulai latihan pernapasan: ' . $session->breathingExercise->name,
+                [
+                    'breathing_session_id' => $session->id,
+                    'exercise_name' => $session->breathingExercise->name,
+                    'category' => $session->breathingExercise->breathingCategory->name,
+                    'planned_duration' => $session->planned_duration_minutes
+                ]
+            ));
+
             return response()->json([
                 'success' => true,
                 'data' => $session,
@@ -172,6 +186,23 @@ class BreathingExerciseController extends Controller
                 'completed' => true,
                 'completed_at' => now()
             ]);
+
+            $session->load('breathingExercise.breathingCategory');
+
+            // Log completion activity
+            event(new UserActivityEvent(
+                $session->user_id,
+                'breathing_exercise',
+                'Menyelesaikan latihan pernapasan: ' . $session->breathingExercise->name,
+                [
+                    'breathing_session_id' => $session->id,
+                    'exercise_name' => $session->breathingExercise->name,
+                    'category' => $session->breathingExercise->breathingCategory->name,
+                    'completed_cycles' => $session->completed_cycles,
+                    'actual_duration' => $session->actual_duration_seconds,
+                    'duration' => round($session->actual_duration_seconds / 60, 1)
+                ]
+            ));
 
             return response()->json([
                 'success' => true,

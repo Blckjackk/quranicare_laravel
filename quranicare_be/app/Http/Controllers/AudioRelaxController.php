@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AudioRelax;
 use App\Models\AudioCategory;
+use App\Events\UserActivityEvent;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -135,13 +136,34 @@ class AudioRelaxController extends Controller
     }
 
     /**
-     * Update play count
+     * Update play count and log activity
      */
-    public function updatePlayCount(int $id): JsonResponse
+    public function updatePlayCount(Request $request, int $id): JsonResponse
     {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'session_duration' => 'nullable|integer|min:0'
+        ]);
+
         try {
             $audio = AudioRelax::findOrFail($id);
             $audio->increment('play_count');
+            $audio->load('category');
+
+            // Log listening activity
+            event(new UserActivityEvent(
+                $request->user_id,
+                'audio_listening',
+                'Mendengarkan: ' . $audio->title,
+                [
+                    'audio_id' => $audio->id,
+                    'audio_title' => $audio->title,
+                    'artist' => $audio->artist,
+                    'category' => $audio->category->name,
+                    'session_duration' => $request->session_duration,
+                    'duration' => $request->session_duration ? round($request->session_duration / 60, 1) : null
+                ]
+            ));
 
             return response()->json([
                 'success' => true,

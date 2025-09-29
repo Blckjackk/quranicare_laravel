@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Mood;
 use App\Models\MoodStatistic;
+use App\Events\UserActivityEvent;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -83,6 +84,20 @@ class MoodController extends Controller
 
         // Update daily mood statistics
         $this->updateMoodStatistics($user->id, $request->mood_date ?? $today);
+
+        // Log mood tracking activity
+        event(new UserActivityEvent(
+            $user->id,
+            'mood_tracking',
+            'Mencatat mood: ' . ucfirst($mood->mood_type),
+            [
+                'mood_id' => $mood->id,
+                'mood_type' => $mood->mood_type,
+                'mood_level' => $this->getMoodLevel($mood->mood_type),
+                'has_notes' => !empty($mood->notes),
+                'mood_time' => $mood->mood_time
+            ]
+        ));
 
         return response()->json([
             'success' => true,
@@ -240,6 +255,21 @@ class MoodController extends Controller
             'success' => true,
             'message' => 'Mood deleted successfully'
         ]);
+    }
+
+    /**
+     * Get mood level for activity tracking
+     */
+    private function getMoodLevel($moodType): int
+    {
+        return match($moodType) {
+            'senang' => 5,
+            'biasa_saja' => 3,
+            'sedih' => 2,
+            'murung' => 1,
+            'marah' => 1,
+            default => 3
+        };
     }
 
     /**

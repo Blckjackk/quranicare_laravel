@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\QalbuConversation;
 use App\Models\QalbuMessage;
+use App\Events\UserActivityEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -153,6 +154,20 @@ class QalbuChatbotController extends Controller
             'is_helpful' => null,
             'user_feedback' => null,
         ]);
+
+        // Log QalbuChat session activity
+        event(new UserActivityEvent(
+            $userId,
+            'qalbuchat_session',
+            'Sesi konseling dengan QalbuChat AI',
+            [
+                'conversation_id' => $conversation->id,
+                'message_count' => QalbuMessage::where('qalbu_conversation_id', $conversation->id)->count(),
+                'ai_response_type' => $aiResponseType,
+                'conversation_type' => $conversation->conversation_type,
+                'user_emotion' => $conversation->user_emotion
+            ]
+        ));
 
         // update conversation timestamp implicitly by model or here explicitly
         $conversation->touch();

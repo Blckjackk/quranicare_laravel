@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Journal;
 use App\Models\QuranAyah;
+use App\Events\UserActivityEvent;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
@@ -94,6 +95,21 @@ class JournalController extends Controller
             ]);
 
             $journal->load(['ayah.surah']);
+
+            // Log journal activity
+            event(new UserActivityEvent(
+                $user->id,
+                'journal_entry',
+                'Menulis jurnal: ' . $journal->title,
+                [
+                    'journal_id' => $journal->id,
+                    'title' => $journal->title,
+                    'word_count' => str_word_count(strip_tags($journal->content)),
+                    'mood_after' => $journal->mood_after,
+                    'tags' => $journal->tags,
+                    'ayah_reference' => $journal->ayah ? $journal->ayah->surah->name_latin . ':' . $journal->ayah->verse_number : null
+                ]
+            ));
 
             return response()->json([
                 'success' => true,
@@ -427,6 +443,22 @@ class JournalController extends Controller
             ]);
 
             $journal->load(['ayah.surah']);
+
+            // Log reflection activity
+            event(new UserActivityEvent(
+                $userId,
+                'journal_entry',
+                'Menulis refleksi: ' . $journal->title,
+                [
+                    'journal_id' => $journal->id,
+                    'title' => $journal->title,
+                    'word_count' => str_word_count(strip_tags($journal->content)),
+                    'mood_after' => $journal->mood_after,
+                    'tags' => $journal->tags,
+                    'ayah_reference' => $journal->ayah->surah->name_latin . ':' . $journal->ayah->verse_number,
+                    'reflection_type' => 'ayah_reflection'
+                ]
+            ));
 
             return response()->json([
                 'success' => true,
