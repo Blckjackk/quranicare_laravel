@@ -53,7 +53,19 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Sesi Selesai!'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const Row(
+          children: [
+            Icon(
+              Icons.mosque,
+              color: Color(0xFF8FA68E),
+            ),
+            SizedBox(width: 8),
+            Text('Sesi Dzikir Selesai!'),
+          ],
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -64,8 +76,31 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Alhamdulillah! Anda telah menyelesaikan $_currentCount kali dzikir dalam ${duration}s.',
+              'بَارَكَ اللَّهُ فِيْكَ',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF2D5A5A),
+              ),
+              textDirection: TextDirection.rtl,
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Barakallahu fiik',
+              style: TextStyle(
+                fontSize: 14,
+                fontStyle: FontStyle.italic,
+                color: Color(0xFF8FA68E),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Alhamdulillah! Anda telah menyelesaikan $_currentCount kali dzikir "${widget.doaDzikir.nama}" dalam ${duration} detik.',
               textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 14,
+                height: 1.4,
+              ),
             ),
           ],
         ),
@@ -75,7 +110,13 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
               Navigator.of(context).pop(); // Close completion dialog
               Navigator.of(context).pop(); // Close session dialog
             },
-            child: const Text('Selesai'),
+            child: const Text(
+              'Alhamdulillah',
+              style: TextStyle(
+                color: Color(0xFF8FA68E),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       ),
@@ -87,14 +128,19 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.9,
+          maxWidth: MediaQuery.of(context).size.width * 0.9,
+        ),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
             // Title
             Text(
               widget.doaDzikir.nama,
@@ -107,6 +153,110 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
             ),
             
             const SizedBox(height: 20),
+
+            // Arabic text display (always visible and prominent)
+            if (widget.doaDzikir.ar.isNotEmpty) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      const Color(0xFF8FA68E).withOpacity(0.1),
+                      const Color(0xFFF0F8F8),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: const Color(0xFF8FA68E).withOpacity(0.4),
+                    width: 2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF2D5A5A).withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    // "Bacaan Dzikir" label
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF8FA68E),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        '📿 Bacaan Dzikir',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 16),
+                    
+                    // Arabic text - larger and more prominent
+                    Text(
+                      widget.doaDzikir.ar,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF2D5A5A),
+                        height: 2.0,
+                      ),
+                      textAlign: TextAlign.center,
+                      textDirection: TextDirection.rtl,
+                    ),
+                    
+                    if (widget.doaDzikir.tr.isNotEmpty) ...[
+                      const SizedBox(height: 16),
+                      // Transliteration with background
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          widget.doaDzikir.tr,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontStyle: FontStyle.italic,
+                            color: Color(0xFF2D5A5A),
+                            height: 1.5,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                    
+                    if (widget.doaDzikir.idn.isNotEmpty) ...[
+                      const SizedBox(height: 12),
+                      // Translation
+                      Text(
+                        '"${widget.doaDzikir.idn}"',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF8FA68E),
+                          fontWeight: FontWeight.w600,
+                          height: 1.5,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
 
             if (!_isSessionActive) ...[
               // Target selection
@@ -162,53 +312,110 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
                 ),
               ),
             ] else ...[
-              // Session active - counter
-              Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFF8FA68E).withOpacity(0.2),
-                  border: Border.all(
-                    color: const Color(0xFF8FA68E),
-                    width: 4,
+              // Session active - Counter and progress
+              Column(
+                children: [
+                  // Counter circle - centered and prominent
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFF8FA68E).withOpacity(0.2),
+                      border: Border.all(
+                        color: const Color(0xFF8FA68E),
+                        width: 4,
+                      ),
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '$_currentCount',
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF2D5A5A),
+                            ),
+                          ),
+                          Text(
+                            '/ $_targetCount',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Color(0xFF8FA68E),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  
+                  const SizedBox(height: 16),
+                  
+                  // Progress bar
+                  Column(
                     children: [
-                      Text(
-                        '$_currentCount',
-                        style: const TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
+                      const Text(
+                        'Progress Dzikir',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
                           color: Color(0xFF2D5A5A),
                         ),
                       ),
+                      const SizedBox(height: 8),
+                      LinearProgressIndicator(
+                        value: _currentCount / _targetCount,
+                        backgroundColor: const Color(0xFF8FA68E).withOpacity(0.2),
+                        valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF8FA68E)),
+                      ),
+                      const SizedBox(height: 8),
                       Text(
-                        '/ $_targetCount',
+                        '${((_currentCount / _targetCount) * 100).toInt()}% selesai',
                         style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 12,
                           color: Color(0xFF8FA68E),
-                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
                   ),
+                ],
+              ),
+              
+              const SizedBox(height: 16),
+              
+              // Instruction text
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2D5A5A).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(
+                      Icons.lightbulb_outline,
+                      color: Color(0xFF2D5A5A),
+                      size: 20,
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Baca dzikir di atas, kemudian tap untuk menghitung',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF2D5A5A),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               
-              const SizedBox(height: 20),
-              
-              // Progress bar
-              LinearProgressIndicator(
-                value: _currentCount / _targetCount,
-                backgroundColor: const Color(0xFF8FA68E).withOpacity(0.2),
-                valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF8FA68E)),
-              ),
-              
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
               
               // Tap to count button
               SizedBox(
@@ -220,11 +427,12 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
                     backgroundColor: const Color(0xFF8FA68E),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
                     ),
+                    elevation: 4,
                   ),
                   child: const Text(
-                    'TAP UNTUK HITUNG',
+                    '👆 TAP UNTUK HITUNG 👆',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -263,6 +471,7 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
             ),
           ],
         ),
+      ),
       ),
     );
   }
