@@ -2,12 +2,13 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      */
     public function run(): void
     {
@@ -19,23 +20,11 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             UserSeeder::class,
             
-            // Breathing exercises data
-            BreathingExerciseSeeder::class,
+            // Mood tracking data (requires users to exist first)
+            MoodSeeder::class,
             
-            // Dzikir and Islamic prayers
-            DzikirSeeder::class,
-            
-            // Psychology and learning materials
-            PsychologyMaterialSeeder::class,
-            
-            // Audio relaxation content
-            AudioRelaxSeeder::class,
-            
-            // Notifications system
-            NotificationSeeder::class,
-            
-            // Complete Quran data (this might take some time due to API calls)
-            QuranSeeder::class,
+            // Activity tracking data (requires users to exist first)  
+            SakinahTrackerSeeder::class,
         ];
 
         foreach ($seeders as $seeder) {
@@ -55,18 +44,9 @@ class DatabaseSeeder extends Seeder
         $this->command->info('🎉 QuraniCare Database Seeding Completed!');
         $this->command->info('');
         $this->command->info('📋 Summary of seeded data:');
-        $this->command->info('👨‍💼 Admin Users: 5 accounts created');
-        $this->command->info('👥 Sample Users: 10 accounts created');
-        $this->command->info('🫁 Breathing Exercises: 4 categories with multiple exercises');
-        $this->command->info('🤲 Dzikir Collections: 6 categories with authentic Islamic prayers');
-        $this->command->info('📚 Psychology Materials: 6 categories with Islamic psychology content');
-        $this->command->info('🎵 Audio Relaxation: 5 categories with Islamic audio content');
-        $this->command->info('� Notifications: 8 sample notifications created');
-        $this->command->info('�📖 Quran Data: Complete 114 surahs with verses (from API)');
-        $this->command->info('');
-        $this->command->info('🔑 Admin Login Credentials:');
-        $this->command->info('   Email: superadmin@quranicare.com');
-        $this->command->info('   Password: admin123');
+        $this->command->info('👥 Sample Users: Users created');
+        $this->command->info('😊 Mood Tracking: 30 days of mood data for each user');
+        $this->command->info('📊 Activity Tracking: Comprehensive activity logs for Sakinah Tracker');
         $this->command->info('');
         $this->command->info('👤 Sample User Login:');
         $this->command->info('   Email: abdullah.rahman@email.com');

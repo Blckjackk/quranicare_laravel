@@ -85,8 +85,7 @@ class _SakinahTrackerScreenState extends State<SakinahTrackerScreen> {
     }
     
     // Gradasi hijau berdasarkan intensitas aktivitas
-    const baseColor = Color(0xFF8FA68E); // Warna hijau utama app
-    
+    const baseColor = Color(0xFF8FA68E); // Warna hijau uta    
     if (activityCount == 1) {
       return baseColor.withOpacity(0.2); // Sangat transparan
     } else if (activityCount == 2) {

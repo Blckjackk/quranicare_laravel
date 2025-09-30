@@ -417,8 +417,11 @@ Route::prefix('breathing-exercise')->group(function () {
 // ============================================================================
 Route::prefix('sakinah-tracker')->middleware('auth:sanctum')->group(function () {
     // Daily & Monthly Views
-    Route::get('daily-recap', [SakinahTrackerController::class, 'getDailyRecap']);
-    Route::get('monthly-stats', [SakinahTrackerController::class, 'getMonthlyStats']);
+    Route::get('daily/{date}', [SakinahTrackerController::class, 'getDailyActivities']);
+    Route::get('monthly/{year}/{month}', [SakinahTrackerController::class, 'getMonthlyRecap']);
+    Route::get('weekly/{startDate}', [SakinahTrackerController::class, 'getWeeklyActivities']);
+    Route::get('calendar/{year}/{month}', [SakinahTrackerController::class, 'getCalendarData']);
+    Route::get('summary', [SakinahTrackerController::class, 'getActivitySummary']);
     
     // Activity Logging
     Route::post('log-activity', [SakinahTrackerController::class, 'logActivity']);
@@ -433,6 +436,15 @@ Route::prefix('sakinah-tracker')->middleware('auth:sanctum')->group(function () 
     
     // Data Migration (one-time)
     Route::post('sync-existing-data', [SakinahTrackerController::class, 'syncExistingData']);
+});
+
+// ============================================================================
+// 11. DAILY RECAP API - Mood & Emotion Tracking
+// ============================================================================
+Route::prefix('daily-recap')->group(function () {
+    // Daily mood recap
+    Route::get('{date}', [App\Http\Controllers\API\DailyRecapController::class, 'getDailyRecap'])->middleware('auth:sanctum');
+    Route::get('monthly/{year}/{month}', [App\Http\Controllers\API\DailyRecapController::class, 'getMonthlyMoodOverview'])->middleware('auth:sanctum');
 });
 
 // ============================================================================

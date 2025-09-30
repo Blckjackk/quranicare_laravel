@@ -62,6 +62,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       assetPath: AssetManager.tasbihIcon,
       gradientColors: [Color(0xFF7CB342), Color(0xFF689F38)],
     ),
+    FeatureData(
+      icon: Icons.calendar_view_day,
+      color: const Color(0xFF7CB342),
+      title: 'Daily Recap',
+      subtitle: 'Rekap mood harian Anda',
+      iconData: Icons.calendar_view_day,
+      assetPath: AssetManager.heartIcon,
+      gradientColors: [Color(0xFF7CB342), Color(0xFF689F38)],
+    ),
   ];
 
   @override
@@ -587,6 +596,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 Navigator.pushNamed(context, '/jurnal-refleksi');
                               } else if (feature.title.contains('Dzikir')) {
                                 Navigator.pushNamed(context, '/doa-dzikir');
+                              } else if (feature.title.contains('Daily Recap')) {
+                                Navigator.pushNamed(context, '/daily-recap');
                               }
                             },
                             child: Container(
