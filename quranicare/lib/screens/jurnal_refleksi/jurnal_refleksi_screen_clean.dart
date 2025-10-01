@@ -78,7 +78,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
   Future<void> _loadJournalHistory() async {
     setState(() => _isLoading = true);
     try {
-      final history = await _journalService.getRecentReflections(limit: 20);
+      final history = await _journalService.getJournalHistory();
       setState(() {
         _journalHistory = history;
         _isLoading = false;
@@ -95,9 +95,8 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
 
   Future<void> _loadAvailableAyahs() async {
     try {
-      // For now, we don't load ayahs here since we need specific ayah IDs
-      // This method can be enhanced later when needed
-      setState(() => _availableAyahs = []);
+      final ayahs = await _journalService.getAvailableAyahs();
+      setState(() => _availableAyahs = ayahs);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -804,7 +803,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      (journal.quranAyahId != null) ? 'ALQURAN' : 'PERASAAN',
+                      journal.type.toUpperCase(),
                       style: const TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
@@ -842,7 +841,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
                   height: 1.4,
                 ),
               ),
-              if (journal.quranAyahId != null && journal.ayah != null) ...[
+              if (journal.surahId != null && journal.ayahId != null) ...[
                 const SizedBox(height: 10),
                 Container(
                   padding: const EdgeInsets.all(10),
@@ -851,7 +850,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    'Surah ${journal.ayah!.surah?.nameIndonesian ?? 'Unknown'}, Ayat ${journal.ayah!.number}',
+                    'Surah ${journal.surahId}, Ayat ${journal.ayahId}',
                     style: const TextStyle(
                       fontSize: 12,
                       color: Color(0xFF2D5A5A),
@@ -878,10 +877,11 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
     setState(() => _isLoading = true);
     
     try {
-      // For now, create a simple entry without backend integration
-      // This can be enhanced later to use the actual service
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Jurnal berhasil disimpan! (Demo mode)')),
+      await _journalService.createJournalEntry(
+        title: _titleController.text,
+        content: _contentController.text,
+        type: 'perasaan',
+        mood: _selectedMood!,
       );
       
       // Clear form
@@ -919,10 +919,12 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
     setState(() => _isLoading = true);
     
     try {
-      // For now, create a simple entry without backend integration
-      // This can be enhanced later to use createAyahReflection when we have ayah IDs
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Refleksi berhasil disimpan! (Demo mode)')),
+      await _journalService.createJournalEntry(
+        title: _titleController.text,
+        content: _contentController.text,
+        type: 'alquran',
+        surahId: int.parse(_selectedSurah!),
+        ayahId: int.parse(_selectedAyah!),
       );
       
       // Clear form
@@ -1173,7 +1175,7 @@ class DynamicJournalDetailScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: Text(
-                    (journal.quranAyahId != null) ? 'ALQURAN' : 'PERASAAN',
+                    journal.type.toUpperCase(),
                     style: const TextStyle(
                       color: Color(0xFF2D5A5A),
                       fontSize: 12,
@@ -1183,7 +1185,7 @@ class DynamicJournalDetailScreen extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  _getMoodEmoji(journal.mood ?? ''),
+                  _getMoodEmoji(journal.mood),
                   style: const TextStyle(fontSize: 20),
                 ),
               ],
@@ -1191,7 +1193,7 @@ class DynamicJournalDetailScreen extends StatelessWidget {
             const SizedBox(height: 20),
             
             // Surah info if available
-            if (journal.quranAyahId != null && journal.ayah != null) ...[
+            if (journal.surahId != null && journal.ayahId != null) ...[
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(15),
@@ -1211,7 +1213,7 @@ class DynamicJournalDetailScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      'Surah ${journal.ayah!.surah?.nameIndonesian ?? 'Unknown'}, Ayat ${journal.ayah!.number}',
+                      'Surah ${journal.surahId}, Ayat ${journal.ayahId}',
                       style: const TextStyle(
                         color: Color(0xFF2D5A5A),
                         fontSize: 16,
