@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import '../../utils/asset_manager.dart';
 import '../../services/breathing_exercise_service.dart';
 
 class BreathingExerciseScreen extends StatefulWidget {
@@ -61,9 +60,23 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F8F8),
-      body: SafeArea(
-        child: _buildCurrentScreen(),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFF8F9FA), // Light gray - consistent with brand
+              Color(0xFFE8F5E8), // Light green 
+              Color(0xFFD4F4DD), // Softer green - brand consistent
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: _buildCurrentScreen(),
+        ),
       ),
     );
   }
@@ -92,27 +105,46 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
   Widget _buildMainMenu() {
     return Column(
       children: [
-        // Header with back button
+        // Header dengan design yang konsisten
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2D5A5A)),
-                onPressed: () => Navigator.pop(context),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(22),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Color(0xFF2D5A5A),
+                    size: 20,
+                  ),
+                ),
               ),
               const Expanded(
                 child: Text(
                   'Latihan Pernapasan Islami',
                   style: TextStyle(
                     color: Color(0xFF2D5A5A),
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(width: 48),
+              const SizedBox(width: 44),
             ],
           ),
         ),
@@ -149,23 +181,37 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                 
                 const SizedBox(height: 40),
                 
-                // Start Button
-                ElevatedButton(
-                  onPressed: () => setState(() => _currentStep = 1),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8FA68E),
-                    padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    elevation: 8,
-                  ),
-                  child: const Text(
-                    'Mulai Latihan',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                // Start Button dengan design yang konsisten
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () => setState(() => _currentStep = 1),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF8FA68E),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        elevation: 12,
+                        shadowColor: const Color(0xFF8FA68E).withOpacity(0.4),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.play_arrow, size: 24),
+                          SizedBox(width: 8),
+                          Text(
+                            'Mulai Latihan',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -250,14 +296,33 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
   Widget _buildCategorySelection() {
     return Column(
       children: [
-        // Header
+        // Header dengan design yang konsisten
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
           child: Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2D5A5A)),
-                onPressed: () => setState(() => _currentStep = 0),
+              GestureDetector(
+                onTap: () => setState(() => _currentStep = 0),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Color(0xFF2D5A5A),
+                    size: 18,
+                  ),
+                ),
               ),
               const Expanded(
                 child: Text(
@@ -270,88 +335,102 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(width: 48),
+              const SizedBox(width: 40),
             ],
           ),
         ),
         
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: GridView.builder(
+              padding: const EdgeInsets.only(bottom: 16),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                childAspectRatio: 1.1,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 1.15,
               ),
               itemCount: _categories.length,
               itemBuilder: (context, index) {
                 final category = _categories[index];
-                return GestureDetector(
-                  onTap: () async {
-                    setState(() {
-                      _selectedCategory = category;
-                    });
-                    await _loadExercisesByCategory(category.id);
-                    setState(() => _currentStep = 2);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
-                        color: Color(category.colorInt).withOpacity(0.3),
-                        width: 2,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(category.colorInt).withOpacity(0.1),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () async {
+                      setState(() {
+                        _selectedCategory = category;
+                      });
+                      await _loadExercisesByCategory(category.id);
+                      setState(() => _currentStep = 2);
+                    },
+                    borderRadius: BorderRadius.circular(14),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color(0xFFFFFFFF),
+                            Color(0xFFF8F9FA),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: Color(category.colorInt).withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: Icon(
-                              _getIconData(category.icon),
-                              color: Color(category.colorInt),
-                              size: 28,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            category.name,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF2D5A5A),
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            category.description,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF2D5A5A).withOpacity(0.6),
-                            ),
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: const Color(0xFF8FA68E).withOpacity(0.3),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
                           ),
                         ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF8FA68E).withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: Icon(
+                                _getIconData(category.icon),
+                                color: const Color(0xFF8FA68E),
+                                size: 26,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              category.name,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF2D5A5A),
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              category.description,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: const Color(0xFF2D5A5A).withOpacity(0.7),
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -367,14 +446,33 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
   Widget _buildExerciseSelection() {
     return Column(
       children: [
-        // Header
+        // Header dengan design yang konsisten
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
           child: Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2D5A5A)),
-                onPressed: () => setState(() => _currentStep = 1),
+              GestureDetector(
+                onTap: () => setState(() => _currentStep = 1),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.arrow_back_ios_new,
+                    color: Color(0xFF2D5A5A),
+                    size: 18,
+                  ),
+                ),
               ),
               Expanded(
                 child: Text(
@@ -387,7 +485,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(width: 48),
+              const SizedBox(width: 40),
             ],
           ),
         ),
@@ -403,138 +501,169 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                     ),
                   ),
                 )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(20),
-                  itemCount: _exercises.length,
-                  itemBuilder: (context, index) {
-                    final exercise = _exercises[index];
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedExercise = exercise;
-                            _currentStep = 3;
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF2D5A5A).withOpacity(0.08),
-                                blurRadius: 10,
-                                offset: const Offset(0, 5),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      exercise.name,
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF2D5A5A),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF8FA68E).withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      exercise.formattedDuration,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF8FA68E),
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                exercise.description,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF2D5A5A).withOpacity(0.7),
-                                  height: 1.4,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFF0F8F8),
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: const Color(0xFF8FA68E).withOpacity(0.2),
-                                  ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'Dzikir:',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xFF8FA68E),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      exercise.dzikirText,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Color(0xFF2D5A5A),
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.5,
-                                      ),
-                                      textAlign: TextAlign.right,
-                                    ),
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    itemCount: _exercises.length,
+                    itemBuilder: (context, index) {
+                      final exercise = _exercises[index];
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                _selectedExercise = exercise;
+                                _currentStep = 3;
+                              });
+                            },
+                            borderRadius: BorderRadius.circular(14),
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Color(0xFFFFFFFF),
+                                    Color(0xFFF8F9FA),
                                   ],
                                 ),
-                              ),
-                              const SizedBox(height: 12),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    exercise.patternText,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xFF2D5A5A).withOpacity(0.6),
-                                    ),
-                                  ),
-                                  Text(
-                                    '${exercise.defaultRepetitions} siklus',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xFF8FA68E),
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: const Color(0xFF8FA68E).withOpacity(0.3),
+                                  width: 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
                                   ),
                                 ],
                               ),
-                            ],
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          exercise.name,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFF2D5A5A),
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF8FA68E).withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Text(
+                                          exercise.formattedDuration,
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                            color: Color(0xFF8FA68E),
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    exercise.description,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: const Color(0xFF2D5A5A).withOpacity(0.7),
+                                      height: 1.3,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF0F8F8),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: const Color(0xFF8FA68E).withOpacity(0.2),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Text(
+                                          'Dzikir:',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFF8FA68E),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 3),
+                                        Text(
+                                          exercise.dzikirText,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFF2D5A5A),
+                                            fontWeight: FontWeight.w500,
+                                            height: 1.3,
+                                          ),
+                                          textAlign: TextAlign.right,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          exercise.patternText,
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: const Color(0xFF2D5A5A).withOpacity(0.6),
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${exercise.defaultRepetitions} siklus',
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          color: Color(0xFF8FA68E),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
         ),
       ],
