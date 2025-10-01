@@ -8,7 +8,7 @@ class QalbuChatScreen extends StatefulWidget {
   State<QalbuChatScreen> createState() => _QalbuChatScreenState();
 }
 
-class _QalbuChatScreenState extends State<QalbuChatScreen> {
+class _QalbuChatScreenState extends State<QalbuChatScreen> with TickerProviderStateMixin {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   List<ChatMessage> messages = [];
@@ -35,6 +35,15 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
         timestamp: DateTime.now().subtract(const Duration(minutes: 8)),
       ),
     ];
+  }
+
+  @override
+  void dispose() {
+    // End chat session when user leaves the screen
+    _chatService.endSession();
+    _messageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _sendMessage() async {

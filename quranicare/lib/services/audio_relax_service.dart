@@ -1,9 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/audio_relax.dart';
+import 'activity_logger_service.dart';
 
 class AudioRelaxService {
   static const String baseUrl = 'http://127.0.0.1:8000/api';
+  final ActivityLoggerService _activityLogger = ActivityLoggerService();
+  
+  // Track listening session data
+  DateTime? _sessionStart;
+  String? _currentAudioTitle;
+  String? _currentCategoryName;
+  int? _currentAudioId;
 
   // Get all audio categories
   Future<List<AudioCategory>> getAllCategories() async {
@@ -191,6 +199,114 @@ class AudioRelaxService {
       return false;
     } catch (e) {
       return false;
+    }
+  }
+
+  /// Start audio listening session for activity tracking
+  Future<void> startAudioSession({
+    required String audioTitle,
+    required String categoryName,
+    int? audioId,
+  }) async {
+    try {
+      _sessionStart = DateTime.now();
+      _currentAudioTitle = audioTitle;
+      _currentCategoryName = categoryName;
+      _currentAudioId = audioId;
+      
+      print('🎵 Starting audio session: $audioTitle');
+      
+      // Update play count
+      if (audioId != null) {
+        await updatePlayCount(audioId);
+      }
+    } catch (e) {
+      print('⚠ Failed to start audio session: $e');
+    }
+  }
+
+  /// End audio listening session and log activity
+  Future<void> endAudioSession({
+    bool? isCompleted,
+    double? completionPercentage,
+  }) async {
+    if (_sessionStart == null || _currentAudioTitle == null) {
+      return;
+    }
+
+    try {
+      final duration = DateTime.now().difference(_sessionStart!).inSeconds;
+      
+      await _activityLogger.logAudioSession(
+        audioTitle: _currentAudioTitle!,
+        categoryName: _currentCategoryName ?? 'Unknown',
+        audioId: _currentAudioId,
+        durationSeconds: duration,
+        completionPercentage: completionPercentage,
+        isCompleted: isCompleted,
+      );
+
+      print('✅ Audio session logged: $_currentAudioTitle (${duration}s)');
+      
+      // Reset session data
+      _sessionStart = null;
+      _currentAudioTitle = null;
+      _currentCategoryName = null;
+      _currentAudioId = null;
+    } catch (e) {
+      print('⚠ Failed to log audio session: $e');
+    }
+  }
+
+  /// Log audio progress during playback
+  Future<void> logAudioProgress({
+    required double progressPercentage,
+  }) async {
+    if (_sessionStart == null || _currentAudioTitle == null) {
+      return;
+    }
+
+    // Only log at significant milestones to avoid spam
+    if (progressPercentage >= 25 && progressPercentage % 25 == 0) {
+      try {
+        final duration = DateTime.now().difference(_sessionStart!).inSeconds;
+        
+        await _activityLogger.logAudioSession(
+          audioTitle: _currentAudioTitle!,
+          categoryName: _currentCategoryName ?? 'Unknown',
+          audioId: _currentAudioId,
+          durationSeconds: duration,
+          completionPercentage: progressPercentage,
+          isCompleted: progressPercentage >= 100,
+        );
+
+        print('📊 Audio progress logged: $_currentAudioTitle (${progressPercentage.toInt()}%)');
+      } catch (e) {
+        print('⚠ Failed to log audio progress: $e');
+      }
+    }
+  }
+
+  /// Get current session info
+  Map<String, dynamic>? getCurrentSessionInfo() {
+    if (_sessionStart == null) return null;
+    
+    return {
+      'session_start': _sessionStart!.toIso8601String(),
+      'duration_seconds': DateTime.now().difference(_sessionStart!).inSeconds,
+      'audio_title': _currentAudioTitle,
+      'category_name': _currentCategoryName,
+      'audio_id': _currentAudioId,
+    };
+  }
+
+  /// Force end session (for cleanup when app is closed)
+  Future<void> forceEndSession() async {
+    if (_sessionStart != null) {
+      await endAudioSession(
+        isCompleted: false,
+        completionPercentage: 0,
+      );
     }
   }
 }

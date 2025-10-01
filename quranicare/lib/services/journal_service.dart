@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'activity_logger_service.dart';
 
 class JournalData {
   final int id;
@@ -165,6 +166,7 @@ class JournalStats {
 
 class JournalService {
   static const String baseUrl = 'http://127.0.0.1:8000/api';
+  final ActivityLoggerService _activityLogger = ActivityLoggerService();
 
   // Get reflections for specific ayah (uses test endpoint - no auth required)
   Future<Map<String, dynamic>> getAyahReflections(int ayahId) async {
@@ -233,7 +235,12 @@ class JournalService {
       if (response.statusCode == 201) {
         final data = json.decode(response.body);
         if (data['success'] == true) {
-          return JournalData.fromJson(data['data']);
+          final journalData = JournalData.fromJson(data['data']);
+          
+          // Log journal writing activity
+          await _logJournalActivity(journalData, ayahId);
+          
+          return journalData;
         } else {
           throw Exception(data['message'] ?? 'Failed to create reflection');
         }
@@ -361,5 +368,49 @@ class JournalService {
       'bersyukur': '🙏',
     };
     return moodMap[mood] ?? '😐';
+  }
+
+  /// Log journal writing activity for daily recap tracking
+  Future<void> _logJournalActivity(JournalData journalData, int? ayahId) async {
+    try {
+      await _activityLogger.logJournalSession(
+        journalTitle: journalData.title,
+        content: journalData.content,
+        journalId: journalData.id,
+        mood: journalData.mood,
+        tags: journalData.tags,
+        wordCount: journalData.content.split(' ').length,
+      );
+
+      print('✅ Journal activity logged: ${journalData.title}');
+    } catch (e) {
+      print('⚠ Failed to log journal activity: $e');
+    }
+  }
+
+  /// Log journal reading activity (when user views/reads existing journals)
+  Future<void> logJournalReadingActivity({
+    required String journalTitle,
+    required int journalId,
+    int? readingDurationSeconds,
+  }) async {
+    try {
+      await _activityLogger.logActivity(
+        activityType: ActivityLoggerService.TYPE_JOURNAL_WRITING,
+        activityTitle: 'Membaca: $journalTitle',
+        referenceId: journalId,
+        referenceTable: 'journals',
+        durationSeconds: readingDurationSeconds,
+        completionPercentage: 100.0,
+        metadata: {
+          'action_type': 'reading',
+          'journal_title': journalTitle,
+        },
+      );
+
+      print('✅ Journal reading logged: $journalTitle');
+    } catch (e) {
+      print('⚠ Failed to log journal reading: $e');
+    }
   }
 }
