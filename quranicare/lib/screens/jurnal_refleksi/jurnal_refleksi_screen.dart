@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../services/journal_service.dart';
 
 class JurnalRefleksiScreen extends StatefulWidget {
   const JurnalRefleksiScreen({super.key});
@@ -8,10 +9,58 @@ class JurnalRefleksiScreen extends StatefulWidget {
 }
 
 class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
+  final JournalService _journalService = JournalService();
+  
   int _currentTab = 0; // 0: Jurnal, 1: Riwayat Jurnal
   String _currentView = 'dashboard'; // 'dashboard', 'jurnal_perasaan', 'jurnal_alquran'
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
+
+  // Backend integration variables
+  List<JournalData> _journalHistory = [];
+  List<AyahData> _availableAyahs = [];
+  List<String> _suggestedTags = [];
+  bool _isLoading = false;
+  bool _isLoadingHistory = false;
+  String _errorMessage = '';
+  String _selectedMood = '';
+  List<String> _selectedTags = [];
+
+  // Al-Quran functionality
+  String _selectedSurah = '';
+  String _selectedAyat = '';
+  AyahData? _selectedAyahData;
+
+  @override
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialData();
+  }
+
+  Future<void> _loadInitialData() async {
+    setState(() {
+      _isLoadingHistory = true;
+    });
+
+    try {
+      // Load recent journal entries
+      final recentJournals = await _journalService.getRecentReflections();
+      // Load suggested tags
+      final tags = await _journalService.getTagSuggestions();
+      
+      setState(() {
+        _journalHistory = recentJournals;
+        _suggestedTags = tags;
+        _isLoadingHistory = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Gagal memuat data jurnal: $e';
+        _isLoadingHistory = false;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -256,9 +305,122 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
     );
   }
 
-  // Add these variables for Al-Quran functionality
-  String _selectedSurah = '';
-  String _selectedAyat = '';
+  // Methods untuk functionality
+  Future<void> _saveJournalReflection() async {
+    if (_selectedSurah.isEmpty || _selectedAyat.isEmpty || _contentController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Mohon lengkapi semua field'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // For demo purposes, using ayah ID based on simple calculation
+      // In real app, you'd get this from a proper ayah selection
+      int ayahId = int.parse(_selectedAyat); // Simplified for demo
+      
+      final journalData = await _journalService.createAyahReflection(
+        ayahId: ayahId,
+        title: 'Refleksi $_selectedSurah Ayat $_selectedAyat',
+        content: _contentController.text,
+        mood: _selectedMood.isEmpty ? null : _selectedMood,
+        tags: _selectedTags.isEmpty ? null : _selectedTags,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Jurnal Refleksi Al-Quran berhasil disimpan!'),
+          backgroundColor: Color(0xFF8FA68E),
+        ),
+      );
+      
+      // Clear form and refresh data
+      _contentController.clear();
+      setState(() {
+        _selectedSurah = '';
+        _selectedAyat = '';
+        _selectedMood = '';
+        _selectedTags.clear();
+        _currentView = 'dashboard';
+      });
+      
+      _loadInitialData(); // Refresh journal history
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal menyimpan jurnal: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _saveEmotionalJournal() async {
+    if (_titleController.text.isEmpty || _contentController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Mohon lengkapi judul dan isi jurnal'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // For emotional journal, we can use a generic ayah ID or create separately
+      final journalData = await _journalService.createAyahReflection(
+        ayahId: 1, // Generic ayah for emotional journals
+        title: _titleController.text,
+        content: _contentController.text,
+        mood: _selectedMood.isEmpty ? null : _selectedMood,
+        tags: _selectedTags.isEmpty ? null : _selectedTags,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Jurnal Perasaan berhasil disimpan!'),
+          backgroundColor: Color(0xFF8FA68E),
+        ),
+      );
+      
+      // Clear form and refresh data
+      _titleController.clear();
+      _contentController.clear();
+      setState(() {
+        _selectedMood = '';
+        _selectedTags.clear();
+        _currentView = 'dashboard';
+      });
+      
+      _loadInitialData(); // Refresh journal history
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal menyimpan jurnal: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   final List<String> surahs = [
     'Al-Fatihah',
@@ -267,6 +429,10 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
     'An-Nisa',
     'Al-Maidah',
     'Al-An\'am',
+    'Al-A\'raf',
+    'Al-Anfal',
+    'At-Taubah',
+    'Yunus',
   ];
 
   void _showSurahPicker() {
@@ -690,24 +856,90 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
   }
 
   Widget _buildRiwayatJurnalContent() {
-    // Sample journal data
-    final List<JournalEntry> journals = [
-      JournalEntry(
-        id: '1',
-        title: 'Al-Baqarah Ayat 5',
-        type: JournalType.alquran,
-        surah: 'Al-Baqarah',
-        ayat: '5',
-        preview: 'Ayat ini, rasanya menenangkan begitu dalam di hati hari ini. Perasaanku kaya jadi bersyukur, walau ada...',
-        content: 'Ayat ini, rasanya menenangkan begitu dalam di hati hari ini. Perasaanku kaya jadi bersyukur, walau ada saja masalah sekedar menunggu sebaiknya saja, kena yang pertahanan membukulah sekamanya. Perjuangan dari Mu ya Allah, sunkan asma yang benar dan dengan kebersihan Dia, nanti, kebermanfaatan dunia, yang menaruhkan setelap hari kebijaksanaan duniawi...',
-        date: DateTime.now().subtract(const Duration(days: 2)),
+    if (_isLoadingHistory) {
+      return const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF8FA68E)),
+        ),
+      );
+    }
+
+    if (_errorMessage.isNotEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 48,
+              color: const Color(0xFF8FA68E).withOpacity(0.6),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _errorMessage,
+              style: TextStyle(
+                color: const Color(0xFF2D5A5A).withOpacity(0.8),
+                fontSize: 16,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _loadInitialData,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF8FA68E),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Coba Lagi'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_journalHistory.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.book_outlined,
+              size: 64,
+              color: const Color(0xFF8FA68E).withOpacity(0.6),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Belum ada jurnal yang dibuat',
+              style: TextStyle(
+                color: const Color(0xFF2D5A5A).withOpacity(0.8),
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Mulai buat jurnal pertama Anda!',
+              style: TextStyle(
+                color: const Color(0xFF8FA68E).withOpacity(0.8),
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Column(
+        children: [], // TODO: Implement dynamic history display
       ),
-      JournalEntry(
-        id: '2',
-        title: 'Al-Kahfi Ayat 26',
-        type: JournalType.alquran,
-        surah: 'Al-Kahfi',
-        ayat: '26',
+    );
+  }
+  
+  Widget _buildJournalHistoryCard(JournalEntry journal) {
+    return GestureDetector(
+      onTap: () {
         preview: 'Ayat ini, begitu menyegarkan saat dibaca. Perasaan balikan, "Allah lebih mengampuni begitu dalamnya...',
         content: 'Ayat ini, begitu menyegarkan saat dibaca. Perasaan balikan, "Allah lebih mengampuni begitu dalamnya mereka proaktif (di pasar ayah). Syukur, semua yang bahagia tidak lolos karena. Kaliman ini berdengu mengusahkan sebagian berkisar pengalahan makmami di bidangnya seperti syari, tidak ada satu kondisi syukur atau kata',
         date: DateTime.now().subtract(const Duration(days: 5)),
@@ -747,10 +979,10 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
-        children: journals.map((journal) => _buildJournalHistoryCard(journal)).toList(),
+        children: _journalHistory.map((journal) => _buildDynamicJournalHistoryCard(journal)).toList(),
       ),
     );
-  }
+  */
 
   Widget _buildJournalHistoryCard(JournalEntry journal) {
     return GestureDetector(
@@ -1030,7 +1262,15 @@ class _SurahPickerModalState extends State<SurahPickerModal> {
       ),
     );
   }
-}
+
+  String _formatDate(DateTime date) {
+    final List<String> months = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
 
 // Data Models
 enum JournalType {
@@ -1189,6 +1429,228 @@ class JournalDetailScreen extends StatelessWidget {
     } else {
       final months = (difference / 30).floor();
       return '$months bulan lalu';
+    }
+  }
+}
+
+// Dynamic Journal Detail Screen for backend data
+class DynamicJournalDetailScreen extends StatelessWidget {
+  final JournalData journal;
+
+  const DynamicJournalDetailScreen({
+    super.key,
+    required this.journal,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isAlQuranJournal = journal.ayah != null;
+    
+    return Scaffold(
+      backgroundColor: const Color(0xFFF0F8F0),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2D5A5A)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Detail Jurnal',
+          style: TextStyle(
+            color: Color(0xFF2D5A5A),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Journal Title
+            Text(
+              journal.title,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2D5A5A),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // Date and Type Info
+            Row(
+              children: [
+                Text(
+                  _formatDate(journal.createdAt),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: const Color(0xFF8FA68E).withOpacity(0.8),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: isAlQuranJournal 
+                        ? [const Color(0xFF8FA68E), const Color(0xFF2D5A5A)]
+                        : [const Color(0xFF2D5A5A), const Color(0xFF8FA68E)],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    isAlQuranJournal ? 'Jurnal Al-Quran' : 'Jurnal Perasaan',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            // Al-Quran info if available
+            if (journal.ayah != null) ...[
+              const SizedBox(height: 16),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      journal.ayah!.surah?.nameIndonesian ?? 'Unknown Surah',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      journal.ayah!.textArabic,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontFamily: 'Arabic',
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      journal.ayah!.textIndonesian,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white.withOpacity(0.9),
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
+            const SizedBox(height: 24),
+
+            // Journal Content
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF8FA68E).withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Text(
+                journal.content,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFF2D5A5A),
+                  height: 1.6,
+                ),
+                textAlign: TextAlign.justify,
+              ),
+            ),
+
+            const SizedBox(height: 30),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date).inDays;
+    
+    if (difference == 0) {
+      return 'Hari ini';
+    } else if (difference == 1) {
+      return 'Kemarin';
+    } else if (difference < 7) {
+      return '$difference hari lalu';
+    } else if (difference < 30) {
+      final weeks = (difference / 7).floor();
+      return '$weeks minggu lalu';
+    } else {
+      final months = (difference / 30).floor();
+      return '$months bulan lalu';
+    }
+  }
+
+  Color _getMoodColor(String mood) {
+    switch (mood.toLowerCase()) {
+      case 'happy':
+      case 'bahagia':
+        return Colors.green;
+      case 'sad':
+      case 'sedih':
+        return Colors.blue;
+      case 'angry':
+      case 'marah':
+        return Colors.red;
+      case 'calm':
+      case 'tenang':
+        return const Color(0xFF8FA68E);
+      default:
+        return Colors.grey;
+    }
+  }
+
+  String _getMoodEmoji(String mood) {
+    switch (mood.toLowerCase()) {
+      case 'happy':
+      case 'bahagia':
+        return '😊';
+      case 'sad':
+      case 'sedih':
+        return '😢';
+      case 'angry':
+      case 'marah':
+        return '😡';
+      case 'calm':
+      case 'tenang':
+        return '😌';
+      default:
+        return '😐';
     }
   }
 }
