@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../services/daily_recap_service.dart';
+import '../models/daily_mood_recap.dart';
 
 class DailyRecapScreen extends StatefulWidget {
   const DailyRecapScreen({super.key});
@@ -45,9 +46,13 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
 
   Future<void> _loadDailyMoodData(DateTime date) async {
     try {
-      final recap = await _dailyRecapService.getDailyRecap(date);
+      final response = await _dailyRecapService.getDailyRecap(date);
       setState(() {
-        _dailyRecap = recap;
+        if (response != null && response['success'] == true && response['data'] != null) {
+          _dailyRecap = DailyMoodRecap.fromJson(response['data']);
+        } else {
+          _dailyRecap = null;
+        }
       });
     } catch (e) {
       print('Error loading daily mood data: $e');
@@ -65,9 +70,12 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
     final overview = await _dailyRecapService.getMonthlyOverview(year, month);
     setState(() {
       _calendarMoodData = {};
-      if (overview != null) {
-        overview.calendarData.forEach((date, moodData) {
-          _calendarMoodData[date] = moodData.moodScore;
+      if (overview != null && overview['calendar_data'] != null) {
+        final calendarData = overview['calendar_data'] as Map<String, dynamic>;
+        calendarData.forEach((date, moodData) {
+          if (moodData is Map<String, dynamic> && moodData['mood_score'] != null) {
+            _calendarMoodData[date] = (moodData['mood_score'] as num).toDouble();
+          }
         });
       }
     });

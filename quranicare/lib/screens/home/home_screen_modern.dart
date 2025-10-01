@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../utils/asset_manager.dart';
+import '../../services/auth_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,6 +16,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late AnimationController _cardAnimationController;
   late Animation<double> _headerAnimation;
   late Animation<double> _cardAnimation;
+  
+  // Auth service and user data
+  final AuthService _authService = AuthService();
+  String _userName = 'Ahmad Rifai'; // default value
+  bool _isLoadingUser = true;
 
   final List<MoodData> _moods = [
     MoodData(emoji: AssetManager.moodSad, color: const Color(0xFF6366f1), label: 'Sedih'),
@@ -66,6 +72,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    
+    // Load user data
+    _loadUserData();
+    
     _headerAnimationController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -94,6 +104,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _headerAnimationController.dispose();
     _cardAnimationController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final result = await _authService.getProfile();
+      if (result['success'] == true && result['user'] != null) {
+        final user = result['user'];
+        setState(() {
+          _userName = user['name'] ?? user['username'] ?? 'User';
+          _isLoadingUser = false;
+        });
+      } else {
+        setState(() {
+          _isLoadingUser = false;
+        });
+      }
+    } catch (e) {
+      print('Error loading user data: $e');
+      setState(() {
+        _isLoadingUser = false;
+      });
+    }
   }
 
   void _onBottomNavTap(int index) {
@@ -261,9 +293,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  const Text(
-                                    'Ahmad Rifai',
-                                    style: TextStyle(
+                                  Text(
+                                    _isLoadingUser ? 'Loading...' : _userName,
+                                    style: const TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
