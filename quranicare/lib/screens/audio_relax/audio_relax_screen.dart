@@ -356,12 +356,12 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE8F5E8), // Soft green background like home screen
+      backgroundColor: const Color(0xFFF0F8F0), // Match jurnal theme
       appBar: AppBar(
-        backgroundColor: const Color(0xFFE8F5E8),
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF7CB342)),
+          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2D5A5A)),
           onPressed: () {
             if (_currentScreen == 3 || _currentScreen == 5) { // player screens
               _youtubeController?.dispose();
@@ -390,7 +390,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
         title: Text(
           _getScreenTitle(),
           style: const TextStyle(
-            color: Color(0xFF7CB342),
+            color: Color(0xFF2D5A5A),
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -439,10 +439,10 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
 
   Widget _buildMainMenuScreen() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          // Header
+          // Header - Match jurnal theme
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
@@ -450,12 +450,12 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF7CB342), Color(0xFF689F38)],
+                colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)],
               ),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF7CB342).withOpacity(0.3),
+                  color: const Color(0xFF8FA68E).withOpacity(0.3),
                   blurRadius: 15,
                   offset: const Offset(0, 5),
                 ),
@@ -463,10 +463,18 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
             ),
             child: Column(
               children: [
-                const Icon(
-                  Icons.headphones_rounded,
-                  size: 48,
-                  color: Colors.white,
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: const Icon(
+                    Icons.headphones_rounded,
+                    size: 30,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 const Text(
@@ -492,189 +500,207 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
 
           const SizedBox(height: 32),
 
-          // Menu Options
+          // Menu Options - Match jurnal card style
           Expanded(
             child: Column(
               children: [
                 // Audio Database Option
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _currentScreen = 1;
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: const Color(0xFF7CB342).withOpacity(0.2),
-                        width: 1,
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 56,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF7CB342), Color(0xFF689F38)],
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Audio Relax Database',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF2D5A5A),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                const Text(
+                                  'Koleksi audio relaksasi dari database internal',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Color(0xFF666666),
+                                  ),
+                                ),
+                              ],
                             ),
-                            borderRadius: BorderRadius.circular(14),
                           ),
-                          child: const Icon(
-                            Icons.library_music_rounded,
-                            color: Colors.white,
-                            size: 28,
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF8FA68E).withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: const Icon(
+                              Icons.library_music_rounded,
+                              color: Color(0xFF8FA68E),
+                              size: 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _currentScreen = 1;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF8FA68E),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text(
+                            'Jelajahi Audio Database',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        const Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Audio Relax Database',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF2D5A5A),
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'Koleksi audio relaksasi dari database internal',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF8FA68E),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Icon(
-                          Icons.arrow_forward_ios,
-                          color: Color(0xFF7CB342),
-                          size: 18,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
                 // Murotal Quran Option
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _currentScreen = 4;
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: const Color(0xFF7CB342).withOpacity(0.2),
-                        width: 1,
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 56,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF7CB342), Color(0xFF689F38)],
-                            ),
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: const Icon(
-                            Icons.menu_book_rounded,
-                            color: Colors.white,
-                            size: 28,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  const Text(
-                                    'Murotal Al-Quran',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF2D5A5A),
-                                    ),
-                                  ),
-                                  if (kIsWeb) ...[
-                                    const SizedBox(width: 8),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: Colors.orange.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(4),
-                                        border: Border.all(
-                                          color: Colors.orange.withOpacity(0.3),
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: const Text(
-                                        'Terbatas',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.orange,
-                                        ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'Murotal Al-Quran',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF2D5A5A),
                                       ),
                                     ),
+                                    if (kIsWeb) ...[
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.orange.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(4),
+                                          border: Border.all(
+                                            color: Colors.orange.withOpacity(0.3),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'Terbatas',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.orange,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ],
-                                ],
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                kIsWeb 
-                                  ? 'Dengarkan tilawah Al-Quran (Fitur terbatas di web)'
-                                  : 'Dengarkan tilawah Al-Quran dari berbagai qari',
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF8FA68E),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 8),
+                                Text(
+                                  kIsWeb 
+                                    ? 'Dengarkan tilawah Al-Quran (Fitur terbatas di web)'
+                                    : 'Dengarkan tilawah Al-Quran dari berbagai qari',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Color(0xFF666666),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF8FA68E).withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: const Icon(
+                              Icons.menu_book_rounded,
+                              color: Color(0xFF8FA68E),
+                              size: 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _currentScreen = 4;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF8FA68E),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text(
+                            'Dengarkan Murotal Al-Quran',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
-                        const Icon(
-                          Icons.arrow_forward_ios,
-                          color: Color(0xFF7CB342),
-                          size: 18,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -689,7 +715,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
     if (_isLoadingCategories) {
       return const Center(
         child: CircularProgressIndicator(
-          color: Color(0xFF7CB342),
+          color: Color(0xFF8FA68E),
         ),
       );
     }
@@ -705,12 +731,12 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               color: Colors.red.withOpacity(0.6),
             ),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               'Gagal memuat kategori',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF2D5A5A),
+                color: Color(0xFF2D5A5A),
               ),
             ),
             const SizedBox(height: 8),
@@ -726,7 +752,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
             ElevatedButton(
               onPressed: _loadCategories,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF7CB342),
+                backgroundColor: const Color(0xFF8FA68E),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -745,7 +771,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
       onRefresh: _loadCategories,
       color: const Color(0xFF8FA68E),
       child: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         itemCount: _categories.length,
         itemBuilder: (context, index) {
           final category = _categories[index];
@@ -756,13 +782,17 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               child: Container(
                 height: 120,
                 decoration: BoxDecoration(
-                  color: _getCategoryColor(category.name),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: _getCategoryGradientColors(category.name),
+                  ),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF2D5A5A).withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+                      color: const Color(0xFF8FA68E).withOpacity(0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
@@ -838,7 +868,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
     if (_isLoadingAudio) {
       return const Center(
         child: CircularProgressIndicator(
-          color: Color(0xFF7CB342),
+          color: Color(0xFF8FA68E),
         ),
       );
     }
@@ -854,12 +884,12 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               color: Colors.red.withOpacity(0.6),
             ),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               'Gagal memuat audio',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF2D5A5A),
+                color: Color(0xFF2D5A5A),
               ),
             ),
             const SizedBox(height: 16),
@@ -870,7 +900,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF7CB342),
+                backgroundColor: const Color(0xFF8FA68E),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -893,15 +923,15 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
             Icon(
               Icons.music_note_outlined,
               size: 64,
-              color: const Color(0xFF7CB342).withOpacity(0.6),
+              color: const Color(0xFF8FA68E).withOpacity(0.6),
             ),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               'Belum ada audio',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF2D5A5A),
+                color: Color(0xFF2D5A5A),
               ),
             ),
             const SizedBox(height: 8),
@@ -909,7 +939,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               'Audio akan segera tersedia',
               style: TextStyle(
                 fontSize: 14,
-                color: const Color(0xFF7CB342).withOpacity(0.8),
+                color: const Color(0xFF8FA68E).withOpacity(0.8),
               ),
             ),
           ],
@@ -918,23 +948,23 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       itemCount: _audioList.length,
       itemBuilder: (context, index) {
         final audio = _audioList[index];
         return Container(
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: 16),
           child: GestureDetector(
             onTap: () => _playAudio(audio),
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF2D5A5A).withOpacity(0.06),
-                    blurRadius: 8,
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
                     offset: const Offset(0, 2),
                   ),
                 ],
@@ -943,34 +973,34 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                 children: [
                   // Thumbnail
                   Container(
-                    width: 56,
-                    height: 56,
+                    width: 60,
+                    height: 60,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(30),
                       color: const Color(0xFF8FA68E).withOpacity(0.1),
                     ),
                     child: audio.isYouTubeAudio
                         ? ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(30),
                             child: Image.network(
                               audio.youTubeThumbnail ?? '',
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
                                 return const Icon(
                                   Icons.music_note,
-                                  color: Color(0xFF7CB342),
-                                  size: 24,
+                                  color: Color(0xFF8FA68E),
+                                  size: 30,
                                 );
                               },
                             ),
                           )
                         : const Icon(
                             Icons.music_note,
-                            color: Color(0xFF7CB342),
-                            size: 24,
+                            color: Color(0xFF8FA68E),
+                            size: 30,
                           ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 16),
                   // Info
                   Expanded(
                     child: Column(
@@ -988,18 +1018,21 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                         Row(
                           children: [
                             if (audio.artist != null) ...[
-                              Text(
-                                audio.artist!,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: const Color(0xFF7CB342).withOpacity(0.8),
+                              Expanded(
+                                child: Text(
+                                  audio.artist!,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: const Color(0xFF666666).withOpacity(0.8),
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               const SizedBox(width: 8),
                               Text(
                                 '•',
                                 style: TextStyle(
-                                  color: const Color(0xFF7CB342).withOpacity(0.5),
+                                  color: const Color(0xFF8FA68E).withOpacity(0.5),
                                 ),
                               ),
                               const SizedBox(width: 8),
@@ -1008,7 +1041,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                               audio.formattedDuration,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: const Color(0xFF7CB342).withOpacity(0.8),
+                                color: const Color(0xFF8FA68E).withOpacity(0.8),
                               ),
                             ),
                           ],
@@ -1017,10 +1050,18 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                     ),
                   ),
                   // Play icon
-                  Icon(
-                    Icons.play_arrow,
-                    color: const Color(0xFF7CB342),
-                    size: 24,
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF8FA68E).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Icon(
+                      Icons.play_arrow,
+                      color: Color(0xFF8FA68E),
+                      size: 24,
+                    ),
                   ),
                 ],
               ),
@@ -1184,7 +1225,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   icon: Icon(
                     Icons.shuffle,
                     size: 24,
-                    color: const Color(0xFF7CB342).withOpacity(0.3),
+                    color: const Color(0xFF8FA68E).withOpacity(0.3),
                   ),
                 ),
                 // Previous (disabled)
@@ -1193,7 +1234,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   icon: Icon(
                     Icons.skip_previous,
                     size: 32,
-                    color: const Color(0xFF7CB342).withOpacity(0.3),
+                    color: const Color(0xFF8FA68E).withOpacity(0.3),
                   ),
                 ),
                 // Play/Pause
@@ -1202,12 +1243,14 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   height: 64,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: const Color(0xFF7CB342),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)],
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF7CB342).withOpacity(0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
+                        color: const Color(0xFF8FA68E).withOpacity(0.4),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
                       ),
                     ],
                   ),
@@ -1226,7 +1269,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   icon: Icon(
                     Icons.skip_next,
                     size: 32,
-                    color: const Color(0xFF7CB342).withOpacity(0.3),
+                    color: const Color(0xFF8FA68E).withOpacity(0.3),
                   ),
                 ),
                 // Stop
@@ -1235,7 +1278,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   icon: const Icon(
                     Icons.stop,
                     size: 24,
-                    color: Color(0xFF7CB342),
+                    color: Color(0xFF8FA68E),
                   ),
                 ),
               ],
@@ -1281,7 +1324,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   icon: const Icon(Icons.refresh),
                   label: const Text('Coba Lagi'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF7CB342),
+                    backgroundColor: const Color(0xFF8FA68E),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -1300,7 +1343,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   icon: const Icon(Icons.arrow_back),
                   label: const Text('Kembali ke Daftar Audio'),
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF7CB342),
+                    foregroundColor: const Color(0xFF8FA68E),
                   ),
                 ),
               ],
@@ -1317,7 +1360,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
     if (_isLoadingQuran) {
       return const Center(
         child: CircularProgressIndicator(
-          color: Color(0xFF7CB342),
+          color: Color(0xFF8FA68E),
         ),
       );
     }
@@ -1333,19 +1376,19 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               color: Colors.red.withOpacity(0.6),
             ),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               'Gagal memuat Al-Quran',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF2D5A5A),
+                color: Color(0xFF2D5A5A),
               ),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _loadQuranData,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF7CB342),
+                backgroundColor: const Color(0xFF8FA68E),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -1365,13 +1408,13 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
         // Web Platform Notice
         if (kIsWeb) 
           Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(12),
+            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF7CB342).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: const Color(0xFF8FA68E).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: const Color(0xFF7CB342).withOpacity(0.3),
+                color: const Color(0xFF8FA68E).withOpacity(0.3),
                 width: 1,
               ),
             ),
@@ -1379,16 +1422,16 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               children: [
                 Icon(
                   Icons.info_outline,
-                  color: const Color(0xFF7CB342),
+                  color: const Color(0xFF8FA68E),
                   size: 20,
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     'Mode Web: Audio murotal terbatas karena kebijakan browser.\nUntuk pengalaman terbaik, gunakan aplikasi mobile.',
                     style: TextStyle(
                       fontSize: 12,
-                      color: const Color(0xFF7CB342).withOpacity(0.8),
+                      color: const Color(0xFF8FA68E).withOpacity(0.8),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -1399,15 +1442,15 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
 
         // Reciter Selection
         Container(
-          margin: const EdgeInsets.all(16),
+          margin: const EdgeInsets.symmetric(horizontal: 20),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
-                blurRadius: 8,
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
             ],
@@ -1416,7 +1459,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
             children: [
               const Icon(
                 Icons.person_rounded,
-                color: Color(0xFF7CB342),
+                color: Color(0xFF8FA68E),
                 size: 24,
               ),
               const SizedBox(width: 12),
@@ -1456,26 +1499,28 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
           ),
         ),
 
+        const SizedBox(height: 20),
+
         // Surahs List
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             itemCount: _quranSurahs.length,
             itemBuilder: (context, index) {
               final surah = _quranSurahs[index];
               return Container(
-                margin: const EdgeInsets.only(bottom: 8),
+                margin: const EdgeInsets.only(bottom: 12),
                 child: GestureDetector(
                   onTap: () => _playQuranSurah(surah),
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
-                          blurRadius: 6,
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
                           offset: const Offset(0, 2),
                         ),
                       ],
@@ -1484,26 +1529,26 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                       children: [
                         // Surah Number
                         Container(
-                          width: 40,
-                          height: 40,
+                          width: 50,
+                          height: 50,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xFF7CB342), Color(0xFF689F38)],
+                              colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)],
                             ),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(25),
                           ),
                           child: Center(
                             child: Text(
                               '${surah.number}',
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 14,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 16),
                         // Surah Info
                         Expanded(
                           child: Column(
@@ -1517,12 +1562,12 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                                   color: Color(0xFF2D5A5A),
                                 ),
                               ),
-                              const SizedBox(height: 2),
+                              const SizedBox(height: 4),
                               Text(
-                                '${surah.englishName} • ${surah.ayahCount}',
+                                '${surah.englishName} • ${surah.ayahCount} ayat',
                                 style: TextStyle(
                                   fontSize: 13,
-                                  color: const Color(0xFF7CB342).withOpacity(0.8),
+                                  color: const Color(0xFF666666).withOpacity(0.8),
                                 ),
                               ),
                               Text(
@@ -1536,10 +1581,18 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                           ),
                         ),
                         // Play icon
-                        const Icon(
-                          Icons.play_arrow,
-                          color: Color(0xFF7CB342),
-                          size: 24,
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF8FA68E).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Icon(
+                            Icons.play_arrow,
+                            color: Color(0xFF8FA68E),
+                            size: 24,
+                          ),
                         ),
                       ],
                     ),
@@ -1662,18 +1715,18 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               ),
             // Surah Info Card
             Container(
-              margin: const EdgeInsets.all(16),
+              margin: const EdgeInsets.all(20),
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF7CB342), Color(0xFF689F38)],
+                  colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)],
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF7CB342).withOpacity(0.3),
+                    color: const Color(0xFF8FA68E).withOpacity(0.3),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
                   ),
@@ -1738,15 +1791,15 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
 
             // Reciter Info
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
-                    blurRadius: 8,
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
                     offset: const Offset(0, 2),
                   ),
                 ],
@@ -1755,7 +1808,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                 children: [
                   const Icon(
                     Icons.person_rounded,
-                    color: Color(0xFF7CB342),
+                    color: Color(0xFF8FA68E),
                     size: 24,
                   ),
                   const SizedBox(width: 12),
@@ -1850,7 +1903,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                     icon: Icon(
                       Icons.skip_previous,
                       size: 32,
-                      color: const Color(0xFF7CB342).withOpacity(0.3),
+                      color: const Color(0xFF8FA68E).withOpacity(0.3),
                     ),
                   ),
                   // Play/Pause
@@ -1860,11 +1913,11 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF7CB342), Color(0xFF689F38)],
+                        colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)],
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF7CB342).withOpacity(0.4),
+                          color: const Color(0xFF8FA68E).withOpacity(0.4),
                           blurRadius: 16,
                           offset: const Offset(0, 6),
                         ),
@@ -1896,7 +1949,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                     icon: Icon(
                       Icons.skip_next,
                       size: 32,
-                      color: const Color(0xFF7CB342).withOpacity(0.3),
+                      color: const Color(0xFF8FA68E).withOpacity(0.3),
                     ),
                   ),
                 ],
@@ -1910,16 +1963,19 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
     );
   }
 
-  Color _getCategoryColor(String categoryName) {
+  List<Color> _getCategoryGradientColors(String categoryName) {
     switch (categoryName.toLowerCase()) {
       case 'nasheed':
-        return const Color(0xFF7CB342);
+      case 'musik islami':
+        return [const Color(0xFF8FA68E), const Color(0xFF2D5A5A)];
       case 'dzikir dan doa':
-        return const Color(0xFF689F38);
+      case 'dzikir & doa':
+        return [const Color(0xFF2D5A5A), const Color(0xFF8FA68E)];
       case 'murottal':
-        return const Color(0xFF7CB342);
+      case 'murrotal':
+        return [const Color(0xFF8FA68E), const Color(0xFF689F38)];
       default:
-        return const Color(0xFF689F38);
+        return [const Color(0xFF8FA68E), const Color(0xFF2D5A5A)];
     }
   }
 }
