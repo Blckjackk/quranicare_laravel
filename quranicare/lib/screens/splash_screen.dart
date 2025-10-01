@@ -79,38 +79,70 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Logo without container
-                      Image.asset(
-                        AssetManager.quranicareLogo,
-                        width: 140,
-                        height: 140,
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) {
-                          // Fallback to icon if image fails to load
-                          return Container(
-                            width: 140,
-                            height: 140,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF2D5A5A),
-                              borderRadius: BorderRadius.circular(25),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 10),
+                      // Logo - Made much larger like onboarding
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final screenHeight = MediaQuery.of(context).size.height;
+                          final logoSize = screenHeight * 0.35; // 35% of screen height (same as onboarding)
+                          final minSize = 280.0; // Large minimum size
+                          final maxSize = 400.0; // Large maximum size
+                          final finalSize = logoSize.clamp(minSize, maxSize);
+                          
+                          return Image.asset(
+                            AssetManager.quranicareLogo,
+                            width: finalSize,
+                            height: finalSize,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                              // Fallback to icon if image fails to load
+                              return Container(
+                                width: finalSize,
+                                height: finalSize,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF2D5A5A),
+                                  borderRadius: BorderRadius.circular(finalSize * 0.18),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: finalSize * 0.14,
+                                      offset: Offset(0, finalSize * 0.07),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: const Icon(
-                              Icons.menu_book_rounded,
-                              size: 70,
-                              color: Colors.white,
-                            ),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.menu_book_rounded,
+                                      size: finalSize * 0.5,
+                                      color: Colors.white,
+                                    ),
+                                    Positioned(
+                                      top: finalSize * 0.16,
+                                      right: finalSize * 0.2,
+                                      child: Container(
+                                        width: finalSize * 0.13,
+                                        height: finalSize * 0.13,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(finalSize * 0.065),
+                                        ),
+                                        child: Icon(
+                                          Icons.brightness_2,
+                                          size: finalSize * 0.08,
+                                          color: const Color(0xFF2D5A5A),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           );
                         },
                       ),
                       
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 25), // Reduced spacing after logo
                       
                       // QuraniCare brand text
                       Column(

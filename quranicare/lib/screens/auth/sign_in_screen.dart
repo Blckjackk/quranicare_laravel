@@ -154,7 +154,7 @@ class _SignInScreenState extends State<SignInScreen> {
               key: _formKey,
               child: Column(
                 children: [
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 10), // Minimal top spacing
                   
                   // Sign In title
                   const Text(
@@ -167,90 +167,77 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
                   
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 20), // Reduced spacing
 
-                  // Logo without container
-                  Image.asset(
-                    AssetManager.quranicareLogo,
-                    width: 120,
-                    height: 120,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      // Fallback to original icon if image fails to load
-                      return Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF2D5A5A),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 15,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            const Icon(
-                              Icons.menu_book_rounded,
-                              size: 60,
-                              color: Colors.white,
-                            ),
-                            Positioned(
-                              top: 20,
-                              right: 25,
-                              child: Container(
-                                width: 16,
-                                height: 16,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Icon(
-                                  Icons.brightness_2,
-                                  size: 10,
-                                  color: Color(0xFF2D5A5A),
-                                ),
+                  // Logo - Large but doesn't affect layout positioning
+                  Transform.scale(
+                    scale: 2.2, // Scale logo 2.2x larger (about 4-5x total from current)
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final screenHeight = MediaQuery.of(context).size.height;
+                        final logoSize = screenHeight * 0.22; // 22% of screen height (base size)
+                        final minSize = 180.0; // Base minimum size
+                        final maxSize = 280.0; // Base maximum size
+                        final finalSize = logoSize.clamp(minSize, maxSize);
+                        
+                        return Image.asset(
+                          AssetManager.quranicareLogo,
+                          width: finalSize,
+                          height: finalSize,
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            // Fallback to original icon if image fails to load
+                            return Container(
+                              width: finalSize,
+                              height: finalSize,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF2D5A5A),
+                                borderRadius: BorderRadius.circular(finalSize * 0.15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: finalSize * 0.12,
+                                    offset: Offset(0, finalSize * 0.06),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // QuraniCare brand text
-                  RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Qurani',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF2D5A5A),
-                            letterSpacing: -0.5,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'CARE',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w300,
-                            color: Color(0xFF2D5A5A),
-                            letterSpacing: 2.0,
-                          ),
-                        ),
-                      ],
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.menu_book_rounded,
+                                    size: finalSize * 0.5,
+                                    color: Colors.white,
+                                  ),
+                                  Positioned(
+                                    top: finalSize * 0.16,
+                                    right: finalSize * 0.2,
+                                    child: Container(
+                                      width: finalSize * 0.13,
+                                      height: finalSize * 0.13,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(finalSize * 0.065),
+                                      ),
+                                      child: Icon(
+                                        Icons.brightness_2,
+                                        size: finalSize * 0.08,
+                                        color: const Color(0xFF2D5A5A),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
                   ),
 
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 15), // Adequate spacing after logo
+
+                  const SizedBox(height: 8), // Reduced spacing before email label
 
                   // Email Address
                   Align(
@@ -265,7 +252,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10), // Reduced spacing
 
                   // Email Input Field
                   Container(
@@ -348,7 +335,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20), // Reduced spacing between email and password
 
                   // Password
                   Align(
@@ -363,7 +350,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10), // Reduced spacing
 
                   // Password Input Field
                   Container(
@@ -425,7 +412,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 15), // Reduced spacing
 
                   // Admin Login Toggle
                   Container(
@@ -473,7 +460,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20), // Reduced spacing
 
                   // Sign In Button
                   SizedBox(
@@ -527,7 +514,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20), // Reduced spacing
 
                   // Sign Up Link
                   Row(
@@ -556,7 +543,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ],
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 15), // Reduced spacing
 
                   // Forgot Password
                   GestureDetector(
@@ -574,7 +561,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20), // Reduced spacing
 
                   // Admin Login Hint
                   if (_isAdminLogin)
@@ -611,52 +598,6 @@ class _SignInScreenState extends State<SignInScreen> {
                           const SizedBox(height: 8),
                           Text(
                             'Email: admin@quranicare.com\nPassword: admin123',
-                            style: TextStyle(
-                              color: Colors.grey[700],
-                              fontSize: 12,
-                              fontFamily: 'monospace',
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  // User Login Hint
-                  if (!_isAdminLogin)
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF2D5A5A).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: const Color(0xFF2D5A5A).withOpacity(0.3),
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.person,
-                                color: const Color(0xFF2D5A5A),
-                                size: 20,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'User Login',
-                                style: TextStyle(
-                                  color: const Color(0xFF2D5A5A),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Email: abdullah.rahman@email.com\nPassword: password123',
                             style: TextStyle(
                               color: Colors.grey[700],
                               fontSize: 12,
