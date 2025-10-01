@@ -639,35 +639,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 ],
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(20),
+                                padding: const EdgeInsets.all(16), // Reduced from 20 to 16
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      width: 64,
-                                      height: 64,
+                                      width: 56, // Reduced from 64 to 56
+                                      height: 56, // Reduced from 64 to 56
                                       decoration: BoxDecoration(
                                         gradient: LinearGradient(
                                           colors: feature.gradientColors,
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
                                         ),
-                                        borderRadius: BorderRadius.circular(20),
+                                        borderRadius: BorderRadius.circular(18), // Reduced from 20 to 18
                                         boxShadow: [
                                           BoxShadow(
                                             color: feature.color.withOpacity(0.3),
-                                            blurRadius: 16,
-                                            offset: const Offset(0, 6),
+                                            blurRadius: 14, // Reduced from 16 to 14
+                                            offset: const Offset(0, 5), // Reduced from 6 to 5
                                           ),
                                         ],
                                       ),
                                       child: feature.assetPath != null 
                                         ? ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius: BorderRadius.circular(18), // Reduced from 20 to 18
                                             child: Image.asset(
                                               feature.assetPath!,
-                                              width: 64,
-                                              height: 64,
+                                              width: 56, // Reduced from 64 to 56
+                                              height: 56, // Reduced from 64 to 56
                                               fit: BoxFit.cover,
                                               color: Colors.white,
                                               colorBlendMode: BlendMode.srcIn,
@@ -675,7 +675,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                 return Icon(
                                                   feature.iconData,
                                                   color: Colors.white,
-                                                  size: 32,
+                                                  size: 28, // Reduced from 32 to 28
                                                 );
                                               },
                                             ),
@@ -683,16 +683,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         : Icon(
                                             feature.iconData,
                                             color: Colors.white,
-                                            size: 32,
+                                            size: 28, // Reduced from 32 to 28
                                           ),
                                     ),
 
-                                    const SizedBox(height: 16),
+                                    const SizedBox(height: 12), // Reduced from 16 to 12
 
                                     Text(
                                       feature.title,
                                       style: const TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 14, // Reduced from 15 to 14
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF1e293b),
                                         letterSpacing: 0.2,
@@ -703,12 +703,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       overflow: TextOverflow.ellipsis,
                                     ),
 
-                                    const SizedBox(height: 6),
+                                    const SizedBox(height: 4), // Reduced from 6 to 4
 
                                     Text(
                                       feature.subtitle,
                                       style: const TextStyle(
-                                        fontSize: 11,
+                                        fontSize: 10, // Reduced from 11 to 10
                                         color: Color(0xFF64748b),
                                         height: 1.3,
                                         fontWeight: FontWeight.w500,

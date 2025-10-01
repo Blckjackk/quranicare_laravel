@@ -4,7 +4,9 @@ import '../models/audio_relax.dart';
 import 'activity_logger_service.dart';
 
 class AudioRelaxService {
-  static const String baseUrl = 'http://127.0.0.1:8000/api';
+  // For development/testing, use localhost
+  static const String baseUrl = 'http://localhost:8000/api';
+  // For production, change to: 'https://your-api-server.com/api'
   final ActivityLoggerService _activityLogger = ActivityLoggerService();
   
   // Track listening session data

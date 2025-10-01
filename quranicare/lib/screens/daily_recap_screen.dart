@@ -46,7 +46,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
 
   Future<void> _loadDailyMoodData(DateTime date) async {
     try {
-      final response = await _dailyRecapService.getDailyRecap(date);
+      final response = await _dailyRecapService.getDailyMoodRecap(date: date);
       setState(() {
         if (response != null && response['success'] == true && response['data'] != null) {
           _dailyRecap = DailyMoodRecap.fromJson(response['data']);
@@ -67,15 +67,13 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
   }
 
   Future<void> _loadCalendarData(int year, int month) async {
-    final overview = await _dailyRecapService.getMonthlyOverview(year, month);
+    final response = await _dailyRecapService.getMonthlyOverview(year, month);
     setState(() {
       _calendarMoodData = {};
-      if (overview != null && overview['calendar_data'] != null) {
-        final calendarData = overview['calendar_data'] as Map<String, dynamic>;
-        calendarData.forEach((date, moodData) {
-          if (moodData is Map<String, dynamic> && moodData['mood_score'] != null) {
-            _calendarMoodData[date] = (moodData['mood_score'] as num).toDouble();
-          }
+      if (response != null) {
+        final overview = MonthlyOverview.fromJson(response);
+        overview.calendarData.forEach((date, moodData) {
+          _calendarMoodData[date] = moodData.moodScore;
         });
       }
     });

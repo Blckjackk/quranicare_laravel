@@ -27,9 +27,9 @@ class Admin {
       name: json['name'],
       email: json['email'],
       role: json['role'],
-      permissions: json['permissions'] is String 
-          ? {} // Handle string permissions for now
-          : json['permissions'],
+      permissions: json['permissions'] is Map
+          ? Map<String, dynamic>.from(json['permissions'])
+          : {},
       lastLoginAt: json['last_login_at'] != null
           ? DateTime.parse(json['last_login_at'])
           : null,
@@ -65,14 +65,20 @@ class Admin {
   bool get isModerator => role == 'moderator';
   
   bool canManageContent() {
-    return isSuperAdmin || isContentAdmin;
+    return isSuperAdmin || isContentAdmin || 
+           (permissions?['manage_content'] == true);
   }
   
   bool canModerate() {
-    return isSuperAdmin || isContentAdmin || isModerator;
+    return isSuperAdmin || isContentAdmin || isModerator ||
+           (permissions?['moderate_content'] == true);
   }
   
   bool canManageAdmins() {
-    return isSuperAdmin;
+    return isSuperAdmin || (permissions?['manage_admins'] == true);
+  }
+  
+  bool hasPermission(String permission) {
+    return isSuperAdmin || (permissions?[permission] == true);
   }
 }

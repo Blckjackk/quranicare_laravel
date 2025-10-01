@@ -16,9 +16,18 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
+                'name' => 'user tester ajammm',
+                'email' => 'user@quranicare.com',
+                'password' => Hash::make('user123'),
+                'birth_date' => Carbon::parse('1995-06-15'),
+                'gender' => 'male',
+                'phone_number' => '+6281234567801',
+                'bio' => 'Mahasiswa teknik informatika yang sedang belajar untuk menjadi Muslim yang lebih baik'
+            ],
+            [
                 'name' => 'Abdullah Rahman',
                 'email' => 'abdullah.rahman@email.com',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('user123'),
                 'birth_date' => Carbon::parse('1995-06-15'),
                 'gender' => 'male',
                 'phone_number' => '+6281234567801',

@@ -20,11 +20,18 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             UserSeeder::class,
             
-            // Mood tracking data (requires users to exist first)
-            MoodSeeder::class,
+            // Content seeders (independent of users)
+            QuranSeeder::class,              // Quran Surahs & Ayahs
+            DzikirSeeder::class,             // Dzikir & Doa content
+            AudioRelaxSeeder::class,         // Audio relax & nasheed
+            BreathingExerciseSeeder::class,  // Breathing exercises
+            PsychologyMaterialSeeder::class, // Psychology materials
+            AiKnowledgeBaseSeeder::class,    // AI knowledge base
+            NotificationSeeder::class,       // Notification templates
             
-            // Activity tracking data (requires users to exist first)  
-            SakinahTrackerSeeder::class,
+            // User dependent data (requires users to exist first)
+            MoodSeeder::class,               // Mood tracking data
+            SakinahTrackerSeeder::class,     // Activity tracking data
         ];
 
         foreach ($seeders as $seeder) {
@@ -45,6 +52,13 @@ class DatabaseSeeder extends Seeder
         $this->command->info('');
         $this->command->info('📋 Summary of seeded data:');
         $this->command->info('👥 Sample Users: Users created');
+        $this->command->info('📖 Quran Data: Surahs and Ayahs');
+        $this->command->info('🤲 Dzikir & Doa: Islamic prayers and dhikr');
+        $this->command->info('🎵 Audio Content: Relaxation audio and nasheed');
+        $this->command->info('🫁 Breathing Exercises: Meditation and breathing techniques');
+        $this->command->info('🧠 Psychology Materials: Mental health resources');
+        $this->command->info('🤖 AI Knowledge Base: Chat support content');
+        $this->command->info('📢 Notifications: System notification templates');
         $this->command->info('😊 Mood Tracking: 30 days of mood data for each user');
         $this->command->info('📊 Activity Tracking: Comprehensive activity logs for Sakinah Tracker');
         $this->command->info('');

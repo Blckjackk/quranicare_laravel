@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   
   // Auth service and user data
   final AuthService _authService = AuthService();
-  String _userName = 'Ahmad Rifai'; // default value
+  String _userName = 'User'; // will be loaded from database
   bool _isLoadingUser = true;
 
   final List<MoodData> _moods = [
@@ -75,7 +75,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     
+    print('🚀 HomeScreen: initState() called');
+    
     // Load user data
+    print('🚀 HomeScreen: Starting user data load...');
     _loadUserData();
     
     // Debug: Print asset paths
@@ -106,6 +109,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     Future.delayed(const Duration(milliseconds: 200), () {
       _cardAnimationController.forward();
     });
+    
+    print('🚀 HomeScreen: initState() completed');
   }
 
   @override
@@ -116,25 +121,65 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Future<void> _loadUserData() async {
+    print('🔄 Starting _loadUserData()...');
+    
     try {
+      // Check if user is logged in first
+      print('🔑 Checking if user is logged in...');
+      final isLoggedIn = await _authService.isLoggedIn();
+      print('🔑 isLoggedIn result: $isLoggedIn');
+      
+      if (!isLoggedIn) {
+        print('❌ User not logged in, setting as Guest');
+        setState(() {
+          _userName = 'Guest'; // User not logged in
+          _isLoadingUser = false;
+        });
+        return;
+      }
+      
+      print('📡 Fetching user profile from API...');
       final result = await _authService.getProfile();
+      print('📡 API Response: $result');
+      
       if (result['success'] == true && result['user'] != null) {
         final user = result['user'];
+        print('👤 User data received:');
+        print('   - ID: ${user['id']}');
+        print('   - Name: ${user['name']}');
+        print('   - Email: ${user['email']}');
+        print('   - Username: ${user['username']}');
+        print('   - Full user object: $user');
+        
         setState(() {
+          // Prioritize 'name' field from database
           _userName = user['name'] ?? user['username'] ?? 'User';
           _isLoadingUser = false;
         });
+        print('✅ User loaded successfully: $_userName');
       } else {
+        print('❌ Failed to load profile:');
+        print('   - Success: ${result['success']}');
+        print('   - Message: ${result['message']}');
+        print('   - User data: ${result['user']}');
+        
         setState(() {
+          _userName = 'User'; // Fallback if profile fetch fails
           _isLoadingUser = false;
         });
+        print('⚠ Set fallback username: User');
       }
     } catch (e) {
-      print('Error loading user data: $e');
+      print('❌ Exception in _loadUserData: $e');
+      print('❌ Stack trace: ${StackTrace.current}');
       setState(() {
+        _userName = 'User'; // Fallback on error
         _isLoadingUser = false;
       });
+      print('⚠ Set fallback username due to exception: User');
     }
+    
+    print('🏁 _loadUserData() completed. Final username: $_userName');
   }
 
   void _onBottomNavTap(int index) {
@@ -169,6 +214,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    print('🎨 HomeScreen: build() called');
+    print('🎨 HomeScreen: Current state - _userName: $_userName, _isLoadingUser: $_isLoadingUser');
+    
     return Scaffold(
       backgroundColor: const Color(0xFFE8F5E8), // Soft green background like in screenshot
       body: SafeArea(
@@ -254,7 +302,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   Text(
-                                    _isLoadingUser ? 'Loading...' : _userName,
+                                    _isLoadingUser 
+                                        ? 'Memuat...' 
+                                        : _userName == 'Guest' 
+                                            ? 'Tamu' 
+                                            : _userName,
                                     style: const TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold,
@@ -642,26 +694,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 ],
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(20),
+                                padding: const EdgeInsets.all(16), // Reduced from 20 to 16
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     // Feature image with better error handling
                                     Container(
-                                      width: 64,
-                                      height: 64,
+                                      width: 56, // Reduced from 64 to 56
+                                      height: 56, // Reduced from 64 to 56
                                       child: feature.assetPath != null 
                                         ? Image.asset(
                                             feature.assetPath!,
-                                            width: 64,
-                                            height: 64,
+                                            width: 56, // Reduced from 64 to 56
+                                            height: 56, // Reduced from 64 to 56
                                             fit: BoxFit.contain,
                                             errorBuilder: (context, error, stackTrace) {
                                               print('Error loading image: ${feature.assetPath}');
                                               print('Error: $error');
                                               return Container(
-                                                width: 64,
-                                                height: 64,
+                                                width: 56, // Reduced from 64 to 56
+                                                height: 56, // Reduced from 64 to 56
                                                 decoration: BoxDecoration(
                                                   color: const Color(0xFF2C6E49).withOpacity(0.1),
                                                   borderRadius: BorderRadius.circular(12),
@@ -669,14 +721,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                                 child: Icon(
                                                   feature.iconData,
                                                   color: const Color(0xFF2C6E49),
-                                                  size: 32,
+                                                  size: 28, // Reduced from 32 to 28
                                                 ),
                                               );
                                             },
                                           )
                                         : Container(
-                                            width: 64,
-                                            height: 64,
+                                            width: 56, // Reduced from 64 to 56
+                                            height: 56, // Reduced from 64 to 56
                                             decoration: BoxDecoration(
                                               color: const Color(0xFF2C6E49).withOpacity(0.1),
                                               borderRadius: BorderRadius.circular(12),
@@ -684,17 +736,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                             child: Icon(
                                               feature.iconData,
                                               color: const Color(0xFF2C6E49),
-                                              size: 32,
+                                              size: 28, // Reduced from 32 to 28
                                             ),
                                           ),
                                     ),
 
-                                    const SizedBox(height: 16),
+                                    const SizedBox(height: 12), // Reduced from 16 to 12
 
                                     Text(
                                       feature.title,
                                       style: const TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 14, // Reduced from 15 to 14
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF1e293b),
                                         letterSpacing: 0.2,
@@ -705,12 +757,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       overflow: TextOverflow.ellipsis,
                                     ),
 
-                                    const SizedBox(height: 6),
+                                    const SizedBox(height: 4), // Reduced from 6 to 4
 
                                     Text(
                                       feature.subtitle,
                                       style: const TextStyle(
-                                        fontSize: 11,
+                                        fontSize: 10, // Reduced from 11 to 10
                                         color: Color(0xFF64748b),
                                         height: 1.3,
                                         fontWeight: FontWeight.w500,

@@ -6,6 +6,7 @@ class AssetManager {
   // App Icons & Logos
   static const String appIcon = '$_imagesPath/app_icon.png';
   static const String appLogo = '$_imagesPath/app_logo.png';
+  static const String quranicareLogo = '$_imagesPath/Logo Quranicare.png';
 
   // Feature Icons for Homepage (sesuai dengan file yang ada)
   static const String heartIcon = '$_imagesPath/Asset Hati.png';           // Jurnal Refleksi

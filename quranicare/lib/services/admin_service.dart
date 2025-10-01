@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/admin/admin.dart';
-import '../models/admin/dashboard_stats.dart';
 
 class AdminService {
   static const String baseUrl = 'http://127.0.0.1:8000/api/admin';
@@ -70,8 +69,13 @@ class AdminService {
       final data = jsonDecode(response.body);
       
       if (response.statusCode == 200) {
+        // Handle Laravel nested response format
+        final responseData = data['data'] ?? data;
+        final token = responseData['token'];
+        final admin = responseData['admin'];
+        
         // Check if required fields exist
-        if (data['token'] == null || data['admin'] == null) {
+        if (token == null || admin == null) {
           print('AdminService: Missing token or admin in response');
           return {
             'success': false,
@@ -79,12 +83,12 @@ class AdminService {
           };
         }
         
-        await saveToken(data['token']);
+        await saveToken(token);
         print('AdminService: Login successful, token saved');
         
         return {
           'success': true,
-          'admin': Admin.fromJson(data['admin']),
+          'admin': Admin.fromJson(admin),
           'message': data['message'] ?? 'Login successful',
         };
       } else {
@@ -162,22 +166,22 @@ class AdminService {
   }
 
   // Get Dashboard Stats
-  Future<DashboardStats> getDashboardStats() async {
+  Future<Map<String, dynamic>> getDashboardStats() async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/dashboard'),
-        headers: await _getHeaders(),
-      );
-
-      final data = jsonDecode(response.body);
+      print('AdminService: Getting dashboard stats...');
+      final result = await apiCall('dashboard/stats', 'GET');
+      print('AdminService: getDashboardStats result: $result');
       
-      if (response.statusCode == 200) {
-        return DashboardStats.fromJson(data['data']);
-      } else {
-        throw Exception(data['error'] ?? 'Failed to get dashboard stats');
+      if (result['success']) {
+        return {
+          'success': true,
+          'data': result['data'],
+        };
       }
+      throw Exception(result['message']);
     } catch (e) {
-      throw Exception('Connection error: $e');
+      print('AdminService: getDashboardStats error: $e');
+      throw Exception('Failed to get dashboard stats: $e');
     }
   }
 
@@ -278,7 +282,7 @@ class AdminService {
   Future<List<Map<String, dynamic>>> getDzikirDoa() async {
     try {
       print('AdminService: Getting dzikir doa data...');
-      final result = await apiCall('dzikir-doa', 'GET');
+      final result = await apiCall('dashboard/dzikir-doa', 'GET');
       print('AdminService: getDzikirDoa result: $result');
       
       if (result['success']) {
@@ -325,7 +329,7 @@ class AdminService {
   Future<List<Map<String, dynamic>>> getAudioRelax() async {
     try {
       print('AdminService: Getting audio relax data...');
-      final result = await apiCall('audio-relax', 'GET');
+      final result = await apiCall('dashboard/audio-relax', 'GET');
       print('AdminService: getAudioRelax result: $result');
       
       if (result['success']) {
@@ -372,7 +376,7 @@ class AdminService {
   Future<List<Map<String, dynamic>>> getPsychologyMaterials() async {
     try {
       print('AdminService: Getting psychology materials data...');
-      final result = await apiCall('psychology', 'GET');
+      final result = await apiCall('dashboard/psychology', 'GET');
       print('AdminService: getPsychologyMaterials result: $result');
       
       if (result['success']) {
@@ -419,7 +423,7 @@ class AdminService {
   Future<List<Map<String, dynamic>>> getNotifications() async {
     try {
       print('AdminService: Getting notifications data...');
-      final result = await apiCall('notifications', 'GET');
+      final result = await apiCall('dashboard/notifications', 'GET');
       print('AdminService: getNotifications result: $result');
       
       if (result['success']) {

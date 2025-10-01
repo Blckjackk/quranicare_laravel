@@ -19,6 +19,8 @@ use App\Http\Controllers\BreathingExerciseController;
 use App\Http\Controllers\API\QalbuChatController;
 use App\Http\Controllers\API\PsychologyController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\AdminController;
+use App\Http\Controllers\API\AdminDashboardController;
 use App\Http\Controllers\QalbuChatbotController;
 use App\Http\Controllers\Api\SakinahTrackerController;
 use App\Http\Controllers\Api\QuranReadingController;
@@ -164,6 +166,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // 5.1 User Profile & Dashboard
     Route::prefix('user')->group(function () {
         Route::get('profile', [UserController::class, 'getProfile']);
+        Route::get('profile/refresh', [UserController::class, 'refreshProfile']);
+        Route::get('greeting', [UserController::class, 'getGreeting']);
+        Route::get('debug', [UserController::class, 'debugUser']);
         Route::put('profile', [UserController::class, 'updateProfile']);
         Route::post('profile/picture', [UserController::class, 'updateProfilePicture']);
         Route::get('dashboard', [UserController::class, 'getDashboard']);
@@ -471,8 +476,24 @@ Route::prefix('quran-sessions')->middleware('auth:sanctum')->group(function () {
 });
 
 // ============================================================================
-// 12. ADMIN ROUTES (Future Implementation)
+// 12. ADMIN ROUTES
 // ============================================================================
-Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function () {
-    // Admin routes akan ditambahkan nanti
+Route::prefix('admin')->group(function () {
+    // Public admin routes
+    Route::post('login', [AdminController::class, 'login']);
+    
+    // Protected admin routes
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('me', [AdminController::class, 'me']);
+        Route::post('logout', [AdminController::class, 'logout']);
+        Route::get('/', [AdminController::class, 'index']); // Get all admins
+        Route::post('/', [AdminController::class, 'store']); // Create new admin
+        
+        // Dashboard endpoints
+        Route::get('dashboard/stats', [AdminDashboardController::class, 'getDashboardStats']);
+        Route::get('dashboard/dzikir-doa', [AdminDashboardController::class, 'getDzikirDoaList']);
+        Route::get('dashboard/audio-relax', [AdminDashboardController::class, 'getAudioRelaxList']);
+        Route::get('dashboard/psychology', [AdminDashboardController::class, 'getPsychologyMaterialsList']);
+        Route::get('dashboard/notifications', [AdminDashboardController::class, 'getNotificationsList']);
+    });
 });

@@ -170,25 +170,40 @@ class AuthService {
   // Get User Profile
   Future<Map<String, dynamic>> getProfile() async {
     try {
+      print('🌐 AuthService: Making getProfile request...');
+      final headers = await _getHeaders();
+      print('🌐 AuthService: Request headers: $headers');
+      print('🌐 AuthService: Request URL: $baseUrl/user/profile');
+      
       final response = await http.get(
         Uri.parse('$baseUrl/user/profile'),
-        headers: await _getHeaders(),
+        headers: headers,
       );
+
+      print('🌐 AuthService: Response status: ${response.statusCode}');
+      print('🌐 AuthService: Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print('🌐 AuthService: Parsed response data: $data');
+        print('🌐 AuthService: User data from response: ${data['data']['user']}');
+        
         return {
           'success': true,
           'user': data['data']['user'],
         };
       } else {
         final data = jsonDecode(response.body);
+        print('❌ AuthService: Profile request failed');
+        print('❌ AuthService: Error data: $data');
+        
         return {
           'success': false,
           'message': data['message'] ?? 'Failed to get profile',
         };
       }
     } catch (e) {
+      print('❌ AuthService: Exception in getProfile: $e');
       return {
         'success': false,
         'message': 'Connection error: $e',
@@ -198,11 +213,21 @@ class AuthService {
 
   // Check if user is logged in
   Future<bool> isLoggedIn() async {
+    print('🔑 AuthService: Checking if user is logged in...');
     final token = await getToken();
-    if (token == null) return false;
+    print('🔑 AuthService: Token from storage: ${token != null ? "Found (${token.substring(0, 10)}...)" : "Not found"}');
+    
+    if (token == null) {
+      print('🔑 AuthService: No token found, user not logged in');
+      return false;
+    }
 
     // Verify token by getting profile
+    print('🔑 AuthService: Verifying token by getting profile...');
     final result = await getProfile();
-    return result['success'] == true;
+    final isValid = result['success'] == true;
+    print('🔑 AuthService: Token verification result: $isValid');
+    
+    return isValid;
   }
 }

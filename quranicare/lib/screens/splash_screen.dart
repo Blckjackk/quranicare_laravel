@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'onboarding_screen.dart';
+import '../utils/asset_manager.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -78,50 +79,35 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Logo container with shadow
-                      Container(
+                      // Logo without container
+                      Image.asset(
+                        AssetManager.quranicareLogo,
                         width: 140,
                         height: 140,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF2D5A5A),
-                          borderRadius: BorderRadius.circular(25),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          // Fallback to icon if image fails to load
+                          return Container(
+                            width: 140,
+                            height: 140,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2D5A5A),
+                              borderRadius: BorderRadius.circular(25),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Book icon
-                            const Icon(
+                            child: const Icon(
                               Icons.menu_book_rounded,
                               size: 70,
                               color: Colors.white,
                             ),
-                            // Crescent moon overlay (simple implementation)
-                            Positioned(
-                              top: 25,
-                              right: 30,
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: const Icon(
-                                  Icons.brightness_2,
-                                  size: 12,
-                                  color: Color(0xFF2D5A5A),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
                       
                       const SizedBox(height: 40),

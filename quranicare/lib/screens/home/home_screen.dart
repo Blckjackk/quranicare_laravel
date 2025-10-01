@@ -637,26 +637,26 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 ],
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.all(20),
+                                padding: const EdgeInsets.all(16), // Reduced from 20 to 16
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     // Feature image with better error handling
                                     Container(
-                                      width: 64,
-                                      height: 64,
+                                      width: 56, // Reduced from 64 to 56
+                                      height: 56, // Reduced from 64 to 56
                                       child: feature.assetPath != null 
                                         ? Image.asset(
                                             feature.assetPath!,
-                                            width: 64,
-                                            height: 64,
+                                            width: 56, // Reduced from 64 to 56
+                                            height: 56, // Reduced from 64 to 56
                                             fit: BoxFit.contain,
                                             errorBuilder: (context, error, stackTrace) {
                                               print('Error loading image: ${feature.assetPath}');
                                               print('Error: $error');
                                               return Container(
-                                                width: 64,
-                                                height: 64,
+                                                width: 56, // Reduced from 64 to 56
+                                                height: 56, // Reduced from 64 to 56
                                                 decoration: BoxDecoration(
                                                   color: const Color(0xFF2C6E49).withOpacity(0.1),
                                                   borderRadius: BorderRadius.circular(12),
@@ -670,8 +670,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                             },
                                           )
                                         : Container(
-                                            width: 64,
-                                            height: 64,
+                                            width: 56, // Reduced from 64 to 56
+                                            height: 56, // Reduced from 64 to 56
                                             decoration: BoxDecoration(
                                               color: const Color(0xFF2C6E49).withOpacity(0.1),
                                               borderRadius: BorderRadius.circular(12),
@@ -679,17 +679,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                             child: Icon(
                                               feature.iconData,
                                               color: const Color(0xFF2C6E49),
-                                              size: 32,
+                                              size: 28, // Reduced from 32 to 28
                                             ),
                                           ),
                                     ),
 
-                                    const SizedBox(height: 16),
+                                    const SizedBox(height: 12), // Reduced from 16 to 12
 
                                     Text(
                                       feature.title,
                                       style: const TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 14, // Reduced from 15 to 14
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF1e293b),
                                         letterSpacing: 0.2,
@@ -700,12 +700,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       overflow: TextOverflow.ellipsis,
                                     ),
 
-                                    const SizedBox(height: 6),
+                                    const SizedBox(height: 4), // Reduced from 6 to 4
 
                                     Text(
                                       feature.subtitle,
                                       style: const TextStyle(
-                                        fontSize: 11,
+                                        fontSize: 10, // Reduced from 11 to 10
                                         color: Color(0xFF64748b),
                                         height: 1.3,
                                         fontWeight: FontWeight.w500,

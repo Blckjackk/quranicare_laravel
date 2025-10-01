@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'auth/sign_in_screen.dart';
+import '../utils/asset_manager.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -92,49 +93,57 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 30),
                 child: Column(
                   children: [
-                    // Logo container
-                    Container(
+                    // Logo without container
+                    Image.asset(
+                      AssetManager.quranicareLogo,
                       width: 120,
                       height: 120,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF2D5A5A),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 15,
-                            offset: const Offset(0, 8),
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        // Fallback to original icon if image fails to load
+                        return Container(
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2D5A5A),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 15,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          // Book and crescent moon icon
-                          const Icon(
-                            Icons.menu_book_rounded,
-                            size: 60,
-                            color: Colors.white,
-                          ),
-                          Positioned(
-                            top: 20,
-                            right: 25,
-                            child: Container(
-                              width: 16,
-                              height: 16,
-                              decoration: BoxDecoration(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              const Icon(
+                                Icons.menu_book_rounded,
+                                size: 60,
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
                               ),
-                              child: const Icon(
-                                Icons.brightness_2,
-                                size: 10,
-                                color: Color(0xFF2D5A5A),
+                              Positioned(
+                                top: 20,
+                                right: 25,
+                                child: Container(
+                                  width: 16,
+                                  height: 16,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Icon(
+                                    Icons.brightness_2,
+                                    size: 10,
+                                    color: Color(0xFF2D5A5A),
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                     
                     const SizedBox(height: 20),
@@ -181,83 +190,87 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Arabic text with proper styling
-                          Container(
-                            padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
-                            child: Text(
-                              _pages[index].arabicText,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF2D5A5A),
-                                height: 2.0,
-                                letterSpacing: 0.5,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 20),
+                            // Arabic text with proper styling
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                              child: Text(
+                                _pages[index].arabicText,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xFF2D5A5A),
+                                  height: 1.6,
+                                  letterSpacing: 0.5,
+                                ),
                               ),
                             ),
-                          ),
 
-                          const SizedBox(height: 80),
+                            const SizedBox(height: 30),
 
-                          // White card container for description
-                          Container(
-                            width: double.infinity,
-                            margin: const EdgeInsets.symmetric(horizontal: 20),
-                            padding: const EdgeInsets.all(35),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.95),
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.08),
-                                  blurRadius: 25,
-                                  offset: const Offset(0, 15),
-                                  spreadRadius: 0,
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                // Progress indicator with exact styling
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: List.generate(_pages.length, (dotIndex) {
-                                    return AnimatedContainer(
-                                      duration: const Duration(milliseconds: 300),
-                                      margin: const EdgeInsets.symmetric(horizontal: 6),
-                                      height: 4,
-                                      width: dotIndex == index ? 40 : 12,
-                                      decoration: BoxDecoration(
-                                        color: dotIndex == index 
-                                            ? const Color(0xFF8FA68E) 
-                                            : const Color(0xFFD0D0D0),
-                                        borderRadius: BorderRadius.circular(2),
-                                      ),
-                                    );
-                                  }),
-                                ),
-
-                                const SizedBox(height: 35),
-
-                                // Description text with proper styling
-                                Text(
-                                  _pages[index].description,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: const Color(0xFF8FA68E),
-                                    height: 1.8,
-                                    fontWeight: FontWeight.w500,
-                                    letterSpacing: 0.3,
+                            // White card container for description
+                            Container(
+                              width: double.infinity,
+                              margin: const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.95),
+                                borderRadius: BorderRadius.circular(30),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 25,
+                                    offset: const Offset(0, 15),
+                                    spreadRadius: 0,
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  // Progress indicator with exact styling
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: List.generate(_pages.length, (dotIndex) {
+                                      return AnimatedContainer(
+                                        duration: const Duration(milliseconds: 300),
+                                        margin: const EdgeInsets.symmetric(horizontal: 6),
+                                        height: 4,
+                                        width: dotIndex == index ? 40 : 12,
+                                        decoration: BoxDecoration(
+                                          color: dotIndex == index 
+                                              ? const Color(0xFF8FA68E) 
+                                              : const Color(0xFFD0D0D0),
+                                          borderRadius: BorderRadius.circular(2),
+                                        ),
+                                      );
+                                    }),
+                                  ),
+
+                                  const SizedBox(height: 25),
+
+                                  // Description text with proper styling
+                                  Text(
+                                    _pages[index].description,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: const Color(0xFF8FA68E),
+                                      height: 1.6,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 20),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -266,7 +279,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
               // Bottom navigation buttons
               Padding(
-                padding: const EdgeInsets.only(left: 40, right: 40, bottom: 40),
+                padding: const EdgeInsets.only(left: 40, right: 40, bottom: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

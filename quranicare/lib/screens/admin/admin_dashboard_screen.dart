@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../models/admin/admin.dart';
-import '../../models/admin/dashboard_stats.dart';
 import '../../services/admin_service.dart';
 import 'dzikir_doa_management_screen.dart';
 import 'audio_relax_management_screen.dart';
@@ -18,7 +17,7 @@ class AdminDashboardScreen extends StatefulWidget {
 
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   final AdminService _adminService = AdminService();
-  DashboardStats? _stats;
+  Map<String, dynamic>? _stats;
   bool _isLoading = true;
 
   @override
@@ -29,9 +28,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 
   Future<void> _loadDashboardStats() async {
     try {
-      final stats = await _adminService.getDashboardStats();
+      final result = await _adminService.getDashboardStats();
       setState(() {
-        _stats = stats;
+        _stats = result['data'];
         _isLoading = false;
       });
     } catch (e) {
@@ -225,7 +224,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         Expanded(
                           child: _StatCard(
                             title: 'Total Users',
-                            value: _stats!.userStats.totalUsers.toString(),
+                            value: (_stats!['user_stats']['total_users'] ?? 0).toString(),
                             icon: Icons.people,
                             color: Colors.blue,
                           ),
@@ -234,7 +233,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         Expanded(
                           child: _StatCard(
                             title: 'Active Users',
-                            value: _stats!.userStats.activeUsers.toString(),
+                            value: (_stats!['user_stats']['active_users'] ?? 0).toString(),
                             icon: Icons.person_outline,
                             color: Colors.green,
                           ),
@@ -249,7 +248,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         Expanded(
                           child: _StatCard(
                             title: 'Dzikir Doa',
-                            value: _stats!.contentStats.totalDzikirDoa.toString(),
+                            value: (_stats!['content_stats']['total_dzikir_doa'] ?? 0).toString(),
                             icon: Icons.auto_stories,
                             color: const Color(0xFF8FA68E),
                           ),
@@ -258,7 +257,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         Expanded(
                           child: _StatCard(
                             title: 'Audio Relax',
-                            value: _stats!.contentStats.totalAudioRelax.toString(),
+                            value: (_stats!['content_stats']['total_audio_relax'] ?? 0).toString(),
                             icon: Icons.music_note,
                             color: Colors.purple,
                           ),
@@ -272,7 +271,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         Expanded(
                           child: _StatCard(
                             title: 'Psychology',
-                            value: _stats!.contentStats.totalPsychology.toString(),
+                            value: (_stats!['content_stats']['total_psychology'] ?? 0).toString(),
                             icon: Icons.psychology,
                             color: Colors.orange,
                           ),
@@ -281,7 +280,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         Expanded(
                           child: _StatCard(
                             title: 'Notifications',
-                            value: _stats!.contentStats.totalNotifications.toString(),
+                            value: (_stats!['content_stats']['total_notifications'] ?? 0).toString(),
                             icon: Icons.notifications,
                             color: Colors.red,
                           ),

@@ -3,9 +3,9 @@ class Admin {
   final String name;
   final String email;
   final String role;
-  final List<String> permissions;
+  final Map<String, dynamic> permissions;
   final DateTime? lastLoginAt;
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   Admin({
     required this.id,
@@ -14,7 +14,7 @@ class Admin {
     required this.role,
     required this.permissions,
     this.lastLoginAt,
-    required this.createdAt,
+    this.createdAt,
   });
 
   factory Admin.fromJson(Map<String, dynamic> json) {
@@ -23,11 +23,13 @@ class Admin {
       name: json['name'],
       email: json['email'],
       role: json['role'],
-      permissions: List<String>.from(json['permissions'] ?? []),
+      permissions: Map<String, dynamic>.from(json['permissions'] ?? {}),
       lastLoginAt: json['last_login_at'] != null 
           ? DateTime.parse(json['last_login_at']) 
           : null,
-      createdAt: DateTime.parse(json['created_at']),
+      createdAt: json['created_at'] != null 
+          ? DateTime.parse(json['created_at'])
+          : null,
     );
   }
 
@@ -39,7 +41,7 @@ class Admin {
       'role': role,
       'permissions': permissions,
       'last_login_at': lastLoginAt?.toIso8601String(),
-      'created_at': createdAt.toIso8601String(),
+      'created_at': createdAt?.toIso8601String(),
     };
   }
 
@@ -48,14 +50,21 @@ class Admin {
   bool get isModerator => role == 'moderator';
 
   bool canManageContent() {
-    return ['super_admin', 'content_admin'].contains(role);
+    return ['super_admin', 'content_admin'].contains(role) || 
+           (permissions['manage_content'] == true);
   }
 
   bool canManageUsers() {
-    return role == 'super_admin';
+    return role == 'super_admin' || 
+           (permissions['manage_users'] == true);
   }
 
   bool canModerate() {
-    return ['super_admin', 'moderator'].contains(role);
+    return ['super_admin', 'moderator'].contains(role) || 
+           (permissions['moderate_content'] == true);
+  }
+
+  bool hasPermission(String permission) {
+    return role == 'super_admin' || (permissions[permission] == true);
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'sign_up_screen.dart';
 import '../../services/admin_service.dart';
 import '../../services/auth_service.dart';
+import '../../utils/asset_manager.dart';
 import '../admin/admin_dashboard_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -168,48 +169,57 @@ class _SignInScreenState extends State<SignInScreen> {
                   
                   const SizedBox(height: 50),
 
-                  // Logo container
-                  Container(
+                  // Logo without container
+                  Image.asset(
+                    AssetManager.quranicareLogo,
                     width: 120,
                     height: 120,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF2D5A5A),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 15,
-                          offset: const Offset(0, 8),
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Fallback to original icon if image fails to load
+                      return Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2D5A5A),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 15,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        const Icon(
-                          Icons.menu_book_rounded,
-                          size: 60,
-                          color: Colors.white,
-                        ),
-                        Positioned(
-                          top: 20,
-                          right: 25,
-                          child: Container(
-                            width: 16,
-                            height: 16,
-                            decoration: BoxDecoration(
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            const Icon(
+                              Icons.menu_book_rounded,
+                              size: 60,
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Icon(
-                              Icons.brightness_2,
-                              size: 10,
-                              color: Color(0xFF2D5A5A),
+                            Positioned(
+                              top: 20,
+                              right: 25,
+                              child: Container(
+                                width: 16,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.brightness_2,
+                                  size: 10,
+                                  color: Color(0xFF2D5A5A),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 20),

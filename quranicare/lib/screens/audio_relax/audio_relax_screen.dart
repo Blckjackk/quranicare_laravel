@@ -92,13 +92,29 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
       });
 
       final categories = await _audioService.getAllCategories();
+      
+      // Filter to only show specific categories
+      final allowedCategories = ['musik islami', 'murrotal', 'dzikir dan doa', 'murottal', 'dzikir & doa'];
+      final filteredCategories = categories.where((category) {
+        return allowedCategories.any((allowed) => 
+          category.name.toLowerCase().contains(allowed.toLowerCase()) ||
+          allowed.toLowerCase().contains(category.name.toLowerCase())
+        );
+      }).toList();
+      
       setState(() {
-        _categories = categories;
+        _categories = filteredCategories;
         _isLoadingCategories = false;
       });
+      
+      if (_categories.isEmpty) {
+        setState(() {
+          _errorMessage = 'Kategori audio yang diinginkan belum tersedia di database.\nKategori yang didukung: Musik Islami, Murrotal, dan Dzikir & Doa.';
+        });
+      }
     } catch (e) {
       setState(() {
-        _errorMessage = e.toString();
+        _errorMessage = 'Gagal terhubung ke server audio.\nPastikan koneksi internet stabil dan server aktif.\n\nDetail error: $e';
         _isLoadingCategories = false;
       });
     }
@@ -114,13 +130,21 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
       });
 
       final result = await _audioService.getAudioByCategory(category.id);
+      final audioList = result['audio_list'] as List<AudioRelax>;
+      
       setState(() {
-        _audioList = result['audio_list'] as List<AudioRelax>;
+        _audioList = audioList;
         _isLoadingAudio = false;
       });
+      
+      if (_audioList.isEmpty) {
+        setState(() {
+          _errorMessage = 'Belum ada audio dalam kategori "${category.name}".\nAudio akan segera ditambahkan.';
+        });
+      }
     } catch (e) {
       setState(() {
-        _errorMessage = e.toString();
+        _errorMessage = 'Gagal memuat audio kategori "${category.name}".\nPastikan koneksi internet stabil.\n\nDetail error: $e';
         _isLoadingAudio = false;
       });
     }
@@ -169,6 +193,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
     setState(() {
       _selectedAudio = audio;
       _currentScreen = 3; // Go to audio player screen
+      _errorMessage = ''; // Clear any previous errors
     });
 
     // Debug: Print audio information
@@ -176,72 +201,93 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
     print('🔗 Audio path: ${audio.audioPath}');
     print('🎬 Is YouTube: ${audio.isYouTubeAudio}');
     
-    // Test regex extraction step by step
-    print('🧪 Testing regex extraction:');
-    final regExp = RegExp(
-      r'(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})',
-    );
-    final match = regExp.firstMatch(audio.audioPath);
-    print('🔍 Regex match found: ${match != null}');
-    if (match != null) {
-      print('🆔 Extracted video ID: ${match.group(1)}');
+    // Validate audio path
+    if (audio.audioPath.isEmpty) {
+      setState(() {
+        _errorMessage = 'Audio path tidak valid untuk "${audio.title}".';
+      });
+      return;
     }
     
-    print('🆔 YouTube ID from getter: ${audio.youTubeVideoId}');
-
     // Initialize YouTube player if it's a YouTube audio
     if (audio.isYouTubeAudio && audio.youTubeVideoId != null) {
-      print('🚀 Initializing YouTube controller...');
-      print('🆔 Video ID: ${audio.youTubeVideoId}');
-      
-      // Test dengan video ID yang sederhana untuk debug
-      String testVideoId = audio.youTubeVideoId!;
-      print('🧪 Using video ID: $testVideoId');
-      
-      _youtubeController?.dispose();
-      _youtubeController = YoutubePlayerController(
-        initialVideoId: testVideoId,
-        flags: const YoutubePlayerFlags(
-          autoPlay: false,
-          mute: false,
-          disableDragSeek: false,
-          loop: false,
-          isLive: false,
-          forceHD: false,
-          enableCaption: false,
-          hideControls: false,
-          hideThumbnail: false,
-        ),
-      );
-      
-      // Add listener to track player state
-      _youtubeController!.addListener(() {
-        print('🔄 Controller state changed - Ready: ${_youtubeController!.value.isReady}');
-        print('🔄 Player state: ${_youtubeController!.value.playerState}');
-        print('🔄 Has error: ${_youtubeController!.value.hasError}');
-        if (_youtubeController!.value.hasError) {
-          print('❌ YouTube Error: ${_youtubeController!.value.errorCode}');
+      try {
+        print('🚀 Initializing YouTube controller...');
+        print('🆔 Video ID: ${audio.youTubeVideoId}');
+        
+        String videoId = audio.youTubeVideoId!;
+        
+        // Validate YouTube video ID format
+        if (videoId.length != 11) {
+          setState(() {
+            _errorMessage = 'YouTube Video ID tidak valid: "$videoId".\nPastikan link YouTube sudah benar.';
+          });
+          return;
         }
         
-        if (_youtubeController!.value.isReady) {
-          setState(() {
-            _isPlaying = _youtubeController!.value.isPlaying;
-          });
-          print('🎮 Player state: ${_isPlaying ? "Playing" : "Paused"}');
-          print('✅ YouTube controller is now ready!');
-        }
+        _youtubeController?.dispose();
+        _youtubeController = YoutubePlayerController(
+          initialVideoId: videoId,
+          flags: const YoutubePlayerFlags(
+            autoPlay: false,
+            mute: false,
+            disableDragSeek: false,
+            loop: false,
+            isLive: false,
+            forceHD: false,
+            enableCaption: false,
+            hideControls: false,
+            hideThumbnail: false,
+          ),
+        );
+        
+        // Add listener to track player state
+        _youtubeController!.addListener(() {
+          if (_youtubeController!.value.hasError) {
+            print('❌ YouTube Error: ${_youtubeController!.value.errorCode}');
+            setState(() {
+              _errorMessage = 'Gagal memuat video YouTube.\nPastikan koneksi internet stabil dan video masih tersedia.';
+            });
+          }
+          
+          if (_youtubeController!.value.isReady) {
+            setState(() {
+              _isPlaying = _youtubeController!.value.isPlaying;
+              _errorMessage = ''; // Clear error when ready
+            });
+            print('✅ YouTube controller is now ready!');
+          }
+        });
+        
+        // Wait for controller to be ready
+        _waitForControllerReady();
+        
+        print('✅ YouTube controller initialized successfully!');
+      } catch (e) {
+        print('❌ Error initializing YouTube controller: $e');
+        setState(() {
+          _errorMessage = 'Gagal menginisialisasi pemutar YouTube.\nCoba pilih audio lain atau periksa koneksi internet.';
+        });
+      }
+    } else if (!audio.isYouTubeAudio) {
+      // Handle local audio files
+      print('🎵 Local audio file detected: ${audio.audioPath}');
+      setState(() {
+        _errorMessage = 'Audio lokal belum didukung sepenuhnya.\nSementara gunakan audio YouTube atau tunggu update selanjutnya.';
       });
-      
-      // Wait for controller to be ready
-      _waitForControllerReady();
-      
-      print('✅ YouTube controller initialized successfully!');
     } else {
-      print('❌ Not a YouTube audio or no video ID found');
+      print('❌ No valid YouTube video ID found');
+      setState(() {
+        _errorMessage = 'Tidak dapat menemukan ID video YouTube yang valid.\nPastikan link audio sudah benar.';
+      });
     }
 
-    // Update play count
-    _audioService.updatePlayCount(audio.id);
+    // Update play count if possible
+    try {
+      _audioService.updatePlayCount(audio.id);
+    } catch (e) {
+      print('⚠ Failed to update play count: $e');
+    }
   }
 
   Future<void> _waitForControllerReady() async {
@@ -994,8 +1040,57 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
 
     return Column(
       children: [
+        // Error Message (if any)
+        if (_errorMessage.isNotEmpty) ...[
+          Container(
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.red.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.red.withOpacity(0.3),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  color: Colors.red,
+                  size: 24,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Audio Tidak Dapat Diputar',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _errorMessage,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.red.withOpacity(0.8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+
         // YouTube Player or Audio Info
-        if (_selectedAudio!.isYouTubeAudio && _youtubeController != null) ...[
+        if (_selectedAudio!.isYouTubeAudio && _youtubeController != null && _errorMessage.isEmpty) ...[
           Container(
             margin: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -1014,6 +1109,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                     print('🎬 YouTube player ready!');
                     setState(() {
                       _isPlaying = false;
+                      _errorMessage = ''; // Clear error when ready
                     });
                   },
                   onEnded: (metaData) {
@@ -1026,29 +1122,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               ),
             ),
           ),
-          // Debug info
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                Text(
-                  'YouTube Video ID: ${_selectedAudio!.youTubeVideoId}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                Text(
-                  'Controller Ready: ${_youtubeController?.value.isReady ?? false}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ] else ...[
+        ] else if (_errorMessage.isEmpty) ...[
           Container(
             margin: const EdgeInsets.all(16),
             height: 200,
@@ -1097,101 +1171,142 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
 
         const SizedBox(height: 40),
 
-        // Player Controls
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              // Shuffle (disabled)
-              IconButton(
-                onPressed: null,
-                icon: Icon(
-                  Icons.shuffle,
-                  size: 24,
-                  color: const Color(0xFF7CB342).withOpacity(0.3),
-                ),
-              ),
-              // Previous (disabled)
-              IconButton(
-                onPressed: null,
-                icon: Icon(
-                  Icons.skip_previous,
-                  size: 32,
-                  color: const Color(0xFF7CB342).withOpacity(0.3),
-                ),
-              ),
-              // Play/Pause
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFF7CB342),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF7CB342).withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: IconButton(
-                  onPressed: _togglePlayPause,
+        // Player Controls (only show if no error)
+        if (_errorMessage.isEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Shuffle (disabled)
+                IconButton(
+                  onPressed: null,
                   icon: Icon(
-                    _isPlaying ? Icons.pause : Icons.play_arrow,
-                    color: Colors.white,
-                    size: 32,
+                    Icons.shuffle,
+                    size: 24,
+                    color: const Color(0xFF7CB342).withOpacity(0.3),
                   ),
                 ),
-              ),
-              // Next (disabled)
-              IconButton(
-                onPressed: null,
-                icon: Icon(
-                  Icons.skip_next,
-                  size: 32,
-                  color: const Color(0xFF7CB342).withOpacity(0.3),
+                // Previous (disabled)
+                IconButton(
+                  onPressed: null,
+                  icon: Icon(
+                    Icons.skip_previous,
+                    size: 32,
+                    color: const Color(0xFF7CB342).withOpacity(0.3),
+                  ),
                 ),
-              ),
-              // Stop
-              IconButton(
-                onPressed: _stopAudio,
-                icon: const Icon(
-                  Icons.stop,
-                  size: 24,
-                  color: Color(0xFF7CB342),
+                // Play/Pause
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFF7CB342),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF7CB342).withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    onPressed: _togglePlayPause,
+                    icon: Icon(
+                      _isPlaying ? Icons.pause : Icons.play_arrow,
+                      color: Colors.white,
+                      size: 32,
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                // Next (disabled)
+                IconButton(
+                  onPressed: null,
+                  icon: Icon(
+                    Icons.skip_next,
+                    size: 32,
+                    color: const Color(0xFF7CB342).withOpacity(0.3),
+                  ),
+                ),
+                // Stop
+                IconButton(
+                  onPressed: _stopAudio,
+                  icon: const Icon(
+                    Icons.stop,
+                    size: 24,
+                    color: Color(0xFF7CB342),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
 
-        const SizedBox(height: 32),
+          const SizedBox(height: 32),
 
-        // Duration
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '00:00',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: const Color(0xFF7CB342).withOpacity(0.8),
+          // Duration
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '00:00',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: const Color(0xFF7CB342).withOpacity(0.8),
+                  ),
                 ),
-              ),
-              Text(
-                _selectedAudio!.formattedDuration,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: const Color(0xFF7CB342).withOpacity(0.8),
+                Text(
+                  _selectedAudio!.formattedDuration,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: const Color(0xFF7CB342).withOpacity(0.8),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ] else ...[
+          // Show retry button when there's an error
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    // Retry playing the audio
+                    _playAudio(_selectedAudio!);
+                  },
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Coba Lagi'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF7CB342),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _currentScreen = 2; // Go back to audio list
+                      _errorMessage = '';
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text('Kembali ke Daftar Audio'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: const Color(0xFF7CB342),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
 
         const Spacer(),
       ],
