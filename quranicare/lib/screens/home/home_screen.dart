@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       title: 'Jurnal Refleksi',
       subtitle: 'Refleksi dari Al-Quran',
       iconData: Icons.menu_book_outlined,
-      assetPath: AssetManager.heartIcon, // Changed from quranIcon to heartIcon
+      assetPath: AssetManager.quranIcon, // Changed from heartIcon to quranIcon
       gradientColors: [Color(0xFF7CB342), Color(0xFF689F38)],
     ),
     FeatureData(
@@ -60,15 +60,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       subtitle: 'Kumpulan dzikir harian',
       iconData: Icons.circle_outlined,
       assetPath: AssetManager.tasbihIcon,
-      gradientColors: [Color(0xFF7CB342), Color(0xFF689F38)],
-    ),
-    FeatureData(
-      icon: Icons.calendar_view_day,
-      color: const Color(0xFF7CB342),
-      title: 'Daily Recap',
-      subtitle: 'Rekap mood harian Anda',
-      iconData: Icons.calendar_view_day,
-      assetPath: AssetManager.heartIcon,
       gradientColors: [Color(0xFF7CB342), Color(0xFF689F38)],
     ),
   ];
@@ -596,8 +587,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 Navigator.pushNamed(context, '/jurnal-refleksi');
                               } else if (feature.title.contains('Dzikir')) {
                                 Navigator.pushNamed(context, '/doa-dzikir');
-                              } else if (feature.title.contains('Daily Recap')) {
-                                Navigator.pushNamed(context, '/daily-recap');
                               }
                             },
                             child: Container(
