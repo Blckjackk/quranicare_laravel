@@ -195,12 +195,19 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
   void _showSuccessSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
-        backgroundColor: const Color(0xFF16A34A),
+        content: Row(
+          children: [
+            const Icon(Icons.check_circle, color: Colors.white),
+            const SizedBox(width: 8),
+            Expanded(child: Text(message)),
+          ],
+        ),
+        backgroundColor: const Color(0xFF8FA68E), // Brand color
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
+        margin: const EdgeInsets.all(16),
       ),
     );
   }
@@ -208,12 +215,19 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Row(
+          children: [
+            const Icon(Icons.error, color: Colors.white),
+            const SizedBox(width: 8),
+            Expanded(child: Text(message)),
+          ],
+        ),
         backgroundColor: const Color(0xFFDC2626),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
+        margin: const EdgeInsets.all(16),
       ),
     );
   }
@@ -229,8 +243,9 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFF0F8F8),
-              Color(0xFFE8F5E8),
+              Color(0xFFF8F9FA), // Light gray - consistent with brand
+              Color(0xFFE8F5E8), // Light green 
+              Color(0xFFD4F4DD), // Softer green - brand consistent
             ],
           ),
         ),
@@ -242,23 +257,23 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
                 opacity: _fadeAnimation.value,
                 child: Column(
                   children: [
-                    // Header
+                    // Header dengan back button saja
                     Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                       child: Row(
                         children: [
                           GestureDetector(
                             onTap: () => Navigator.pop(context),
                             child: Container(
-                              width: 40,
-                              height: 40,
+                              width: 44,
+                              height: 44,
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white.withOpacity(0.9),
+                                borderRadius: BorderRadius.circular(22),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFF2D5A5A).withOpacity(0.1),
-                                    blurRadius: 8,
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 10,
                                     offset: const Offset(0, 4),
                                   ),
                                 ],
@@ -274,183 +289,264 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
                       ),
                     ),
 
-                    const SizedBox(height: 20),
-
-                    // Title
-                    const Text(
-                      'Bagaimana Perasaan\nKamu Hari Ini??',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF2D5A5A),
-                        height: 1.2,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-
-                    const SizedBox(height: 40),
-
-                    // Current Mood Display
-                    if (_selectedMood != null)
-                      Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: _selectedMood!.color.withOpacity(0.2),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: _selectedMood!.color.withOpacity(0.3),
-                              blurRadius: 20,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Text(
-                            _selectedMood!.emoji,
-                            style: const TextStyle(fontSize: 60),
-                          ),
-                        ),
-                      ),
-                    
-                    if (_selectedMood == null)
-                      Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.2),
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.grey.withOpacity(0.5),
-                            width: 2,
-                          ),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            '😐',
-                            style: TextStyle(
-                              fontSize: 60,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    const SizedBox(height: 20),
-
-                    Text(
-                      _selectedMood?.label ?? 'Pilih mood Anda',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: _selectedMood?.color ?? Colors.grey,
-                      ),
-                    ),
-
-                    const SizedBox(height: 60),
-
-                    // Mood Spinner Widget
+                    // Main content area
                     Expanded(
-                      child: Center(
-                        child: MoodSpinnerWidget(
-                          onMoodSelected: _onMoodSelected,
-                          initialMood: _selectedMood,
-                          canSpin: _canSelectMood,
-                        ),
-                      ),
-                    ),
-
-                    // Save Button
-                    Padding(
-                      padding: const EdgeInsets.all(20),
                       child: Column(
                         children: [
-                          // Show selected mood info
-                          if (_selectedMood != null && _canSelectMood)
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 15),
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: _selectedMood!.color.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: _selectedMood!.color,
-                                  width: 2,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                          // Top section dengan scroll
+                          Expanded(
+                            flex: 6,
+                            child: SingleChildScrollView(
+                              child: Column(
                                 children: [
-                                  if (_selectedMood!.imagePath != null)
-                                    ClipOval(
-                                      child: Image.asset(
-                                        _selectedMood!.imagePath!,
-                                        width: 30,
-                                        height: 30,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Text(
-                                            _selectedMood!.emoji,
-                                            style: const TextStyle(fontSize: 20),
-                                          );
-                                        },
-                                      ),
-                                    )
-                                  else
-                                    Text(
-                                      _selectedMood!.emoji,
-                                      style: const TextStyle(fontSize: 20),
-                                    ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Mood: ${_selectedMood!.label}',
+                                  const SizedBox(height: 20),
+
+                                  // Title section - simple and clean
+                                  const Text(
+                                    'Bagaimana Perasaan\nKamu Hari Ini??',
                                     style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: _selectedMood!.color,
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF2D5A5A),
+                                      height: 1.3,
                                     ),
+                                    textAlign: TextAlign.center,
                                   ),
+
+                                  const SizedBox(height: 50),
+
+                                  // Current selected mood display - large and centered
+                                  if (_selectedMood != null)
+                                    Column(
+                                      children: [
+                                        Container(
+                                          width: 180,
+                                          height: 180,
+                                          decoration: BoxDecoration(
+                                            color: _selectedMood!.color.withOpacity(0.1),
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: _selectedMood!.color.withOpacity(0.2),
+                                                blurRadius: 30,
+                                                offset: const Offset(0, 15),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Center(
+                                            child: _selectedMood!.imagePath != null
+                                                ? ClipOval(
+                                                    child: Image.asset(
+                                                      _selectedMood!.imagePath!,
+                                                      width: 120,
+                                                      height: 120,
+                                                      fit: BoxFit.cover,
+                                                      errorBuilder: (context, error, stackTrace) {
+                                                        return Text(
+                                                          _selectedMood!.emoji,
+                                                          style: const TextStyle(fontSize: 80),
+                                                        );
+                                                      },
+                                                    ),
+                                                  )
+                                                : Text(
+                                                    _selectedMood!.emoji,
+                                                    style: const TextStyle(fontSize: 80),
+                                                  ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        Text(
+                                          _selectedMood!.label,
+                                          style: TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w600,
+                                            color: _selectedMood!.color,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  
+                                  if (_selectedMood == null)
+                                    Column(
+                                      children: [
+                                        Container(
+                                          width: 180,
+                                          height: 180,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.withOpacity(0.1),
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: Colors.grey.withOpacity(0.3),
+                                              width: 2,
+                                            ),
+                                          ),
+                                          child: const Center(
+                                            child: Icon(
+                                              Icons.touch_app,
+                                              size: 60,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        const Text(
+                                          'Ketuk Untuk Memulai',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                  const SizedBox(height: 30),
                                 ],
                               ),
                             ),
-                          
-                          // Save button
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: (_isLoading || !_canSelectMood || _selectedMood == null) ? null : _saveMood,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: _selectedMood?.color ?? const Color(0xFF8FA68E),
-                                foregroundColor: Colors.white,
-                                disabledBackgroundColor: Colors.grey.shade400,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
+                          ),
+
+                          // Bottom section - Spinner dan Button (fixed)
+                          Container(
+                            child: Column(
+                              children: [
+                                // Mood Spinner Widget - di bagian bawah dengan Spin Emote sebagai background
+                                Container(
+                                  height: 280,
+                                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.95),
+                                    borderRadius: BorderRadius.circular(30),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 25,
+                                        offset: const Offset(0, 15),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      // Background Spin Emote
+                                      Positioned.fill(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(30),
+                                          child: Opacity(
+                                            opacity: 0.1,
+                                            child: Image.asset(
+                                              'assets/images/Spin Emote.png',
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (context, error, stackTrace) {
+                                                return Container(
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(0xFF8FA68E).withOpacity(0.05),
+                                                    borderRadius: BorderRadius.circular(30),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      // Spinner Widget
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(30),
+                                        child: MoodSpinnerWidget(
+                                          onMoodSelected: _onMoodSelected,
+                                          initialMood: _selectedMood,
+                                          canSpin: _canSelectMood,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                elevation: 8,
-                                shadowColor: (_selectedMood?.color ?? const Color(0xFF8FA68E)).withOpacity(0.3),
-                              ),
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2,
+
+                                const SizedBox(height: 20),
+
+                                // Save Button Section
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  child: Column(
+                                    children: [
+                                      // Status indicator jika sudah memilih
+                                      if (!_canSelectMood)
+                                        Container(
+                                          margin: const EdgeInsets.only(bottom: 20),
+                                          padding: const EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF8FA68E).withOpacity(0.1),
+                                            borderRadius: BorderRadius.circular(20),
+                                            border: Border.all(
+                                              color: const Color(0xFF8FA68E),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: const Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.check_circle,
+                                                color: Color(0xFF8FA68E),
+                                                size: 24,
+                                              ),
+                                              SizedBox(width: 12),
+                                              Text(
+                                                'Sudah Memilih Hari Ini',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Color(0xFF8FA68E),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      
+                                      // Save button
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton(
+                                          onPressed: (_isLoading || !_canSelectMood || _selectedMood == null) ? null : _saveMood,
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: _selectedMood?.color ?? const Color(0xFF8FA68E),
+                                            foregroundColor: Colors.white,
+                                            disabledBackgroundColor: Colors.grey.shade300,
+                                            padding: const EdgeInsets.symmetric(vertical: 18),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30),
+                                            ),
+                                            elevation: 8,
+                                            shadowColor: (_selectedMood?.color ?? const Color(0xFF8FA68E)).withOpacity(0.3),
+                                          ),
+                                          child: _isLoading
+                                              ? const SizedBox(
+                                                  height: 24,
+                                                  width: 24,
+                                                  child: CircularProgressIndicator(
+                                                    color: Colors.white,
+                                                    strokeWidth: 2.5,
+                                                  ),
+                                                )
+                                              : Text(
+                                                  !_canSelectMood 
+                                                      ? 'Sudah Memilih Hari Ini' 
+                                                      : _selectedMood == null 
+                                                          ? 'Pilih Mood Dulu'
+                                                          : 'Simpan Mood Saya',
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                        ),
                                       ),
-                                    )
-                                  : Text(
-                                      !_canSelectMood 
-                                          ? 'Sudah Memilih Hari Ini' 
-                                          : _selectedMood == null 
-                                              ? 'Pilih Mood Dulu'
-                                              : 'Simpan Mood Saya',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
+                                    ],
+                                  ),
+                                ),
+
+                                const SizedBox(height: 30),
+                              ],
                             ),
                           ),
                         ],
