@@ -75,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onFeatureTap(String feature) {
+    print('Feature tapped: $feature'); // Debug print
     switch (feature) {
       case 'breathing':
         Navigator.pushNamed(context, '/breathing-exercise');
@@ -83,7 +84,8 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.pushNamed(context, '/audio-relax');
         break;
       case 'journal':
-        Navigator.pushNamed(context, '/journal');
+        print('Navigating to journal...'); // Debug print
+        Navigator.pushNamed(context, '/jurnal-refleksi'); // Fixed route name
         break;
       case 'dzikir':
         Navigator.pushNamed(context, '/doa-dzikir');
@@ -112,237 +114,243 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              // Header Section
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Greeting Text
-                    Text(
-                      _isLoadingUser ? 'Assalamualaikum...' : 'Assalamualaikum $_userName....',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF2D5A5A), // Brand dark green
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                    // Notification Bell
-                    GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, '/notification'),
-                      child: Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF8FA68E), // Brand color
-                          borderRadius: BorderRadius.circular(22),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF8FA68E).withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.notifications_outlined,
-                          color: Colors.white,
-                          size: 22,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Mood Card
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: GestureDetector(
-                  onTap: _onMoodTap,
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.95),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: const Color(0xFF8FA68E).withOpacity(0.1),
-                        width: 1,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 20,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        const Text(
-                          'Bagaimana Perasaanmu Hari Ini?',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF2D5A5A), // Brand text
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _buildMoodEmoji(AssetManager.moodSad, 'Sedih'),
-                            _buildMoodEmoji(AssetManager.moodDown, 'Down'),
-                            _buildMoodEmoji(AssetManager.moodNeutral, 'Biasa'),
-                            _buildMoodEmoji(AssetManager.moodHappy, 'Senang'),
-                            _buildMoodEmoji(AssetManager.moodHappy, 'Bahagia'),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'Ketuk Untuk Memulai',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: const Color(0xFF8FA68E), // Brand secondary
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              // Features Grid
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: GridView.count(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    childAspectRatio: 1.1,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Header Section
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildFeatureCard(
-                        AssetManager.heartIcon,
-                        'Breathing Islami Exercise',
-                        () => _onFeatureTap('breathing'),
+                      // Greeting Text
+                      Text(
+                        _isLoadingUser ? 'Assalamualaikum...' : 'Assalamualaikum $_userName....',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF2D5A5A), // Brand dark green
+                          letterSpacing: 0.5,
+                        ),
                       ),
-                      _buildFeatureCard(
-                        AssetManager.headphoneIcon,
-                        'Audio Relax Islami',
-                        () => _onFeatureTap('audio'),
-                      ),
-                      _buildFeatureCard(
-                        AssetManager.quranIcon,
-                        'Jurnal Refleksi Al-Quran',
-                        () => _onFeatureTap('journal'),
-                      ),
-                      _buildFeatureCard(
-                        AssetManager.tasbihIcon,
-                        'Dzikir dan Doa Ketenangan',
-                        () => _onFeatureTap('dzikir'),
+                      // Notification Bell
+                      GestureDetector(
+                        onTap: () => Navigator.pushNamed(context, '/notification'),
+                        child: Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF8FA68E), // Brand color
+                            borderRadius: BorderRadius.circular(22),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF8FA68E).withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.notifications_outlined,
+                            color: Colors.white,
+                            size: 22,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
 
-              // Psychology Learning Card
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: GestureDetector(
-                  onTap: _onPsychologyTap,
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)], // Brand gradient
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF8FA68E).withOpacity(0.3),
-                          blurRadius: 15,
-                          offset: const Offset(0, 8),
+                // Mood Card
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: GestureDetector(
+                    onTap: _onMoodTap,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.95),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: const Color(0xFF8FA68E).withOpacity(0.1),
+                          width: 1,
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                              child: const Icon(
-                                Icons.auto_stories_rounded,
-                                color: Colors.white,
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            const Expanded(
-                              child: Text(
-                                'Quranic Psychology Learning',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Kumpulan materi edukatif yang membahas kesehatan mental dari perspektif Islam dan Al-Quran dengan pendekatan modern.',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white70,
-                            height: 1.5,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Text(
-                                'Pelajari',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                ),
-                              ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          const Text(
+                            'Bagaimana Perasaanmu Hari Ini?',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF2D5A5A), // Brand text
                             ),
-                          ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildMoodEmoji(AssetManager.moodSad, 'Sedih'),
+                              _buildMoodEmoji(AssetManager.moodDown, 'Down'),
+                              _buildMoodEmoji(AssetManager.moodNeutral, 'Biasa'),
+                              _buildMoodEmoji(AssetManager.moodHappy, 'Senang'),
+                              _buildMoodEmoji(AssetManager.moodHappy, 'Bahagia'),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Ketuk Untuk Memulai',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: const Color(0xFF8FA68E), // Brand secondary
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Features Grid - Fixed height, no scrolling
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: SizedBox(
+                    height: 480, // Increased height significantly untuk memastikan 4 card terlihat penuh
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: 0.75, // Lebih tinggi lagi untuk memastikan semua card terlihat
+                      physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+                      children: [
+                        _buildFeatureCard(
+                          AssetManager.heartIcon,
+                          'Breathing Islami Exercise',
+                          () => _onFeatureTap('breathing'),
+                        ),
+                        _buildFeatureCard(
+                          AssetManager.headphoneIcon,
+                          'Audio Relax Islami',
+                          () => _onFeatureTap('audio'),
+                        ),
+                        _buildFeatureCard(
+                          AssetManager.quranIcon,
+                          'Jurnal Refleksi Al-Quran',
+                          () => _onFeatureTap('journal'),
+                        ),
+                        _buildFeatureCard(
+                          AssetManager.tasbihIcon,
+                          'Dzikir dan Doa Ketenangan',
+                          () => _onFeatureTap('dzikir'),
                         ),
                       ],
                     ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 20),
-            ],
+                const SizedBox(height: 16), // Spacing sebelum Psychology card
+
+                // Psychology Learning Card
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: GestureDetector(
+                    onTap: _onPsychologyTap,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)], // Brand gradient
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF8FA68E).withOpacity(0.3),
+                            blurRadius: 15,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
+                                child: const Icon(
+                                  Icons.auto_stories_rounded,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              const Expanded(
+                                child: Text(
+                                  'Quranic Psychology Learning',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Kumpulan materi edukatif yang membahas kesehatan mental dari perspektif Islam dan Al-Quran dengan pendekatan modern.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white70,
+                              height: 1.5,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Text(
+                                  'Pelajari',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
@@ -381,9 +389,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  Widget _buildMoodEmoji(String assetPath, String label) {
+  }  Widget _buildMoodEmoji(String assetPath, String label) {
     return Column(
       children: [
         Container(
@@ -431,68 +437,72 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildFeatureCard(String assetPath, String title, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.95),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: const Color(0xFF8FA68E).withOpacity(0.1),
-            width: 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.95),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: const Color(0xFF8FA68E).withOpacity(0.1),
+              width: 1,
             ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                child: Image.asset(
-                  assetPath,
-                  width: 56,
-                  height: 56,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: 56,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF8FA68E).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Icon(
-                        Icons.apps,
-                        color: Color(0xFF8FA68E),
-                        size: 32,
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF2D5A5A), // Brand text
-                  height: 1.2,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
               ),
             ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  child: Image.asset(
+                    assetPath,
+                    width: 56,
+                    height: 56,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF8FA68E).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.apps,
+                          color: Color(0xFF8FA68E),
+                          size: 32,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF2D5A5A), // Brand text
+                    height: 1.2,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ),
       ),
