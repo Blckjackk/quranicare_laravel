@@ -265,4 +265,118 @@ class AdminDashboardController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Create new Dzikir Doa
+     */
+    public function createDzikirDoa(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'nama' => 'required|string|max:255',
+                'grup' => 'required|string|max:100',
+                'arab' => 'required|string',
+                'idn' => 'required|string',
+                'is_active' => 'boolean',
+                'is_featured' => 'boolean',
+            ]);
+
+            $dzikirDoa = DoaDzikir::create([
+                'nama' => $validated['nama'],
+                'grup' => $validated['grup'],
+                'arab' => $validated['arab'],
+                'idn' => $validated['idn'],
+                'is_active' => $validated['is_active'] ?? true,
+                'is_featured' => $validated['is_featured'] ?? false,
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Dzikir Doa created successfully',
+                'data' => $dzikirDoa
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create dzikir doa: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get Dzikir Doa Detail
+     */
+    public function getDzikirDoaDetail($id)
+    {
+        try {
+            $dzikirDoa = DoaDzikir::findOrFail($id);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $dzikirDoa
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to get dzikir doa detail: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update Dzikir Doa
+     */
+    public function updateDzikirDoa(Request $request, $id)
+    {
+        try {
+            $dzikirDoa = DoaDzikir::findOrFail($id);
+            
+            $validated = $request->validate([
+                'nama' => 'sometimes|required|string|max:255',
+                'grup' => 'sometimes|required|string|max:100',
+                'arab' => 'sometimes|required|string',
+                'idn' => 'sometimes|required|string',
+                'is_active' => 'sometimes|boolean',
+                'is_featured' => 'sometimes|boolean',
+            ]);
+
+            $dzikirDoa->update($validated);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Dzikir Doa updated successfully',
+                'data' => $dzikirDoa
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update dzikir doa: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete Dzikir Doa
+     */
+    public function deleteDzikirDoa($id)
+    {
+        try {
+            $dzikirDoa = DoaDzikir::findOrFail($id);
+            $dzikirDoa->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Dzikir Doa deleted successfully'
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to delete dzikir doa: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

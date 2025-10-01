@@ -172,7 +172,7 @@ class AdminService {
       final result = await apiCall('dashboard/stats', 'GET');
       print('AdminService: getDashboardStats result: $result');
       
-      if (result['success']) {
+      if (result['status'] == 'success') {
         return {
           'success': true,
           'data': result['data'],
@@ -254,14 +254,15 @@ class AdminService {
       final data = jsonDecode(response.body);
       
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        // Return format consistent with Laravel backend response
         return {
-          'success': true,
+          'status': data['status'] ?? 'success',
           'data': data['data'] ?? data,
           'message': data['message'] ?? 'Success',
         };
       } else {
         return {
-          'success': false,
+          'status': 'error',
           'message': data['error'] ?? data['message'] ?? 'Request failed',
           'errors': data['messages'],
         };
@@ -285,7 +286,7 @@ class AdminService {
       final result = await apiCall('dashboard/dzikir-doa', 'GET');
       print('AdminService: getDzikirDoa result: $result');
       
-      if (result['success']) {
+      if (result['status'] == 'success') {
         // Handle paginated response
         final responseData = result['data'];
         List<Map<String, dynamic>> data;
@@ -332,7 +333,7 @@ class AdminService {
       final result = await apiCall('dashboard/audio-relax', 'GET');
       print('AdminService: getAudioRelax result: $result');
       
-      if (result['success']) {
+      if (result['status'] == 'success') {
         // Handle paginated response
         final responseData = result['data'];
         List<Map<String, dynamic>> data;
@@ -379,7 +380,7 @@ class AdminService {
       final result = await apiCall('dashboard/psychology', 'GET');
       print('AdminService: getPsychologyMaterials result: $result');
       
-      if (result['success']) {
+      if (result['status'] == 'success') {
         // Handle paginated response
         final responseData = result['data'];
         List<Map<String, dynamic>> data;
@@ -426,7 +427,7 @@ class AdminService {
       final result = await apiCall('dashboard/notifications', 'GET');
       print('AdminService: getNotifications result: $result');
       
-      if (result['success']) {
+      if (result['status'] == 'success') {
         // Handle paginated response
         final responseData = result['data'];
         List<Map<String, dynamic>> data;

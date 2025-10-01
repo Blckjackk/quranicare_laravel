@@ -495,5 +495,11 @@ Route::prefix('admin')->group(function () {
         Route::get('dashboard/audio-relax', [AdminDashboardController::class, 'getAudioRelaxList']);
         Route::get('dashboard/psychology', [AdminDashboardController::class, 'getPsychologyMaterialsList']);
         Route::get('dashboard/notifications', [AdminDashboardController::class, 'getNotificationsList']);
+        
+        // CRUD endpoints for dzikir doa management
+        Route::post('dzikir-doa', [AdminDashboardController::class, 'createDzikirDoa']);
+        Route::put('dzikir-doa/{id}', [AdminDashboardController::class, 'updateDzikirDoa']);
+        Route::delete('dzikir-doa/{id}', [AdminDashboardController::class, 'deleteDzikirDoa']);
+        Route::get('dzikir-doa/{id}', [AdminDashboardController::class, 'getDzikirDoaDetail']);
     });
 });
