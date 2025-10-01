@@ -20,19 +20,9 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
     super.initState();
     messages = [
       ChatMessage(
-        text: "بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ\n\nAssalamu'alaikum warahmatullahi wabarakatuh 🌙",
+        text: "Assalamu'alaikum! Selamat datang di QalbuChat 💚",
         isUser: false,
-        timestamp: DateTime.now().subtract(const Duration(minutes: 15)),
-      ),
-      ChatMessage(
-        text: "Ahlan wa sahlan, akhi/ukhti! Selamat datang di QalbuChat - teman curhat Islami Anda ✨\n\nSaya di sini untuk mendengarkan keluh kesah, memberikan nasihat berdasarkan Al-Quran dan Sunnah, serta menemani Anda dalam perjalanan spiritual.",
-        isUser: false,
-        timestamp: DateTime.now().subtract(const Duration(minutes: 12)),
-      ),
-      ChatMessage(
-        text: "💭 Ceritakan apa yang sedang Anda rasakan hari ini\n💚 Bagikan kebahagiaan atau kesedihan Anda\n🤲 Minta doa atau nasihat Islami\n📖 Diskusi tentang ayat Al-Quran dan hadits\n\nIngat, Allah selalu mendengar hamba-Nya. Mari berbagi dan saling menguatkan dalam keimanan! 🤗",
-        isUser: false,
-        timestamp: DateTime.now().subtract(const Duration(minutes: 8)),
+        timestamp: DateTime.now().subtract(const Duration(minutes: 1)),
       ),
     ];
   }
@@ -98,13 +88,14 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [
-              Color(0xFFF0F8F8), // Light mint green (same as homepage)
-              Color(0xFFE8F5E8), // Soft green background (same as homepage)
+              Color(0xFFF0F8F0), // Light mint background
+              Color(0xFFE8F5E8), // Soft green background
+              Color(0xFFF0F8F8), // Light teal accent
             ],
-            stops: [0.0, 1.0],
+            stops: [0.0, 0.6, 1.0],
           ),
         ),
         child: SafeArea(
@@ -113,6 +104,24 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
               // Modern Header
               Container(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF8FA68E).withOpacity(0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
                 child: Column(
                   children: [
                     // Back button dan title
@@ -120,32 +129,76 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.3),
+                              width: 1,
+                            ),
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2D5A5A)),
+                            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
                             onPressed: () => Navigator.pop(context),
                           ),
                         ),
                         const SizedBox(width: 16),
-                        const Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        Expanded(
+                          child: Row(
                             children: [
-                              Text(
-                                'QalbuChat',
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF2D5A5A),
+                              Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(6),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(19),
+                                    child: Image.asset(
+                                      'assets/images/Chatbot.png',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              Text(
-                                'Teman Curhat Islami',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF2D5A5A),
+                              const SizedBox(width: 12),
+                              const Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'QalbuBot',
+                                      style: TextStyle(
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        shadows: [
+                                          Shadow(
+                                            color: Colors.black26,
+                                            offset: Offset(0, 2),
+                                            blurRadius: 4,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      'Teman Curhat Islami Anda',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -153,48 +206,60 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                         ),
                         Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.3),
+                              width: 1,
+                            ),
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.psychology_outlined, color: Color(0xFF2D5A5A)),
+                            icon: const Icon(Icons.favorite_rounded, color: Colors.white),
                             onPressed: () {}, // Empty action for now
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-              // Online status indicator
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF2D5A5A).withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: const Color(0xFF2D5A5A).withOpacity(0.3),
-                    width: 1,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
+                    const SizedBox(height: 20),
+                    // Online status indicator
                     Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF2D5A5A),
-                        shape: BoxShape.circle,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(25),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.3),
+                          width: 1,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 6),
-                    const Text(
-                      'Online',
-                      style: TextStyle(
-                        color: Color(0xFF2D5A5A),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF4CAF50),
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFF4CAF50),
+                                  blurRadius: 4,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Online - Siap Mendengarkan',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -236,9 +301,16 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                           color: const Color(0xFFFFFFFF),
                           borderRadius: BorderRadius.circular(25),
                           border: Border.all(
-                            color: const Color(0xFF2D5A5A).withOpacity(0.2),
-                            width: 1,
+                            color: const Color(0xFF8FA68E).withOpacity(0.3),
+                            width: 2,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF8FA68E).withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: TextField(
                           controller: _messageController,
@@ -256,8 +328,8 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                             ),
                             border: InputBorder.none,
                             prefixIcon: Icon(
-                              Icons.mood,
-                              color: const Color(0xFF2D5A5A).withOpacity(0.6),
+                              Icons.chat_bubble_outline_rounded,
+                              color: const Color(0xFF8FA68E),
                               size: 22,
                             ),
                           ),
@@ -273,30 +345,30 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                     GestureDetector(
                       onTap: _sendMessage,
                       child: Container(
-                        width: 48,
-                        height: 48,
+                        width: 50,
+                        height: 50,
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
+                              Color(0xFF8FA68E),
                               Color(0xFF2D5A5A),
-                              Color(0xFF1E4242),
                             ],
                           ),
-                          borderRadius: BorderRadius.circular(24),
+                          borderRadius: BorderRadius.circular(25),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF2D5A5A).withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
+                              color: const Color(0xFF8FA68E).withOpacity(0.4),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
                         child: const Icon(
                           Icons.send_rounded,
                           color: Colors.white,
-                          size: 20,
+                          size: 22,
                         ),
                       ),
                     ),
@@ -316,18 +388,38 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
       child: Row(
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: 42,
+            height: 42,
             decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(21),
               gradient: const LinearGradient(
-                colors: [Color(0xFF2D5A5A), Color(0xFF1E4242)],
+                colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF8FA68E).withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            child: const Icon(
-              Icons.psychology_outlined,
-              color: Colors.white,
-              size: 20,
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(17),
+                  color: Colors.white,
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(17),
+                  child: Image.asset(
+                    'assets/images/Chatbot.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -343,9 +435,9 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 5,
-                  offset: const Offset(0, 1),
+                  color: const Color(0xFF8FA68E).withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -372,7 +464,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
       width: 8,
       height: 8,
       decoration: BoxDecoration(
-        color: const Color(0xFF2D5A5A).withOpacity(0.7),
+        color: const Color(0xFF8FA68E),
         shape: BoxShape.circle,
       ),
     );
@@ -380,7 +472,9 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
 
   Widget _buildMessageBubble(ChatMessage message) {
     final isUser = message.isUser;
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOutBack,
       margin: const EdgeInsets.only(bottom: 16),
       child: Row(
         mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -388,18 +482,38 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
         children: [
           if (!isUser) ...[
             Container(
-              width: 40,
-              height: 40,
+              width: 42,
+              height: 42,
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(21),
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF2D5A5A), Color(0xFF1E4242)],
+                  colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF8FA68E).withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              child: const Icon(
-                Icons.psychology_outlined,
-                color: Colors.white,
-                size: 20,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(17),
+                    color: Colors.white,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(17),
+                    child: Image.asset(
+                      'assets/images/Chatbot.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
               ),
             ),
             const SizedBox(width: 12),
@@ -410,7 +524,9 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
               decoration: BoxDecoration(
                 gradient: isUser 
                     ? const LinearGradient(
-                        colors: [Color(0xFF2D5A5A), Color(0xFF1E4242)],
+                        colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       )
                     : null,
                 color: isUser ? null : Colors.white,
@@ -422,9 +538,11 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 5,
-                    offset: const Offset(0, 1),
+                    color: isUser 
+                        ? const Color(0xFF8FA68E).withOpacity(0.2)
+                        : Colors.black.withOpacity(0.05),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
@@ -437,6 +555,7 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                       fontSize: 15,
                       height: 1.4,
                       color: isUser ? Colors.white : const Color(0xFF2D5A5A),
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -445,8 +564,9 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
                     style: TextStyle(
                       fontSize: 12,
                       color: isUser 
-                          ? Colors.white.withOpacity(0.7)
-                          : Colors.grey[500],
+                          ? Colors.white.withOpacity(0.8)
+                          : const Color(0xFF8FA68E),
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -456,20 +576,27 @@ class _QalbuChatScreenState extends State<QalbuChatScreen> {
           if (isUser) ...[
             const SizedBox(width: 12),
             Container(
-              width: 36,
-              height: 36,
+              width: 38,
+              height: 38,
               decoration: BoxDecoration(
-                color: const Color(0xFF2D5A5A).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(
-                  color: const Color(0xFF2D5A5A).withOpacity(0.2),
-                  width: 2,
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF8FA68E), Color(0xFF2D5A5A)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
+                borderRadius: BorderRadius.circular(19),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF8FA68E).withOpacity(0.3),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: const Icon(
-                Icons.person,
-                color: Color(0xFF2D5A5A),
-                size: 18,
+                Icons.person_rounded,
+                color: Colors.white,
+                size: 20,
               ),
             ),
           ],
