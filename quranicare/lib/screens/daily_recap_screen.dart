@@ -19,6 +19,8 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
   DailyMoodRecap? _dailyRecap;
   Map<String, double> _calendarMoodData = {};
   bool _isLoading = true;
+  String _errorMessage = '';
+  bool _hasUserData = false;
 
   @override
   void initState() {
@@ -27,56 +29,106 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
   }
 
   Future<void> _initializeService() async {
-    await initializeDateFormatting('id', null);
-    await _dailyRecapService.initialize();
-    await _loadInitialData();
+    try {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = '';
+      });
+      
+      await initializeDateFormatting('id', null);
+      await _dailyRecapService.initialize();
+      
+      print('📱 Daily Recap Screen: Service initialized, loading data...');
+      await _loadInitialData();
+      
+    } catch (e) {
+      print('❌ Error initializing service: $e');
+      setState(() {
+        _errorMessage = 'Gagal menginisialisasi layanan';
+        _isLoading = false;
+      });
+    }
   }
 
   Future<void> _loadInitialData() async {
     setState(() => _isLoading = true);
     
-    await Future.wait([
-      _loadDailyMoodData(_selectedDate),
-      _loadMonthlyData(_currentMonth.year, _currentMonth.month),
-      _loadCalendarData(_currentMonth.year, _currentMonth.month),
-    ]);
-    
-    setState(() => _isLoading = false);
+    try {
+      await Future.wait([
+        _loadDailyMoodData(_selectedDate),
+        _loadMonthlyData(_currentMonth.year, _currentMonth.month),
+        _loadCalendarData(_currentMonth.year, _currentMonth.month),
+      ]);
+      
+      setState(() {
+        _isLoading = false;
+        _errorMessage = '';
+      });
+      
+    } catch (e) {
+      print('❌ Error loading initial data: $e');
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Gagal memuat data. Silakan coba lagi.';
+      });
+    }
   }
 
   Future<void> _loadDailyMoodData(DateTime date) async {
     try {
+      print('📅 Loading daily mood data for: ${date.toIso8601String().split('T')[0]}');
+      
       final response = await _dailyRecapService.getDailyMoodRecap(date: date);
+      
       setState(() {
         if (response != null && response['success'] == true && response['data'] != null) {
           _dailyRecap = DailyMoodRecap.fromJson(response['data']);
+          _hasUserData = _dailyRecap!.moodEntries.isNotEmpty;
+          print('✅ Daily mood data loaded: ${_dailyRecap!.moodEntries.length} entries');
         } else {
           _dailyRecap = null;
+          _hasUserData = false;
+          print('📝 No mood data found for this date');
         }
       });
     } catch (e) {
-      print('Error loading daily mood data: $e');
+      print('❌ Error loading daily mood data: $e');
       setState(() {
         _dailyRecap = null;
+        _hasUserData = false;
       });
     }
   }
 
   Future<void> _loadMonthlyData(int year, int month) async {
     // Data sudah di-load di _loadCalendarData, tidak perlu disimpan terpisah
+    print('📅 Monthly data loading handled by calendar data');
   }
 
   Future<void> _loadCalendarData(int year, int month) async {
-    final response = await _dailyRecapService.getMonthlyOverview(year, month);
-    setState(() {
-      _calendarMoodData = {};
-      if (response != null) {
-        final overview = MonthlyOverview.fromJson(response);
-        overview.calendarData.forEach((date, moodData) {
-          _calendarMoodData[date] = moodData.moodScore;
-        });
-      }
-    });
+    try {
+      print('📅 Loading calendar data for: $year-$month');
+      
+      final response = await _dailyRecapService.getMonthlyOverview(year, month);
+      
+      setState(() {
+        _calendarMoodData = {};
+        if (response != null) {
+          final overview = MonthlyOverview.fromJson(response);
+          overview.calendarData.forEach((date, moodData) {
+            _calendarMoodData[date] = moodData.moodScore;
+          });
+          print('✅ Calendar data loaded: ${_calendarMoodData.length} days with data');
+        } else {
+          print('📝 No calendar data found for this month');
+        }
+      });
+    } catch (e) {
+      print('❌ Error loading calendar data: $e');
+      setState(() {
+        _calendarMoodData = {};
+      });
+    }
   }
 
   Color _getMoodColor(double score) {
@@ -91,30 +143,111 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: const Color(0xFFF0F8F8),
+        backgroundColor: const Color(0xFFF5F8F5),
         appBar: AppBar(
           backgroundColor: Colors.white,
-          foregroundColor: const Color(0xFF2D5A5A),
+          foregroundColor: const Color(0xFF6B7D6A),
           elevation: 0,
           title: const Text(
             'Daily Recap',
             style: TextStyle(
-              color: Color(0xFF2D5A5A),
+              color: Color(0xFF6B7D6A),
               fontWeight: FontWeight.w600,
               fontSize: 20,
             ),
           ),
         ),
-        body: const Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF8FA68E)),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF8FA68E)),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Memuat rekap harian Anda...',
+                style: TextStyle(
+                  color: const Color(0xFF6B7D6A).withOpacity(0.8),
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Show error state if there's an error
+    if (_errorMessage.isNotEmpty) {
+      return Scaffold(
+        backgroundColor: const Color(0xFFF5F8F5),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF6B7D6A),
+          elevation: 0,
+          title: const Text(
+            'Daily Recap',
+            style: TextStyle(
+              color: Color(0xFF6B7D6A),
+              fontWeight: FontWeight.w600,
+              fontSize: 20,
+            ),
+          ),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF8FA68E).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Icon(
+                    Icons.refresh,
+                    size: 64,
+                    color: Color(0xFF8FA68E),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  _errorMessage,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF6B7D6A),
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: _initializeService,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF8FA68E),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    'Coba Lagi',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F8F8),
+      backgroundColor: const Color(0xFFF5F8F5),
       body: SafeArea(
         child: Column(
           children: [
@@ -149,7 +282,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF8FA68E), Color(0xFF7A9B7A)],
+          colors: [Color(0xFF8FA68E), Color(0xFF6B7D6A)],
         ),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(24),
@@ -230,7 +363,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF2D5A5A).withOpacity(0.1),
+            color: const Color(0xFF6B7D6A).withOpacity(0.1),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -243,7 +376,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF8FA68E), Color(0xFF7A9B7A)],
+                colors: [Color(0xFF8FA68E), Color(0xFF6B7D6A)],
               ),
               borderRadius: BorderRadius.circular(15),
             ),
@@ -436,7 +569,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF2D5A5A).withOpacity(0.1),
+              color: const Color(0xFF6B7D6A).withOpacity(0.1),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -459,7 +592,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D5A5A),
+                    color: Color(0xFF6B7D6A),
                   ),
                 ),
               ],
@@ -509,21 +642,49 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Belum ada catatan mood',
-              style: TextStyle(
+              _hasUserData ? 'Belum ada catatan mood hari ini' : 'Belum ada catatan mood',
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF2D5A5A),
+                color: Color(0xFF6B7D6A),
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Mulai catat mood Anda di hari ini!',
+              _hasUserData 
+                  ? 'Catat mood Anda di ${DateFormat('dd MMMM', 'id').format(_selectedDate)} untuk mulai tracking!'
+                  : 'Mulai catat mood Anda setiap hari untuk melihat pola dan perkembangan kesehatan mental!',
               style: TextStyle(
                 fontSize: 14,
-                color: const Color(0xFF64748b).withValues(alpha: 0.7),
+                color: const Color(0xFF6B7D6A).withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            // Add mood button
+            ElevatedButton.icon(
+              onPressed: () {
+                // Navigate to mood tracker or show mood input dialog
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Fitur catat mood akan segera tersedia!'),
+                    backgroundColor: Color(0xFF8FA68E),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF8FA68E),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              icon: const Icon(Icons.add_reaction_outlined),
+              label: const Text(
+                'Catat Mood Sekarang',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
             ),
           ],
         ),
@@ -644,7 +805,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
     switch (moodType) {
       case 'senang': return const Color(0xFF8FA68E);
       case 'sedih': return const Color(0xFF64748B);
-      case 'biasa_saja': return const Color(0xFF7A9B7A);
+      case 'biasa_saja': return const Color(0xFF6B7D6A);
       case 'marah': return const Color(0xFF9CA3AF);
       case 'murung': return const Color(0xFF6B7280);
       default: return const Color(0xFF8FA68E);

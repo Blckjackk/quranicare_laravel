@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'activity_logger_service.dart';
+import 'auth_service.dart';
 
 class DailyRecapService {
-  static const String baseUrl = 'http://localhost:8000/api';
+  static const String baseUrl = 'http://127.0.0.1:8000/api';
   final ActivityLoggerService _activityLogger = ActivityLoggerService();
+  final AuthService _authService = AuthService();
   String? _token;
   static final DailyRecapService _instance = DailyRecapService._internal();
   
@@ -14,15 +16,13 @@ class DailyRecapService {
   DailyRecapService._internal();
 
   Future<void> initialize() async {
-    final prefs = await SharedPreferences.getInstance();
-    _token = prefs.getString('user_token'); // Sesuaikan dengan AuthService
+    _token = await _authService.getToken();
+    print('🔑 DailyRecapService initialized with token: ${_token != null ? 'YES' : 'NO'}');
   }
 
   void setToken(String token) {
     _token = token;
-    SharedPreferences.getInstance().then((prefs) {
-      prefs.setString('user_token', token); // Sesuaikan dengan AuthService
-    });
+    _authService.saveToken(token);
   }
 
   Map<String, String> get _headers => {
@@ -107,25 +107,48 @@ class DailyRecapService {
   /// Original mood-only daily recap (kept for backward compatibility)
   Future<Map<String, dynamic>?> getDailyMoodRecap({DateTime? date}) async {
     try {
+      await initialize(); // Ensure token is loaded
+      
       final targetDate = date ?? DateTime.now();
       final formattedDate = targetDate.toIso8601String().split('T')[0]; // YYYY-MM-DD format
       final url = Uri.parse('$baseUrl/daily-recap/$formattedDate');
       
+      print('🔍 Fetching daily recap for: $formattedDate');
+      print('🔑 Using token: ${_token != null ? 'YES' : 'NO'}');
+      print('📡 URL: $url');
+      
       final response = await http.get(url, headers: _headers);
       
-      print('Daily recap response status: ${response.statusCode}');
-      print('Daily recap response body: ${response.body}');
+      print('📊 Daily recap response status: ${response.statusCode}');
+      print('📋 Daily recap response body: ${response.body}');
       
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['success'] == true && data['data'] != null) {
+          print('✅ Daily recap loaded successfully');
           return {
             'success': true,
             'data': data['data'],
           };
         }
       } else if (response.statusCode == 401) {
-        print('Unauthorized access - using fallback data');
+        print('🔐 Unauthorized access - token may be invalid');
+        // Try to refresh token
+        await initialize();
+        
+        // Return empty data structure for fallback
+        return {
+          'success': true,
+          'data': {
+            'date': formattedDate,
+            'mood_entries': [],
+            'daily_stats': null,
+            'weekly_context': {},
+            'insights': {},
+          },
+        };
+      } else if (response.statusCode == 404) {
+        print('📅 No data found for this date - returning empty structure');
         return {
           'success': true,
           'data': {
@@ -138,6 +161,8 @@ class DailyRecapService {
         };
       }
       
+      // Fallback for other status codes
+      print('⚠️ Unexpected response, using fallback data');
       return {
         'success': true,
         'data': {
@@ -149,7 +174,7 @@ class DailyRecapService {
         },
       };
     } catch (e) {
-      print('Error getting daily recap: $e');
+      print('❌ Error getting daily recap: $e');
       final targetDate = date ?? DateTime.now();
       final formattedDate = targetDate.toIso8601String().split('T')[0];
       return {
@@ -281,23 +306,34 @@ class DailyRecapService {
   /// Get monthly overview for calendar
   Future<Map<String, dynamic>?> getMonthlyOverview(int year, int month) async {
     try {
+      await initialize(); // Ensure token is loaded
+      
       final url = Uri.parse('$baseUrl/monthly-overview/$year/$month');
+      
+      print('🔍 Fetching monthly overview for: $year-$month');
+      print('🔑 Using token: ${_token != null ? 'YES' : 'NO'}');
+      print('📡 URL: $url');
       
       final response = await http.get(url, headers: _headers);
       
-      print('Monthly overview response status: ${response.statusCode}');
-      print('Monthly overview response body: ${response.body}');
+      print('📊 Monthly overview response status: ${response.statusCode}');
+      print('📋 Monthly overview response body: ${response.body}');
       
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['success'] == true && data['data'] != null) {
+          print('✅ Monthly overview loaded successfully');
           return data['data'];
         }
       } else if (response.statusCode == 401) {
-        print('Unauthorized access - using fallback data for monthly overview');
+        print('🔐 Unauthorized access for monthly overview - token may be invalid');
+        await initialize(); // Try to refresh token
+      } else if (response.statusCode == 404) {
+        print('📅 No monthly data found - returning empty structure');
       }
       
       // Return empty data for fallback
+      print('⚠️ Using fallback data for monthly overview');
       return {
         'year': year,
         'month': month,
@@ -305,7 +341,7 @@ class DailyRecapService {
         'monthly_stats': {},
       };
     } catch (e) {
-      print('Error getting monthly overview: $e');
+      print('❌ Error getting monthly overview: $e');
       // Return empty data for fallback
       return {
         'year': year,
