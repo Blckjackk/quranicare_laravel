@@ -287,7 +287,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   Text(
                                     'بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ',
                                     style: TextStyle(
-                                      fontSize: 12,
+                                      fontFamily: 'Amiri',
+                                      fontSize: 22, // Increased from 16
                                       color: Colors.white.withOpacity(0.8),
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -296,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   const Text(
                                     'Assalamualaikum',
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 22, // Increased from 16
                                       color: Colors.white70,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -308,7 +309,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                             ? 'Tamu' 
                                             : _userName,
                                     style: const TextStyle(
-                                      fontSize: 22,
+                                      fontSize: 32, // Increased from 26
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                       letterSpacing: 0.5,
@@ -428,7 +429,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       Text(
                                         'Mood Check',
                                         style: TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 30, // Increased from 24
                                           fontWeight: FontWeight.bold,
                                           color: Color(0xFF1e293b),
                                         ),
@@ -436,7 +437,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       Text(
                                         'Bagaimana perasaanmu hari ini?',
                                         style: TextStyle(
-                                          fontSize: 13,
+                                          fontSize: 24, // Increased from 18
                                           color: Color(0xFF64748b),
                                         ),
                                       ),
@@ -492,7 +493,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                           return Text(
                                             mood.label.substring(0, 1),
                                             style: TextStyle(
-                                              fontSize: isSelected ? 28 : 24,
+                                              fontSize: isSelected ? 36 : 32,
                                               color: isSelected ? Colors.white : const Color(0xFF64748b),
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -539,7 +540,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         ? 'Pilih mood untuk tracking' 
                                         : 'Mood tersimpan!',
                                     style: TextStyle(
-                                      fontSize: 13,
+                                      fontSize: 18, // Increased from 13
                                       color: _selectedMood == -1 
                                           ? const Color(0xFF64748b)
                                           : _moods[_selectedMood].color,
@@ -573,7 +574,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 label: const Text(
                                   'Pilih dengan Spin',
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 18, // Increased from 14
                                     fontWeight: FontWeight.w600,
                                     color: Colors.white,
                                   ),
@@ -628,7 +629,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           const Text(
                             'Fitur Utama',
                             style: TextStyle(
-                              fontSize: 22,
+                              fontSize: 28, // Increased from 22
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF7CB342), // Soft natural green for title
                               letterSpacing: 0.5,
@@ -746,7 +747,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     Text(
                                       feature.title,
                                       style: const TextStyle(
-                                        fontSize: 14, // Reduced from 15 to 14
+                                        fontSize: 26, // Increased from 20
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF1e293b),
                                         letterSpacing: 0.2,
@@ -762,7 +763,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     Text(
                                       feature.subtitle,
                                       style: const TextStyle(
-                                        fontSize: 10, // Reduced from 11 to 10
+                                        fontSize: 20, // Increased from 15
                                         color: Color(0xFF64748b),
                                         height: 1.3,
                                         fontWeight: FontWeight.w500,
@@ -842,7 +843,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               const Text(
                                 'Quranic Psychology',
                                 style: TextStyle(
-                                  fontSize: 22,
+                                  fontSize: 28, // Increased from 22
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                   letterSpacing: 0.5,
@@ -855,7 +856,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               const Text(
                                 'Jelajahi kesehatan mental dari perspektif Al-Quran dengan pendekatan psikologi modern yang terintegrasi',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 18, // Increased from 14
                                   color: Colors.white70,
                                   height: 1.5,
                                   fontWeight: FontWeight.w400,
@@ -888,7 +889,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       Text(
                                         'Mulai Belajar',
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 18, // Increased from 14
                                           color: Colors.white,
                                           fontWeight: FontWeight.w700,
                                           letterSpacing: 0.5,
@@ -989,7 +990,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             Text(
               label,
               style: TextStyle(
-                fontSize: 11,
+                fontSize: 16, // Increased from 11
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 color: isSelected ? Colors.white : const Color(0xFF64748b),
                 letterSpacing: 0.2,

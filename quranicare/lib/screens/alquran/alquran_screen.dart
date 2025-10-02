@@ -154,7 +154,8 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                               Text(
                                 'هُدًى لِّلنَّاسِ • Hidayah & Petunjuk Hidup',
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontFamily: 'Amiri',
+                                  fontSize: 15, // Increased from 13
                                   color: Colors.white.withValues(alpha: 0.8),
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -208,7 +209,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                         controller: searchController,
                         onChanged: filterSurahs,
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 20,
                           color: Color(0xFF2D5A5A),
                           fontWeight: FontWeight.w500,
                         ),
@@ -216,7 +217,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                           hintText: 'Cari surah, nomor, atau tempat turun...',
                           hintStyle: TextStyle(
                             color: const Color(0xFF2D5A5A).withValues(alpha: 0.5),
-                            fontSize: 14,
+                            fontSize: 17,
                           ),
                           prefixIcon: Container(
                             padding: const EdgeInsets.all(12),
@@ -319,7 +320,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                             const Text(
                               'Total Surah',
                               style: TextStyle(
-                                fontSize: 13,
+                                fontSize: 16,
                                 color: Color(0xFF64748b),
                                 fontWeight: FontWeight.w600,
                               ),
@@ -391,7 +392,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                             const Text(
                               'Hasil Pencarian',
                               style: TextStyle(
-                                fontSize: 13,
+                                fontSize: 16,
                                 color: Color(0xFF64748b),
                                 fontWeight: FontWeight.w600,
                               ),
@@ -466,7 +467,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                                   const Text(
                                     'Memuat kitab suci Al-Quran...',
                                     style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 20,
                                       color: Color(0xFF2D5A5A),
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -475,7 +476,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                                   Text(
                                     'رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ',
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 17,
                                       color: const Color(0xFF2D5A5A).withValues(alpha: 0.7),
                                       fontFamily: 'Amiri',
                                     ),
@@ -508,7 +509,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                                       const Text(
                                         'Tidak ada surah ditemukan',
                                         style: TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 22,
                                           fontWeight: FontWeight.bold,
                                           color: Color(0xFF2D5A5A),
                                         ),
@@ -517,7 +518,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                                       Text(
                                         'Coba kata kunci lain atau hapus filter pencarian',
                                         style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 17,
                                           color: const Color(0xFF2D5A5A).withValues(alpha: 0.7),
                                         ),
                                         textAlign: TextAlign.center,
@@ -600,7 +601,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                                                     '${surah.number}',
                                                     style: const TextStyle(
                                                       color: Colors.white,
-                                                      fontSize: 18,
+                                                      fontSize: 22,
                                                       fontWeight: FontWeight.bold,
                                                       letterSpacing: 0.5,
                                                     ),
@@ -620,7 +621,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                                                           child: Text(
                                                             surah.nameIndonesian,
                                                             style: const TextStyle(
-                                                              fontSize: 17,
+                                                              fontSize: 20,
                                                               fontWeight: FontWeight.bold,
                                                               color: Color(0xFF2D5A5A),
                                                               letterSpacing: 0.3,
@@ -630,7 +631,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                                                         const SizedBox(width: 8),
                                                         ArabicText(
                                                           surah.nameArabic,
-                                                          style: FontStyles.arabicWithSize(20, 
+                                                          style: FontStyles.arabicWithSize(24, 
                                                             fontWeight: FontWeight.w600,
                                                             color: const Color(0xFF7A9B7A),
                                                           ),
@@ -668,7 +669,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                                                           child: Text(
                                                             surah.place,
                                                             style: TextStyle(
-                                                              fontSize: 12,
+                                                              fontSize: 17, // Increased from 12
                                                               color: surah.place.toLowerCase() == 'makkah' || surah.place.toLowerCase() == 'makkiyyah'
                                                                   ? const Color(0xFF4CAF50)
                                                                   : const Color(0xFF2196F3),
@@ -686,7 +687,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                                                         Text(
                                                           '${surah.numberOfAyahs} ayat',
                                                           style: const TextStyle(
-                                                            fontSize: 13,
+                                                            fontSize: 18, // Increased from 13
                                                             color: Color(0xFF64748b),
                                                             fontWeight: FontWeight.w600,
                                                           ),
@@ -1209,7 +1210,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                                         child: ArabicText(
                                           ayah.textArabic,
                                           style: FontStyles.ayahText.copyWith(
-                                            fontSize: 26,
+                                            fontSize: 30,
                                             color: const Color(0xFF2D5A5A),
                                             fontWeight: FontWeight.w500,
                                             height: 2.2,
@@ -1234,7 +1235,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                                           child: Text(
                                             ayah.textLatin!,
                                             style: TextStyle(
-                                              fontSize: 15,
+                                              fontSize: 18,
                                               fontStyle: FontStyle.italic,
                                               color: const Color(0xFF7A9B7A),
                                               height: 1.6,
@@ -1249,7 +1250,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                                       Text(
                                         ayah.textIndonesian,
                                         style: const TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 19,
                                           height: 1.7,
                                           color: Color(0xFF2D5A5A),
                                           fontWeight: FontWeight.w500,

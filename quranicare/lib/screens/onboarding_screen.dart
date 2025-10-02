@@ -202,7 +202,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       textDirection: TextDirection.rtl,
                                       style: TextStyle(
                                         fontFamily: 'Amiri',
-                                        fontSize: screenWidth * 0.065, // Responsive font size
+                                        fontSize: screenWidth * 0.08, // Increased from 0.065
                                         fontWeight: FontWeight.w500,
                                         color: const Color(0xFF2D5A5A),
                                         height: 1.8,
@@ -264,7 +264,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           _pages[index].description,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                            fontSize: screenWidth * 0.038, // Responsive font size
+                                            fontSize: screenWidth * 0.045, // Increased from 0.038
                                             color: const Color(0xFF8FA68E),
                                             height: 1.6,
                                             fontWeight: FontWeight.w500,
@@ -316,7 +316,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           child: Text(
                             'Skip',
                             style: TextStyle(
-                              fontSize: screenWidth * 0.045, // Responsive font size
+                              fontSize: screenWidth * 0.05, // Increased from 0.045
                               color: const Color(0xFF8FA68E),
                               fontWeight: FontWeight.w500,
                               letterSpacing: 0.5,

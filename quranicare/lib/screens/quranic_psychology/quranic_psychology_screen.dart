@@ -15,10 +15,10 @@ class QuranicPsychologyScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'Quranic Psychology Learning',
+          'Psikologi Qurani',
           style: TextStyle(
             color: Color(0xFF2D5A5A),
-            fontSize: 20,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -27,9 +27,67 @@ class QuranicPsychologyScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
+            // Header yang lebih sederhana dan menarik
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF2D5A5A).withOpacity(0.08),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF8FA68E).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.psychology_outlined,
+                      size: 32,
+                      color: const Color(0xFF8FA68E),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Psikologi dalam Al-Quran',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2D5A5A),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Temukan ketenangan jiwa',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF64748B),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
             Expanded(
               child: ListView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: psychologyArticles.length,
                 itemBuilder: (context, index) {
                   final article = psychologyArticles[index];
@@ -48,37 +106,80 @@ class QuranicPsychologyScreen extends StatelessWidget {
                         width: double.infinity,
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.7),
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF2D5A5A).withOpacity(0.06),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
+                              color: const Color(0xFF2D5A5A).withOpacity(0.08),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Nomor artikel kecil di kiri atas
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF8FA68E).withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                '${index + 1}',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF8FA68E),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            
+                            // Judul artikel
                             Text(
                               article.title,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF2D5A5A),
+                                height: 1.3,
                               ),
                             ),
                             const SizedBox(height: 12),
+                            
+                            // Preview dengan spacing yang baik
                             Text(
                               article.preview,
                               style: const TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFF8FA68E),
+                                fontSize: 15,
+                                color: Color(0xFF64748B),
                                 height: 1.5,
                               ),
-                              maxLines: 4,
+                              maxLines: 3,
                               overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 12),
+                            
+                            // Indikator baca lebih lanjut
+                            Row(
+                              children: [
+                                Text(
+                                  'Baca Selengkapnya',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF8FA68E),
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                const Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: Color(0xFF8FA68E),
+                                  size: 12,
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -88,26 +189,41 @@ class QuranicPsychologyScreen extends StatelessWidget {
                 },
               ),
             ),
-            // Show more indicator
+            // Tombol muat lebih banyak yang sederhana
             Container(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Text(
-                    'Lainnya',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: const Color(0xFF8FA68E),
-                      fontWeight: FontWeight.w500,
+              margin: const EdgeInsets.all(16),
+              child: TextButton(
+                onPressed: () {
+                  // Action untuk load more articles
+                },
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(
+                      color: const Color(0xFF8FA68E).withOpacity(0.3),
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    color: const Color(0xFF8FA68E),
-                    size: 20,
-                  ),
-                ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Muat Artikel Lainnya',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: const Color(0xFF8FA68E),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(
+                      Icons.keyboard_arrow_down,
+                      color: const Color(0xFF8FA68E),
+                      size: 16,
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -189,10 +305,10 @@ class PsychologyArticleDetailScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'Quranic Psychology Learning',
+          'Psikologi Qurani',
           style: TextStyle(
             color: Color(0xFF2D5A5A),
-            fontSize: 20,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -204,59 +320,74 @@ class PsychologyArticleDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title card
+              // Title card yang sederhana dan clean
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
+                margin: const EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.7),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF2D5A5A).withOpacity(0.06),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+                      color: const Color(0xFF2D5A5A).withOpacity(0.08),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
-                child: Text(
-                  article.title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D5A5A),
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      article.title,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2D5A5A),
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${(article.contentSections.join(' ').length / 200).ceil()} menit baca',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF8FA68E),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
-              const SizedBox(height: 20),
-
-              // Content sections
-              ...article.contentSections.map((section) => Container(
-                width: double.infinity,
-                margin: const EdgeInsets.only(bottom: 16),
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF2D5A5A).withOpacity(0.06),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Text(
-                  section,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF2D5A5A),
-                    height: 1.6,
+              // Content sections yang lebih bersih
+              ...article.contentSections.map((section) {
+                return Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF2D5A5A).withOpacity(0.06),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                  textAlign: TextAlign.justify,
-                ),
-              )).toList(),
+                  child: Text(
+                    section,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF2D5A5A),
+                      height: 1.7,
+                    ),
+                    textAlign: TextAlign.justify,
+                  ),
+                );
+              }).toList(),
 
               const SizedBox(height: 100), // Space for bottom navigation
             ],

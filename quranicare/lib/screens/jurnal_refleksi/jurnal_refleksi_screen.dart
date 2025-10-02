@@ -148,7 +148,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
                   'Jurnal Refleksi',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 26,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -242,7 +242,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
           const Text(
             'Pilih Jenis Jurnal',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
               color: Color(0xFF2D5A5A),
             ),
@@ -282,7 +282,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
                         Text(
                           'Jurnal Perasaan',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF2D5A5A),
                           ),
@@ -292,7 +292,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
                           'Tulis dan refleksikan perasaan Anda',
                           style: TextStyle(
                             color: Color(0xFF8FA68E),
-                            fontSize: 14,
+                            fontSize: 17,
                           ),
                         ),
                       ],
@@ -335,7 +335,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
                         Text(
                           'Jurnal Al-Quran',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF2D5A5A),
                           ),
@@ -345,7 +345,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
                           'Refleksi dari ayat-ayat Al-Quran',
                           style: TextStyle(
                             color: Color(0xFF8FA68E),
-                            fontSize: 14,
+                            fontSize: 17,
                           ),
                         ),
                       ],
@@ -376,7 +376,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
               const Text(
                 'Jurnal Perasaan',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF2D5A5A),
                 ),
@@ -389,7 +389,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
           const Text(
             'Bagaimana perasaan Anda hari ini?',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Color(0xFF2D5A5A),
             ),
@@ -402,7 +402,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
           const Text(
             'Judul Jurnal',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Color(0xFF2D5A5A),
             ),
@@ -428,7 +428,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
           const Text(
             'Isi Jurnal',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Color(0xFF2D5A5A),
             ),
@@ -468,7 +468,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
                   : const Text(
                       'Simpan Jurnal',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -496,7 +496,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
               const Text(
                 'Jurnal Al-Quran',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF2D5A5A),
                 ),
@@ -509,7 +509,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
           const Text(
             'Pilih Surah',
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Color(0xFF2D5A5A),
             ),
@@ -523,7 +523,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
             const Text(
               'Pilih Ayat',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF2D5A5A),
               ),
@@ -603,7 +603,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
                   : const Text(
                       'Simpan Refleksi',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -755,7 +755,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
             Text(
               'Belum ada jurnal',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 22,
                 color: Color(0xFF2D5A5A),
                 fontWeight: FontWeight.bold,
               ),
@@ -764,7 +764,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
             Text(
               'Mulai menulis jurnal pertama Anda',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 17,
                 color: Color(0xFF8FA68E),
               ),
             ),
@@ -806,7 +806,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
                     child: Text(
                       (journal.quranAyahId != null) ? 'ALQURAN' : 'PERASAAN',
                       style: const TextStyle(
-                        fontSize: 10,
+                        fontSize: 13,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF2D5A5A),
                       ),
@@ -826,7 +826,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
               Text(
                 journal.title,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF2D5A5A),
                 ),
@@ -837,7 +837,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
                     ? '${journal.content.substring(0, 100)}...'
                     : journal.content,
                 style: const TextStyle(
-                  fontSize: 14,
+                  fontSize: 17,
                   color: Color(0xFF2D5A5A),
                   height: 1.4,
                 ),

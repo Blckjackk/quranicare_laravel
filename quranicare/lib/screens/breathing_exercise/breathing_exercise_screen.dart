@@ -138,7 +138,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                   'Latihan Pernapasan Islami',
                   style: TextStyle(
                     color: Color(0xFF2D5A5A),
-                    fontSize: 20,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
@@ -172,7 +172,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                     'Latihan pernapasan dengan panduan dzikir dan asmaul husna untuk menenangkan jiwa dan memperkuat spiritualitas',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 20,
                       color: Color(0xFF2D5A5A).withOpacity(0.8),
                       height: 1.5,
                     ),
@@ -206,7 +206,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                           Text(
                             'Mulai Latihan',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 22,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -276,7 +276,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
           Text(
             title,
             style: const TextStyle(
-              fontSize: 16,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Color(0xFF2D5A5A),
             ),
@@ -284,7 +284,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
           Text(
             subtitle,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 15,
               color: Color(0xFF2D5A5A).withOpacity(0.6),
             ),
           ),
@@ -329,7 +329,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                   'Pilih Kategori Latihan',
                   style: TextStyle(
                     color: Color(0xFF2D5A5A),
-                    fontSize: 18,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
@@ -410,7 +410,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                             Text(
                               category.name,
                               style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: 17,
                                 fontWeight: FontWeight.w600,
                                 color: Color(0xFF2D5A5A),
                               ),
@@ -422,7 +422,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                             Text(
                               category.description,
                               style: TextStyle(
-                                fontSize: 11,
+                                fontSize: 14,
                                 color: const Color(0xFF2D5A5A).withOpacity(0.7),
                               ),
                               textAlign: TextAlign.center,
@@ -479,7 +479,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                   _selectedCategory?.name ?? 'Pilih Latihan',
                   style: const TextStyle(
                     color: Color(0xFF2D5A5A),
-                    fontSize: 18,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
@@ -497,7 +497,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                     'Tidak ada latihan tersedia',
                     style: TextStyle(
                       color: Color(0xFF8FA68E),
-                      fontSize: 16,
+                      fontSize: 20,
                     ),
                   ),
                 )
@@ -555,7 +555,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                                         child: Text(
                                           exercise.name,
                                           style: const TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.w600,
                                             color: Color(0xFF2D5A5A),
                                           ),
@@ -574,7 +574,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                                         child: Text(
                                           exercise.formattedDuration,
                                           style: const TextStyle(
-                                            fontSize: 11,
+                                            fontSize: 14,
                                             color: Color(0xFF8FA68E),
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -586,7 +586,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                                   Text(
                                     exercise.description,
                                     style: TextStyle(
-                                      fontSize: 13,
+                                      fontSize: 16,
                                       color: const Color(0xFF2D5A5A).withOpacity(0.7),
                                       height: 1.3,
                                     ),
@@ -610,7 +610,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                                         const Text(
                                           'Dzikir:',
                                           style: TextStyle(
-                                            fontSize: 11,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.w600,
                                             color: Color(0xFF8FA68E),
                                           ),
@@ -619,7 +619,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                                         Text(
                                           exercise.dzikirText,
                                           style: const TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 17,
                                             color: Color(0xFF2D5A5A),
                                             fontWeight: FontWeight.w500,
                                             height: 1.3,
@@ -639,7 +639,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                                         child: Text(
                                           exercise.patternText,
                                           style: TextStyle(
-                                            fontSize: 11,
+                                            fontSize: 14,
                                             color: const Color(0xFF2D5A5A).withOpacity(0.6),
                                           ),
                                           maxLines: 1,
@@ -649,7 +649,7 @@ class _BreathingExerciseScreenState extends State<BreathingExerciseScreen> {
                                       Text(
                                         '${exercise.defaultRepetitions} siklus',
                                         style: const TextStyle(
-                                          fontSize: 11,
+                                          fontSize: 14,
                                           color: Color(0xFF8FA68E),
                                           fontWeight: FontWeight.w600,
                                         ),
@@ -925,7 +925,7 @@ class _BreathingAnimationScreenState extends State<BreathingAnimationScreen>
                       widget.exercise?.name ?? 'Latihan Pernapasan Islami',
                       style: const TextStyle(
                         color: Color(0xFF2D5A5A),
-                        fontSize: 18,
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -958,7 +958,7 @@ class _BreathingAnimationScreenState extends State<BreathingAnimationScreen>
                     'Siklus: $_currentCycle/$_totalCycles',
                     style: const TextStyle(
                       color: Color(0xFF2D5A5A),
-                      fontSize: 16,
+                      fontSize: 20,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -970,7 +970,7 @@ class _BreathingAnimationScreenState extends State<BreathingAnimationScreen>
                         '${remainingMinutes.toInt()}:${((remainingMinutes % 1) * 60).toInt().toString().padLeft(2, '0')}',
                         style: const TextStyle(
                           color: Color(0xFF8FA68E),
-                          fontSize: 16,
+                          fontSize: 20,
                           fontWeight: FontWeight.w600,
                         ),
                       );
@@ -1007,7 +1007,7 @@ class _BreathingAnimationScreenState extends State<BreathingAnimationScreen>
                         _currentDzikir,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 24,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFF2D5A5A),
                           height: 1.5,
@@ -1097,7 +1097,7 @@ class _BreathingAnimationScreenState extends State<BreathingAnimationScreen>
                         _currentPhase,
                         key: ValueKey(_currentPhase),
                         style: const TextStyle(
-                          fontSize: 28,
+                          fontSize: 32,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF2D5A5A),
                         ),

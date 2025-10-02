@@ -14,39 +14,39 @@ class FontStyles {
     height: 1.8,
   );
 
-  // Specific Arabic text styles for different contexts
+  // Specific Arabic text styles for different contexts - MUCH LARGER SIZES
   static const TextStyle ayahText = TextStyle(
     fontFamily: 'Amiri',
     fontWeight: FontWeight.w400,
-    fontSize: 24,
+    fontSize: 32, // Increased from 28 to 32
     height: 2.0,
   );
 
   static const TextStyle doaText = TextStyle(
     fontFamily: 'Amiri',
     fontWeight: FontWeight.w400,
-    fontSize: 20,
+    fontSize: 28, // Increased from 24 to 28
     height: 1.8,
   );
 
   static const TextStyle dzikrText = TextStyle(
     fontFamily: 'Amiri',
     fontWeight: FontWeight.w400,
-    fontSize: 18,
+    fontSize: 26, // Increased from 22 to 26
     height: 1.8,
   );
 
   static const TextStyle arabicTitle = TextStyle(
     fontFamily: 'Amiri',
     fontWeight: FontWeight.w700,
-    fontSize: 22,
+    fontSize: 30, // Increased from 26 to 30
     height: 1.8,
   );
 
   static const TextStyle arabicSubtitle = TextStyle(
     fontFamily: 'Amiri',
     fontWeight: FontWeight.w400,
-    fontSize: 16,
+    fontSize: 24, // Increased from 20 to 24
     height: 1.8,
   );
 
