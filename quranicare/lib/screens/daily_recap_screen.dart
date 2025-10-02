@@ -144,54 +144,79 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
   Widget _buildHeader() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFFF0F8F8),
-            Color(0xFFE8F5E8),
-          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF8FA68E), Color(0xFF7A9B7A)],
+        ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(24),
+          bottomRight: Radius.circular(24),
         ),
       ),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF2D5A5A).withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.3),
+                width: 1,
               ),
-              child: const Icon(
+            ),
+            child: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(
                 Icons.arrow_back_ios_new,
-                color: Color(0xFF2D5A5A),
+                color: Colors.white,
                 size: 20,
               ),
+              padding: EdgeInsets.zero,
             ),
           ),
-          const Expanded(
-            child: Text(
-              'Daily Recap',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF2D5A5A),
-              ),
-              textAlign: TextAlign.center,
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Daily Recap',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Rekam jejak mood harian Anda',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white.withValues(alpha: 0.8),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(width: 40), // Balance untuk back button
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.calendar_today,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
         ],
       ),
     );
@@ -458,18 +483,37 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.sentiment_neutral,
-              size: 64,
-              color: const Color(0xFF8FA68E).withOpacity(0.5),
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFF8FA68E).withValues(alpha: 0.1),
+                    const Color(0xFF8FA68E).withValues(alpha: 0.05),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                  width: 1,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Image.asset(
+                  'assets/images/Emote Datar.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Text(
               'Belum ada catatan mood',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF64748b).withOpacity(0.8),
+                color: const Color(0xFF2D5A5A),
               ),
             ),
             const SizedBox(height: 8),
@@ -477,7 +521,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
               'Mulai catat mood Anda di hari ini!',
               style: TextStyle(
                 fontSize: 14,
-                color: const Color(0xFF64748b).withOpacity(0.6),
+                color: const Color(0xFF64748b).withValues(alpha: 0.7),
               ),
               textAlign: TextAlign.center,
             ),
@@ -503,22 +547,39 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
           ),
           child: Row(
             children: [
-              // Emoji mood
+              // Enhanced Mood Asset
               Container(
-                width: 50,
-                height: 50,
+                width: 54,
+                height: 54,
                 decoration: BoxDecoration(
-                  color: _getMoodColorFromType(moodEntry.moodType).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(25),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      _getMoodColorFromType(moodEntry.moodType).withValues(alpha: 0.1),
+                      _getMoodColorFromType(moodEntry.moodType).withValues(alpha: 0.05),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: _getMoodColorFromType(moodEntry.moodType).withOpacity(0.3),
+                    color: _getMoodColorFromType(moodEntry.moodType).withValues(alpha: 0.3),
                     width: 1,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _getMoodColorFromType(moodEntry.moodType).withValues(alpha: 0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-                child: Center(
-                  child: Text(
-                    moodEntry.moodEmoji,
-                    style: const TextStyle(fontSize: 24),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Image.asset(
+                    _getMoodAssetFromType(moodEntry.moodType),
+                    width: 36,
+                    height: 36,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
@@ -581,12 +642,23 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
 
   Color _getMoodColorFromType(String moodType) {
     switch (moodType) {
-      case 'senang': return const Color(0xFF10B981);
-      case 'sedih': return const Color(0xFFEF4444);
-      case 'biasa_saja': return const Color(0xFFF59E0B);
-      case 'marah': return const Color(0xFFDC2626);
+      case 'senang': return const Color(0xFF8FA68E);
+      case 'sedih': return const Color(0xFF64748B);
+      case 'biasa_saja': return const Color(0xFF7A9B7A);
+      case 'marah': return const Color(0xFF9CA3AF);
       case 'murung': return const Color(0xFF6B7280);
-      default: return const Color(0xFF6B7280);
+      default: return const Color(0xFF8FA68E);
+    }
+  }
+
+  String _getMoodAssetFromType(String moodType) {
+    switch (moodType) {
+      case 'senang': return 'assets/images/Emote Kacamata Senang.png';
+      case 'sedih': return 'assets/images/Emote Sedih.png';
+      case 'biasa_saja': return 'assets/images/Emote Datar.png';
+      case 'marah': return 'assets/images/Emote Marah.png';
+      case 'murung': return 'assets/images/Emote Sedih Kecewa.png';
+      default: return 'assets/images/Emote Datar.png';
     }
   }
 }

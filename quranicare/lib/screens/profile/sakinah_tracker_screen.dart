@@ -85,17 +85,40 @@ class _SakinahTrackerScreenState extends State<SakinahTrackerScreen> {
     }
     
     // Gradasi hijau berdasarkan intensitas aktivitas
-    const baseColor = Color(0xFF8FA68E); // Warna hijau uta    
+    const baseColor = Color(0xFF8FA68E); // Warna hijau utama   
     if (activityCount == 1) {
-      return baseColor.withOpacity(0.2); // Sangat transparan
+      return baseColor.withValues(alpha: 0.2); // Sangat transparan
     } else if (activityCount == 2) {
-      return baseColor.withOpacity(0.4); // Sedikit lebih terlihat
+      return baseColor.withValues(alpha: 0.4); // Sedikit lebih terlihat
     } else if (activityCount <= 4) {
-      return baseColor.withOpacity(0.6); // Medium transparan
+      return baseColor.withValues(alpha: 0.6); // Medium transparan
     } else if (activityCount <= 6) {
-      return baseColor.withOpacity(0.8); // Hampir penuh
+      return baseColor.withValues(alpha: 0.8); // Hampir penuh
     } else {
       return baseColor; // Hijau penuh untuk 7+ aktivitas
+    }
+  }
+
+  String _getActivityAssetFromType(String activityType) {
+    switch (activityType) {
+      case 'quran_reading':
+        return 'assets/images/Emote Kacamata Senang.png';
+      case 'dzikir_session':
+        return 'assets/images/Emote Senang.png';
+      case 'breathing_exercise':
+        return 'assets/images/Emote Datar.png';
+      case 'audio_listening':
+        return 'assets/images/Emote Kacamata Senang.png';
+      case 'journal_entry':
+        return 'assets/images/Emote Senang.png';
+      case 'qalbuchat_session':
+        return 'assets/images/Emote Kacamata Senang.png';
+      case 'psychology_assessment':
+        return 'assets/images/Emote Datar.png';
+      case 'mood_tracking':
+        return 'assets/images/Emote Senang.png';
+      default:
+        return 'assets/images/Emote Datar.png';
     }
   }
 
@@ -117,72 +140,89 @@ class _SakinahTrackerScreenState extends State<SakinahTrackerScreen> {
           child: Column(
             children: [
               // Header
-              Padding(
+              Container(
                 padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF2D5A5A).withOpacity(0.1),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.arrow_back_ios_new,
-                          color: Color(0xFF2D5A5A),
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                    const Expanded(
-                      child: Text(
-                        'Sakinah Tracker',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2D5A5A),
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: _isLoading ? null : () {
-                        _loadInitialData();
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF2D5A5A).withOpacity(0.1),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.refresh,
-                          color: _isLoading 
-                              ? const Color(0xFF2D5A5A).withOpacity(0.5)
-                              : const Color(0xFF2D5A5A),
-                          size: 20,
-                        ),
-                      ),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF8FA68E),
+                      Color(0xFF7A9B7A),
+                    ],
+                  ),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                      blurRadius: 15,
+                      offset: const Offset(0, 8),
                     ),
                   ],
+                ),
+                child: SafeArea(
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(22),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      const Expanded(
+                        child: Text(
+                          'Sakinah Tracker',
+                          style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: _isLoading ? null : () {
+                          _loadInitialData();
+                        },
+                        child: Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(22),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.refresh,
+                            color: _isLoading 
+                                ? Colors.white.withValues(alpha: 0.5)
+                                : Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
@@ -398,16 +438,27 @@ class _SakinahTrackerScreenState extends State<SakinahTrackerScreen> {
                                       child: Column(
                                         children: [
                                           Container(
-                                            width: 60,
-                                            height: 60,
+                                            width: 64,
+                                            height: 64,
                                             decoration: BoxDecoration(
-                                              color: const Color(0xFF8FA68E).withOpacity(0.1),
-                                              borderRadius: BorderRadius.circular(30),
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  const Color(0xFF8FA68E).withValues(alpha: 0.1),
+                                                  const Color(0xFF8FA68E).withValues(alpha: 0.05),
+                                                ],
+                                              ),
+                                              borderRadius: BorderRadius.circular(20),
+                                              border: Border.all(
+                                                color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                                                width: 1,
+                                              ),
                                             ),
-                                            child: const Icon(
-                                              Icons.calendar_today_outlined,
-                                              size: 30,
-                                              color: Color(0xFF8FA68E),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(12),
+                                              child: Image.asset(
+                                                'assets/images/Emote Datar.png',
+                                                fit: BoxFit.contain,
+                                              ),
                                             ),
                                           ),
                                           const SizedBox(height: 16),
@@ -527,25 +578,48 @@ class _SakinahTrackerScreenState extends State<SakinahTrackerScreen> {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF8FA68E).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: const Color(0xFF8FA68E).withOpacity(0.2),
+        gradient: LinearGradient(
+          colors: [
+            const Color(0xFF8FA68E).withValues(alpha: 0.1),
+            const Color(0xFF8FA68E).withValues(alpha: 0.05),
+          ],
         ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF8FA68E).withValues(alpha: 0.1),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
-              color: const Color(0xFF8FA68E).withOpacity(0.2),
-              borderRadius: BorderRadius.circular(8),
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFF8FA68E).withValues(alpha: 0.2),
+                  const Color(0xFF7A9B7A).withValues(alpha: 0.1),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                width: 1,
+              ),
             ),
-            child: Center(
-              child: Text(
-                activity.iconEmoji,
-                style: const TextStyle(fontSize: 20),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Image.asset(
+                _getActivityAssetFromType(activity.activityType),
+                fit: BoxFit.contain,
               ),
             ),
           ),
@@ -567,20 +641,27 @@ class _SakinahTrackerScreenState extends State<SakinahTrackerScreen> {
                     [activity.additionalInfo, activity.duration]
                         .where((info) => info != null)
                         .join(' • '),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
-                      color: Color(0xFF64748B),
+                      color: const Color(0xFF64748B).withValues(alpha: 0.8),
                     ),
                   ),
               ],
             ),
           ),
-          Text(
-            DateFormat('HH:mm').format(activity.createdAt),
-            style: const TextStyle(
-              fontSize: 12,
-              color: Color(0xFF64748B),
-              fontWeight: FontWeight.w500,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: const Color(0xFF8FA68E).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              DateFormat('HH:mm').format(activity.createdAt),
+              style: const TextStyle(
+                fontSize: 12,
+                color: Color(0xFF2D5A5A),
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

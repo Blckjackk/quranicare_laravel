@@ -127,6 +127,29 @@ class _SakinahTrackerDemoState extends State<SakinahTrackerDemo> {
     }
   }
 
+  String _getActivityAssetFromType(String activityType) {
+    switch (activityType) {
+      case 'quran_reading':
+        return 'assets/images/Emote Kacamata Senang.png';
+      case 'dzikir_session':
+        return 'assets/images/Emote Senang.png';
+      case 'breathing_exercise':
+        return 'assets/images/Emote Datar.png';
+      case 'audio_listening':
+        return 'assets/images/Emote Kacamata Senang.png';
+      case 'journal_entry':
+        return 'assets/images/Emote Senang.png';
+      case 'qalbuchat_session':
+        return 'assets/images/Emote Kacamata Senang.png';
+      case 'psychology_assessment':
+        return 'assets/images/Emote Datar.png';
+      case 'mood_tracking':
+        return 'assets/images/Emote Senang.png';
+      default:
+        return 'assets/images/Emote Datar.png';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -247,9 +270,25 @@ class _SakinahTrackerDemoState extends State<SakinahTrackerDemo> {
                           child: Column(
                             children: _todayActivities.map((activity) {
                               return ListTile(
-                                leading: Text(
-                                  activity.iconEmoji,
-                                  style: const TextStyle(fontSize: 24),
+                                leading: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        const Color(0xFF8FA68E).withValues(alpha: 0.2),
+                                        const Color(0xFF7A9B7A).withValues(alpha: 0.1),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6),
+                                    child: Image.asset(
+                                      _getActivityAssetFromType(activity.activityType),
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
                                 ),
                                 title: Text(activity.displayName),
                                 subtitle: Text(activity.additionalInfo ?? 'No details'),
