@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/font_styles.dart';
 import 'package:quranicare/services/journal_service.dart';
 
 class AddReflectionModal extends StatefulWidget {
@@ -203,17 +204,11 @@ class _AddReflectionModalState extends State<AddReflectionModal> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            ArabicText(
                               widget.ayahText,
-                              style: const TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                height: 2.0,
-                                color: Color(0xFF2D5A5A),
+                              style: FontStyles.ayahText.copyWith(
+                                color: const Color(0xFF2D5A5A),
                               ),
-                              textAlign: TextAlign.right,
-                              textDirection: TextDirection.rtl,
                             ),
                             const SizedBox(height: 12),
                             Container(

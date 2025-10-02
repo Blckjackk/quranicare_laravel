@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/doa_dzikir.dart';
+import '../utils/font_styles.dart';
 
 // Session Dialog Widget
 class DoaDzikirSessionDialog extends StatefulWidget {
@@ -204,16 +205,13 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
                     const SizedBox(height: 16),
                     
                     // Arabic text - larger and more prominent
-                    Text(
+                    ArabicText(
                       widget.doaDzikir.ar,
-                      style: const TextStyle(
+                      style: FontStyles.dzikrText.copyWith(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF2D5A5A),
-                        height: 2.0,
+                        color: const Color(0xFF2D5A5A),
                       ),
-                      textAlign: TextAlign.center,
-                      textDirection: TextDirection.rtl,
                     ),
                     
                     if (widget.doaDzikir.tr.isNotEmpty) ...[

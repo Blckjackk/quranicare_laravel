@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:quranicare/screens/splash_screen.dart';
 import 'firebase_options.dart';
 import 'test_firebase_screen.dart';
+import 'test_font_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/home/notification_screen.dart';
@@ -41,9 +42,26 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color(0xFF2D5A5A),
-        fontFamily: 'Roboto',
+        fontFamily: 'AbhayaLibre',
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF2D5A5A),
+        ),
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w800), // ExtraBold
+          displayMedium: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w700), // Bold
+          displaySmall: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w600), // SemiBold
+          headlineLarge: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w700), // Bold
+          headlineMedium: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w600), // SemiBold
+          headlineSmall: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w600), // SemiBold
+          titleLarge: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w600), // SemiBold
+          titleMedium: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w500), // Medium
+          titleSmall: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w500), // Medium
+          bodyLarge: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w400), // Regular
+          bodyMedium: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w400), // Regular
+          bodySmall: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w400), // Regular
+          labelLarge: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w500), // Medium
+          labelMedium: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w500), // Medium
+          labelSmall: TextStyle(fontFamily: 'AbhayaLibre', fontWeight: FontWeight.w400), // Regular
         ),
         useMaterial3: true,
       ),
@@ -70,6 +88,7 @@ class MyApp extends StatelessWidget {
         '/alquran': (context) => const AlQuranScreen(),
         '/admin-login': (context) => const AdminLoginScreen(),
         '/daily-recap': (context) => const DailyRecapScreen(),
+        '/test-font': (context) => const TestFontScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/verification') {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/doa_dzikir.dart';
 import '../services/doa_dzikir_service.dart';
 import '../widgets/doa_dzikir_session_dialog.dart';
@@ -292,7 +293,7 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
                 
                 const SizedBox(height: 12),
                 
-                // Arabic text (preview)
+                // Arabic text (preview) - TESTING FONT AMIRI
                 if (doaDzikir.ar.isNotEmpty)
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -300,17 +301,59 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
                       color: const Color(0xFFF0F8F8),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text(
-                      doaDzikir.ar.length > 100 
-                          ? '${doaDzikir.ar.substring(0, 100)}...'
-                          : doaDzikir.ar,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Color(0xFF2D5A5A),
-                        height: 1.8,
-                      ),
-                      textAlign: TextAlign.right,
-                      textDirection: TextDirection.rtl,
+                    child: Column(
+                      children: [
+                        // Debug label
+                        Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: const Text(
+                            'AMIRI FONT TEST',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Arabic text with multiple font test
+                        Column(
+                          children: [
+                            // Test 1: Local Amiri font
+                            Text(
+                              'تجربة الخط المحلي: ${doaDzikir.ar.length > 50 ? doaDzikir.ar.substring(0, 50) : doaDzikir.ar}',
+                              style: const TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 18,
+                                color: Color(0xFF2D5A5A),
+                                height: 1.8,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.right,
+                              textDirection: TextDirection.rtl,
+                            ),
+                            const SizedBox(height: 8),
+                            const Divider(),
+                            const SizedBox(height: 8),
+                            // Test 2: Google Fonts Amiri
+                            Text(
+                              'تجربة جوجل فونت: ${doaDzikir.ar.length > 50 ? doaDzikir.ar.substring(0, 50) : doaDzikir.ar}',
+                              style: GoogleFonts.amiri(
+                                fontSize: 18,
+                                color: const Color(0xFF2D5A5A),
+                                height: 1.8,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.right,
+                              textDirection: TextDirection.rtl,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 
@@ -654,16 +697,39 @@ class DoaDzikirDetailScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Text(
-                    doaDzikir.ar,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF2D5A5A),
-                      height: 2.0,
-                    ),
-                    textAlign: TextAlign.center,
-                    textDirection: TextDirection.rtl,
+                  child: Column(
+                    children: [
+                      // Debug label for detail view
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        margin: const EdgeInsets.only(bottom: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Text(
+                          'AMIRI FONT DETAIL VIEW',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      // Main Arabic text
+                      Text(
+                        doaDzikir.ar,
+                        style: const TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: 24,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF2D5A5A),
+                          height: 2.0,
+                        ),
+                        textAlign: TextAlign.center,
+                        textDirection: TextDirection.rtl,
+                      ),
+                    ],
                   ),
                 ),
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/font_styles.dart';
 import 'package:quranicare/services/journal_service.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -396,15 +397,12 @@ class ReflectionDetailModal extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
+                    ArabicText(
                       reflection.ayah!.textArabic,
-                      style: const TextStyle(
-                        fontFamily: 'Amiri',
+                      style: FontStyles.ayahText.copyWith(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        height: 1.8,
                       ),
-                      textAlign: TextAlign.right,
                     ),
                     const SizedBox(height: 8),
                     Text(

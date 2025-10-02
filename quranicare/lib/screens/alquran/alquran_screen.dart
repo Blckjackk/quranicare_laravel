@@ -3,6 +3,7 @@ import '../../services/quran_service.dart';
 import '../../services/journal_service.dart' as journal;
 import '../../widgets/add_reflection_modal_simple.dart';
 import '../../widgets/reflection_list_widget.dart';
+import '../../utils/font_styles.dart';
 
 class AlQuranScreen extends StatefulWidget {
   const AlQuranScreen({super.key});
@@ -627,15 +628,12 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                                                           ),
                                                         ),
                                                         const SizedBox(width: 8),
-                                                        Text(
+                                                        ArabicText(
                                                           surah.nameArabic,
-                                                          style: const TextStyle(
-                                                            fontSize: 20,
+                                                          style: FontStyles.arabicWithSize(20, 
                                                             fontWeight: FontWeight.w600,
-                                                            color: Color(0xFF7A9B7A),
-                                                            fontFamily: 'Amiri',
+                                                            color: const Color(0xFF7A9B7A),
                                                           ),
-                                                          textDirection: TextDirection.rtl,
                                                         ),
                                                       ],
                                                     ),
@@ -1032,15 +1030,12 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                             color: Colors.white.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Text(
+                          child: ArabicText(
                             widget.surah.nameArabic,
-                            style: const TextStyle(
-                              fontSize: 18,
+                            style: FontStyles.arabicWithSize(18,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
-                              fontFamily: 'Amiri',
                             ),
-                            textDirection: TextDirection.rtl,
                           ),
                         ),
                       ],
@@ -1182,13 +1177,11 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                                             ),
                                           ],
                                         ),
-                                        child: Text(
+                                        child: ArabicText(
                                           'آية ${ayah.number}',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 13,
+                                          style: FontStyles.arabicWithSize(13,
                                             fontWeight: FontWeight.w600,
-                                            letterSpacing: 0.5,
+                                            color: Colors.white,
                                           ),
                                         ),
                                       ),
@@ -1213,17 +1206,14 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                                             width: 1,
                                           ),
                                         ),
-                                        child: Text(
+                                        child: ArabicText(
                                           ayah.textArabic,
-                                          style: const TextStyle(
+                                          style: FontStyles.ayahText.copyWith(
                                             fontSize: 26,
-                                            height: 2.2,
-                                            fontFamily: 'Amiri',
-                                            color: Color(0xFF2D5A5A),
+                                            color: const Color(0xFF2D5A5A),
                                             fontWeight: FontWeight.w500,
+                                            height: 2.2,
                                           ),
-                                          textAlign: TextAlign.right,
-                                          textDirection: TextDirection.rtl,
                                         ),
                                       ),
                                       const SizedBox(height: 16),

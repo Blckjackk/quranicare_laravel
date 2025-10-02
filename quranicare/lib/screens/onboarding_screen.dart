@@ -199,11 +199,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     child: Text(
                                       _pages[index].arabicText,
                                       textAlign: TextAlign.center,
+                                      textDirection: TextDirection.rtl,
                                       style: TextStyle(
+                                        fontFamily: 'Amiri',
                                         fontSize: screenWidth * 0.065, // Responsive font size
                                         fontWeight: FontWeight.w500,
                                         color: const Color(0xFF2D5A5A),
-                                        height: 1.6,
+                                        height: 1.8,
                                         letterSpacing: 0.5,
                                       ),
                                     ),
