@@ -1053,7 +1053,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
             // Enhanced Ayah List
             SliverToBoxAdapter(
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
+                margin: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -1350,23 +1350,27 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.symmetric(
                                                       vertical: 12,
-                                                      horizontal: 16,
+                                                      horizontal: 12,
                                                     ),
                                                     child: Row(
                                                       mainAxisAlignment: MainAxisAlignment.center,
+                                                      mainAxisSize: MainAxisSize.min,
                                                       children: [
                                                         Icon(
                                                           Icons.edit_note_rounded,
-                                                          size: 20,
+                                                          size: 18,
                                                           color: const Color(0xFF4CAF50),
                                                         ),
-                                                        const SizedBox(width: 8),
-                                                        Text(
-                                                          'Tulis Refleksi',
-                                                          style: TextStyle(
-                                                            color: const Color(0xFF4CAF50),
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.w600,
+                                                        const SizedBox(width: 6),
+                                                        Flexible(
+                                                          child: Text(
+                                                            'Refleksi',
+                                                            style: TextStyle(
+                                                              color: const Color(0xFF4CAF50),
+                                                              fontSize: 13,
+                                                              fontWeight: FontWeight.w600,
+                                                            ),
+                                                            overflow: TextOverflow.ellipsis,
                                                           ),
                                                         ),
                                                       ],
@@ -1400,23 +1404,27 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.symmetric(
                                                       vertical: 12,
-                                                      horizontal: 16,
+                                                      horizontal: 12,
                                                     ),
                                                     child: Row(
                                                       mainAxisAlignment: MainAxisAlignment.center,
+                                                      mainAxisSize: MainAxisSize.min,
                                                       children: [
                                                         Icon(
                                                           Icons.visibility_outlined,
-                                                          size: 20,
+                                                          size: 18,
                                                           color: const Color(0xFFFF9800),
                                                         ),
-                                                        const SizedBox(width: 8),
-                                                        Text(
-                                                          'Lihat Refleksi',
-                                                          style: TextStyle(
-                                                            color: const Color(0xFFFF9800),
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.w600,
+                                                        const SizedBox(width: 6),
+                                                        Flexible(
+                                                          child: Text(
+                                                            'Lihat',
+                                                            style: TextStyle(
+                                                              color: const Color(0xFFFF9800),
+                                                              fontSize: 13,
+                                                              fontWeight: FontWeight.w600,
+                                                            ),
+                                                            overflow: TextOverflow.ellipsis,
                                                           ),
                                                         ),
                                                       ],
