@@ -102,23 +102,37 @@ class _SakinahTrackerScreenState extends State<SakinahTrackerScreen> {
   String _getActivityAssetFromType(String activityType) {
     switch (activityType) {
       case 'quran_reading':
-        return 'assets/images/Emote Kacamata Senang.png';
+        return 'assets/images/Asset Alquran.png'; // Al-Qur'an icon
       case 'dzikir_session':
-        return 'assets/images/Emote Senang.png';
+        return 'assets/images/Asset Tasbih.png'; // Tasbih/Dzikir icon
       case 'breathing_exercise':
-        return 'assets/images/Emote Datar.png';
+        return 'assets/images/Asset Hati.png'; // Heart for breathing/meditation
       case 'audio_listening':
-        return 'assets/images/Emote Kacamata Senang.png';
+      case 'audio_relax':
+        return 'assets/images/Asset Headphone.png'; // Headphone for audio
       case 'journal_entry':
-        return 'assets/images/Emote Senang.png';
+        return 'assets/images/Emote Senang.png'; // Happy emote for journaling
       case 'qalbuchat_session':
-        return 'assets/images/Emote Kacamata Senang.png';
+      case 'chatbot_session':
+        return 'assets/images/Chatbot.png'; // Chatbot icon
       case 'psychology_assessment':
-        return 'assets/images/Emote Datar.png';
+        return 'assets/images/Asset Hati.png'; // Heart for psychology
       case 'mood_tracking':
-        return 'assets/images/Emote Senang.png';
+        return 'assets/images/Emote Kacamata Senang.png'; // Happy emote for mood
+      case 'doa_dzikir':
+        return 'assets/images/Asset Tasbih.png'; // Tasbih for doa & dzikir
+      case 'meditation':
+        return 'assets/images/Asset Hati.png'; // Heart for meditation
+      case 'therapy_session':
+        return 'assets/images/Chatbot.png'; // Chatbot for therapy
+      case 'spiritual_reading':
+        return 'assets/images/Asset Alquran.png'; // Al-Qur'an for spiritual reading
+      case 'gratitude_journal':
+        return 'assets/images/Emote Senang.png'; // Happy emote for gratitude
+      case 'self_reflection':
+        return 'assets/images/Asset Hati.png'; // Heart for self reflection
       default:
-        return 'assets/images/Emote Datar.png';
+        return 'assets/images/Emote Datar.png'; // Default neutral emote
     }
   }
 
@@ -131,8 +145,8 @@ class _SakinahTrackerScreenState extends State<SakinahTrackerScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFF0F8F8),
-              Color(0xFFE8F5E8),
+              Color(0xFFF5F8F5),
+              Color(0xFFF5F8F5),
             ],
           ),
         ),

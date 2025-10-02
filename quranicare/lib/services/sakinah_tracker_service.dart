@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_activity.dart';
 import '../models/activity_summary.dart';
+import 'auth_service.dart';
 
 class SakinahTrackerService {
-  static const String baseUrl = 'http://localhost:8000/api';
+  static const String baseUrl = 'http://127.0.0.1:8000/api';
+  final AuthService _authService = AuthService();
   String? _token;
   static final SakinahTrackerService _instance = SakinahTrackerService._internal();
   
@@ -14,15 +15,13 @@ class SakinahTrackerService {
   SakinahTrackerService._internal();
 
   Future<void> initialize() async {
-    final prefs = await SharedPreferences.getInstance();
-    _token = prefs.getString('auth_token');
+    _token = await _authService.getToken();
+    print('🔑 SakinahTrackerService initialized with token: ${_token != null ? 'YES' : 'NO'}');
   }
 
   void setToken(String token) {
     _token = token;
-    SharedPreferences.getInstance().then((prefs) {
-      prefs.setString('auth_token', token);
-    });
+    _authService.saveToken(token);
   }
 
   Map<String, String> get _headers => {
@@ -193,9 +192,6 @@ class SakinahTrackerService {
 
   // Mock data for testing when server is not available
   List<UserActivity> _getMockActivitiesForDate(DateTime date) {
-    final now = DateTime.now();
-    final daysDifference = now.difference(date).inDays;
-    
     // Generate realistic mock data based on the date pattern
     // Using date hash to ensure consistent data for each date
     final dayOfMonth = date.day;
@@ -405,7 +401,18 @@ class SakinahTrackerService {
 
   String _getRandomActivityType(int seed) {
     List<String> types = [
-      'audio_listening', 'journal_entry', 'qalbuchat_session', 'psychology_assessment'
+      'audio_listening', 
+      'journal_entry', 
+      'qalbuchat_session', 
+      'psychology_assessment',
+      'chatbot_session',
+      'audio_relax',
+      'doa_dzikir',
+      'meditation',
+      'therapy_session',
+      'spiritual_reading',
+      'gratitude_journal',
+      'self_reflection'
     ];
     return types[seed % types.length];
   }
@@ -415,11 +422,19 @@ class SakinahTrackerService {
       'audio_listening': ['Tilawah Al-Quran', 'Murottal', 'Ceramah', 'Musik Relaksasi'],
       'journal_entry': ['Refleksi Harian', 'Syukur Hari Ini', 'Evaluasi Diri', 'Catatan Ibadah'],
       'qalbuchat_session': ['Konsultasi AI', 'Sharing Curhat', 'Bimbingan Spiritual', 'Tanya Jawab'],
-      'psychology_assessment': ['Tes Mood', 'Evaluasi Mental', 'Self Assessment', 'Wellness Check']
+      'psychology_assessment': ['Tes Mood', 'Evaluasi Mental', 'Self Assessment', 'Wellness Check'],
+      'chatbot_session': ['Chat dengan QalbuBot', 'Konsultasi AI', 'AI Coaching', 'Bimbingan Digital'],
+      'audio_relax': ['Meditasi Audio', 'Relaksasi Suara', 'Terapi Musik', 'Suara Alam'],
+      'doa_dzikir': ['Doa Pagi', 'Dzikir Petang', 'Istighfar', 'Tasbih Digital'],
+      'meditation': ['Meditasi Mindfulness', 'Breathing Exercise', 'Body Scan', 'Fokus Pernapasan'],
+      'therapy_session': ['Sesi Terapi', 'Konseling Online', 'Mental Health Check', 'Stress Management'],
+      'spiritual_reading': ['Baca Hadist', 'Tafsir Quran', 'Kisah Nabi', 'Buku Spiritual'],
+      'gratitude_journal': ['Jurnal Syukur', 'Catatan Nikmat', 'Refleksi Positif', 'Daily Gratitude'],
+      'self_reflection': ['Muhasabah Diri', 'Introspeksi', 'Evaluasi Spiritual', 'Self Improvement']
     };
     
     String activityType = _getRandomActivityType(seed);
-    List<String> nameList = names[activityType] ?? ['Aktivitas'];
+    List<String> nameList = names[activityType] ?? ['Aktivitas Spiritual'];
     return nameList[seed % nameList.length];
   }
 
@@ -451,8 +466,60 @@ class SakinahTrackerService {
           'score': (seed % 5) + 1,
           'completion_time': (seed % 10) + 2
         };
+      case 'chatbot_session':
+        return {
+          'bot_name': 'QalbuBot',
+          'messages_exchanged': (seed % 12) + 5,
+          'session_duration': (seed % 20) + 8,
+          'topic': 'Konsultasi Spiritual'
+        };
+      case 'audio_relax':
+        return {
+          'track_name': 'Relaksasi ${seed % 5 + 1}',
+          'duration': (seed % 25) + 10,
+          'type': 'Nature Sounds'
+        };
+      case 'doa_dzikir':
+        return {
+          'doa_type': 'Doa ${seed % 10 + 1}',
+          'repetitions': (seed % 100) + 33,
+          'duration': (seed % 15) + 5
+        };
+      case 'meditation':
+        return {
+          'meditation_type': 'Mindfulness',
+          'duration': (seed % 20) + 10,
+          'focus_level': (seed % 5) + 1
+        };
+      case 'therapy_session':
+        return {
+          'session_type': 'Individual Therapy',
+          'duration': (seed % 45) + 30,
+          'therapist': 'AI Counselor'
+        };
+      case 'spiritual_reading':
+        return {
+          'content_type': 'Hadist',
+          'pages_read': (seed % 10) + 2,
+          'reading_time': (seed % 30) + 10
+        };
+      case 'gratitude_journal':
+        return {
+          'gratitude_count': (seed % 5) + 3,
+          'word_count': (seed % 100) + 50,
+          'mood_after': 'grateful'
+        };
+      case 'self_reflection':
+        return {
+          'reflection_type': 'Muhasabah',
+          'insights_count': (seed % 3) + 1,
+          'duration': (seed % 20) + 15
+        };
       default:
-        return {};
+        return {
+          'activity_duration': (seed % 30) + 5,
+          'completion_status': 'completed'
+        };
     }
   }
 
