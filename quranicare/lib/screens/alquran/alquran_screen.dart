@@ -71,100 +71,166 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFF0F8F8), // Light mint green (same as homepage)
-              Color(0xFFE8F5E8), // Soft green background (same as homepage)
-            ],
-            stops: [0.0, 1.0],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              // Modern Header
-              Container(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+      backgroundColor: const Color(0xFFE8F5E8), // Soft green background like homescreen
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            // Modern Eye-catching Header
+            SliverToBoxAdapter(
+              child: Container(
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF8FA68E), Color(0xFF7A9B7A)], // Softer green to match other screens
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
                 child: Column(
                   children: [
-                    // Back button dan title
+                    // Header row with back button and title
                     Row(
                       children: [
                         Container(
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1,
+                            ),
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2D5A5A)),
+                            icon: const Icon(Icons.arrow_back_ios, 
+                              color: Colors.white, size: 20),
                             onPressed: () => Navigator.pop(context),
+                            padding: EdgeInsets.zero,
                           ),
                         ),
                         const SizedBox(width: 16),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Al-Quran',
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF2D5A5A),
-                                ),
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.2),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const Icon(
+                                      Icons.menu_book_rounded,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Text(
+                                    'Al-Quran',
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
                               ),
+                              const SizedBox(height: 4),
                               Text(
-                                'Hidayah & Petunjuk Hidup',
+                                'هُدًى لِّلنَّاسِ • Hidayah & Petunjuk Hidup',
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF2D5A5A),
+                                  fontSize: 13,
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],
                           ),
                         ),
                         Container(
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1,
+                            ),
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.bookmark_border, color: Color(0xFF2D5A5A)),
+                            icon: const Icon(Icons.bookmark_rounded, 
+                              color: Colors.white, size: 20),
                             onPressed: () {
                               // TODO: Navigate to bookmarks
                             },
+                            padding: EdgeInsets.zero,
                           ),
                         ),
                       ],
                     ),
+                    
                     const SizedBox(height: 24),
-                    // Search Bar
+                    
+                    // Enhanced Search Bar
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
+                        color: Colors.white.withValues(alpha: 0.9),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.3),
+                          width: 1,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 15,
+                            offset: const Offset(0, 5),
                           ),
                         ],
                       ),
                       child: TextField(
                         controller: searchController,
                         onChanged: filterSurahs,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF2D5A5A),
+                          fontWeight: FontWeight.w500,
+                        ),
                         decoration: InputDecoration(
-                          hintText: 'Cari Surah...',
-                          hintStyle: TextStyle(color: Colors.grey[400]),
-                          prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
+                          hintText: 'Cari surah, nomor, atau tempat turun...',
+                          hintStyle: TextStyle(
+                            color: const Color(0xFF2D5A5A).withValues(alpha: 0.5),
+                            fontSize: 14,
+                          ),
+                          prefixIcon: Container(
+                            padding: const EdgeInsets.all(12),
+                            child: Icon(
+                              Icons.search_rounded, 
+                              color: const Color(0xFF8FA68E),
+                              size: 24,
+                            ),
+                          ),
                           suffixIcon: searchQuery.isNotEmpty
                               ? IconButton(
-                                  icon: Icon(Icons.clear, color: Colors.grey[400]),
+                                  icon: Icon(
+                                    Icons.clear_rounded, 
+                                    color: const Color(0xFF2D5A5A).withValues(alpha: 0.5),
+                                  ),
                                   onPressed: () {
                                     searchController.clear();
                                     filterSurahs('');
@@ -172,75 +238,161 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                                 )
                               : null,
                           border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, 
+                            vertical: 18,
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              // Stats cards
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+            ),
+            
+            // Enhanced Stats Cards
+            SliverToBoxAdapter(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
                     Expanded(
                       child: Container(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFF2D5A5A).withOpacity(0.3)),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white,
+                              const Color(0xFF8FA68E).withValues(alpha: 0.05),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: const Color(0xFF8FA68E).withValues(alpha: 0.2),
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF8FA68E).withValues(alpha: 0.1),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
                         ),
                         child: Column(
                           children: [
-                            const Icon(Icons.menu_book, color: Color(0xFF2D5A5A), size: 24),
-                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFF8FA68E), Color(0xFF7A9B7A)],
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.menu_book_rounded, 
+                                color: Colors.white, 
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
                             Text(
                               '${surahList.length}',
                               style: const TextStyle(
-                                fontSize: 20,
+                                fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF2D5A5A),
+                                letterSpacing: 0.5,
                               ),
                             ),
+                            const SizedBox(height: 4),
                             const Text(
                               'Total Surah',
                               style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
+                                fontSize: 13,
+                                color: Color(0xFF64748b),
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: Container(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFF4A6741).withOpacity(0.3)),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white,
+                              const Color(0xFF7A9B7A).withValues(alpha: 0.05),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: const Color(0xFF7A9B7A).withValues(alpha: 0.2),
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF7A9B7A).withValues(alpha: 0.1),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
                         ),
                         child: Column(
                           children: [
-                            const Icon(Icons.filter_vintage, color: Color(0xFF4A6741), size: 24),
-                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFF7A9B7A), Color(0xFF6B8E6B)],
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF7A9B7A).withValues(alpha: 0.3),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.search_rounded, 
+                                color: Colors.white, 
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
                             Text(
                               '${filteredSurahList.length}',
                               style: const TextStyle(
-                                fontSize: 20,
+                                fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF4A6741),
+                                color: Color(0xFF2D5A5A),
+                                letterSpacing: 0.5,
                               ),
                             ),
+                            const SizedBox(height: 4),
                             const Text(
                               'Hasil Pencarian',
                               style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
+                                fontSize: 13,
+                                color: Color(0xFF64748b),
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
@@ -250,194 +402,331 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
-              // Surah List
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
+            ),
+            
+            const SliverToBoxAdapter(child: SizedBox(height: 20)),
+            
+            // Enhanced Surah List
+            SliverToBoxAdapter(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.white,
+                      Colors.white.withValues(alpha: 0.95),
+                    ],
                   ),
-                  child: isLoading
-                      ? const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2D5A5A)),
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'Memuat data Al-Quran...',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : filteredSurahList.isEmpty
-                          ? const Center(
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: const Color(0xFF8FA68E).withValues(alpha: 0.1),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: Container(
+                    constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height * 0.5,
+                    ),
+                    child: isLoading
+                        ? SizedBox(
+                            height: 400,
+                            child: Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                    Icons.search_off,
-                                    size: 64,
-                                    color: Colors.grey,
+                                  Container(
+                                    width: 64,
+                                    height: 64,
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [Color(0xFF8FA68E), Color(0xFF7A9B7A)],
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: const Center(
+                                      child: CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                        strokeWidth: 3,
+                                      ),
+                                    ),
                                   ),
-                                  SizedBox(height: 16),
-                                  Text(
-                                    'Tidak ada surah yang ditemukan',
+                                  const SizedBox(height: 20),
+                                  const Text(
+                                    'Memuat kitab suci Al-Quran...',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: Colors.grey,
+                                      color: Color(0xFF2D5A5A),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنتَ السَّمِيعُ الْعَلِيمُ',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: const Color(0xFF2D5A5A).withValues(alpha: 0.7),
+                                      fontFamily: 'Amiri',
                                     ),
                                   ),
                                 ],
                               ),
-                            )
-                          : ListView.builder(
-                              padding: const EdgeInsets.all(20),
-                              itemCount: filteredSurahList.length,
-                              itemBuilder: (context, index) {
-                                final surah = filteredSurahList[index];
-                                return Card(
-                                  margin: const EdgeInsets.only(bottom: 12),
-                                  elevation: 2,
-                                  shadowColor: Colors.black.withOpacity(0.1),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(16),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => SurahDetailScreen(surah: surah),
+                            ),
+                          )
+                        : filteredSurahList.isEmpty
+                            ? SizedBox(
+                                height: 300,
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 80,
+                                        height: 80,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF8FA68E).withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(20),
                                         ),
-                                      );
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: Row(
-                                        children: [
-                                          // Nomor surah dengan styling khusus
-                                          Container(
-                                            width: 50,
-                                            height: 50,
-                                            decoration: BoxDecoration(
-                                              gradient: const LinearGradient(
-                                                colors: [Color(0xFF2D5A5A), Color(0xFF4A6741)],
-                                              ),
-                                              borderRadius: BorderRadius.circular(12),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                '${surah.number}',
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 16),
-                                          // Info surah
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        surah.nameIndonesian,
-                                                        style: const TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight: FontWeight.w600,
-                                                          color: Color(0xFF2D5A5A),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      surah.nameArabic,
-                                                      style: const TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight: FontWeight.w500,
-                                                        color: Color(0xFF4A6741),
-                                                        fontFamily: 'Arabic',
-                                                      ),
-                                                      textDirection: TextDirection.rtl,
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 4),
-                                                Row(
-                                                  children: [
-                                                    Container(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                                      decoration: BoxDecoration(
-                                                        color: surah.place.toLowerCase() == 'makkah' || surah.place.toLowerCase() == 'makkiyyah'
-                                                            ? Colors.green.withOpacity(0.1)
-                                                            : Colors.blue.withOpacity(0.1),
-                                                        borderRadius: BorderRadius.circular(6),
-                                                      ),
-                                                      child: Text(
-                                                        surah.place,
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                          color: surah.place.toLowerCase() == 'makkah' || surah.place.toLowerCase() == 'makkiyyah'
-                                                              ? Colors.green
-                                                              : Colors.blue,
-                                                          fontWeight: FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(width: 12),
-                                                    Icon(
-                                                      Icons.list_alt,
-                                                      size: 16,
-                                                      color: Colors.grey[600],
-                                                    ),
-                                                    const SizedBox(width: 4),
-                                                    Text(
-                                                      '${surah.numberOfAyahs} ayat',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: Colors.grey[600],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          // Arrow icon
-                                          Icon(
-                                            Icons.arrow_forward_ios,
-                                            size: 16,
-                                            color: Colors.grey[400],
-                                          ),
+                                        child: const Icon(
+                                          Icons.search_off_rounded,
+                                          size: 40,
+                                          color: Color(0xFF8FA68E),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      const Text(
+                                        'Tidak ada surah ditemukan',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF2D5A5A),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        'Coba kata kunci lain atau hapus filter pencarian',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: const Color(0xFF2D5A5A).withValues(alpha: 0.7),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: const EdgeInsets.all(20),
+                                itemCount: filteredSurahList.length,
+                                separatorBuilder: (context, index) => const SizedBox(height: 12),
+                                itemBuilder: (context, index) {
+                                  final surah = filteredSurahList[index];
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Colors.white,
+                                          const Color(0xFF8FA68E).withValues(alpha: 0.02),
                                         ],
                                       ),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: const Color(0xFF8FA68E).withValues(alpha: 0.1),
+                                        width: 1,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color(0xFF8FA68E).withValues(alpha: 0.08),
+                                          blurRadius: 15,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(20),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => SurahDetailScreen(surah: surah),
+                                            ),
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Row(
+                                            children: [
+                                              // Enhanced Surah Number
+                                              Container(
+                                                width: 56,
+                                                height: 56,
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                    colors: [
+                                                      const Color(0xFF8FA68E), 
+                                                      const Color(0xFF7A9B7A),
+                                                    ],
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(18),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                                                      blurRadius: 10,
+                                                      offset: const Offset(0, 4),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    '${surah.number}',
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.bold,
+                                                      letterSpacing: 0.5,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 16),
+                                              // Enhanced Surah Info
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            surah.nameIndonesian,
+                                                            style: const TextStyle(
+                                                              fontSize: 17,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Color(0xFF2D5A5A),
+                                                              letterSpacing: 0.3,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(width: 8),
+                                                        Text(
+                                                          surah.nameArabic,
+                                                          style: const TextStyle(
+                                                            fontSize: 20,
+                                                            fontWeight: FontWeight.w600,
+                                                            color: Color(0xFF7A9B7A),
+                                                            fontFamily: 'Amiri',
+                                                          ),
+                                                          textDirection: TextDirection.rtl,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Row(
+                                                      children: [
+                                                        Container(
+                                                          padding: const EdgeInsets.symmetric(
+                                                            horizontal: 10, 
+                                                            vertical: 5,
+                                                          ),
+                                                          decoration: BoxDecoration(
+                                                            gradient: LinearGradient(
+                                                              colors: surah.place.toLowerCase() == 'makkah' || surah.place.toLowerCase() == 'makkiyyah'
+                                                                  ? [
+                                                                      const Color(0xFF4CAF50).withValues(alpha: 0.1),
+                                                                      const Color(0xFF4CAF50).withValues(alpha: 0.05),
+                                                                    ]
+                                                                  : [
+                                                                      const Color(0xFF2196F3).withValues(alpha: 0.1),
+                                                                      const Color(0xFF2196F3).withValues(alpha: 0.05),
+                                                                    ],
+                                                            ),
+                                                            borderRadius: BorderRadius.circular(8),
+                                                            border: Border.all(
+                                                              color: surah.place.toLowerCase() == 'makkah' || surah.place.toLowerCase() == 'makkiyyah'
+                                                                  ? const Color(0xFF4CAF50).withValues(alpha: 0.3)
+                                                                  : const Color(0xFF2196F3).withValues(alpha: 0.3),
+                                                              width: 1,
+                                                            ),
+                                                          ),
+                                                          child: Text(
+                                                            surah.place,
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                              color: surah.place.toLowerCase() == 'makkah' || surah.place.toLowerCase() == 'makkiyyah'
+                                                                  ? const Color(0xFF4CAF50)
+                                                                  : const Color(0xFF2196F3),
+                                                              fontWeight: FontWeight.w600,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(width: 12),
+                                                        Icon(
+                                                          Icons.format_list_numbered_rounded,
+                                                          size: 16,
+                                                          color: const Color(0xFF64748b),
+                                                        ),
+                                                        const SizedBox(width: 4),
+                                                        Text(
+                                                          '${surah.numberOfAyahs} ayat',
+                                                          style: const TextStyle(
+                                                            fontSize: 13,
+                                                            color: Color(0xFF64748b),
+                                                            fontWeight: FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              // Enhanced Arrow
+                                              Container(
+                                                width: 32,
+                                                height: 32,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xFF8FA68E).withValues(alpha: 0.1),
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
+                                                child: const Icon(
+                                                  Icons.arrow_forward_ios_rounded,
+                                                  size: 16,
+                                                  color: Color(0xFF8FA68E),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+            
+            const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          ],
         ),
       ),
     );
@@ -643,36 +932,50 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFF0F8F8), // Light mint green (same as homepage)
-              Color(0xFFE8F5E8), // Soft green background (same as homepage)
-            ],
-            stops: [0.0, 1.0],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              // Header
-              Container(
-                padding: const EdgeInsets.all(20),
+      backgroundColor: const Color(0xFFE8F5E8), // Same as homescreen
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            // Enhanced Header for Surah Detail
+            SliverToBoxAdapter(
+              child: Container(
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF8FA68E), Color(0xFF7A9B7A)],
+                  ),
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
                 child: Column(
                   children: [
                     Row(
                       children: [
                         Container(
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.9),
-                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1,
+                            ),
                           ),
                           child: IconButton(
-                            icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2D5A5A)),
+                            icon: const Icon(Icons.arrow_back_ios, 
+                              color: Colors.white, size: 20),
                             onPressed: () => Navigator.pop(context),
+                            padding: EdgeInsets.zero,
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -680,249 +983,464 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                widget.surah.nameIndonesian,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF2D5A5A),
-                                ),
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.2),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      '${widget.surah.number}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      widget.surah.nameIndonesian,
+                                      style: const TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+                              const SizedBox(height: 4),
                               Text(
                                 '${widget.surah.place} • ${widget.surah.numberOfAyahs} ayat',
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Color(0xFF2D5A5A),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        Text(
-                          widget.surah.nameArabic,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF2D5A5A),
-                            fontFamily: 'Arabic',
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          textDirection: TextDirection.rtl,
+                          child: Text(
+                            widget.surah.nameArabic,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                              fontFamily: 'Amiri',
+                            ),
+                            textDirection: TextDirection.rtl,
+                          ),
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-              // Content
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
+            ),
+            
+            // Enhanced Ayah List
+            SliverToBoxAdapter(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.white,
+                      Colors.white.withValues(alpha: 0.95),
+                    ],
                   ),
-                  child: isLoading
-                      ? const Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2D5A5A)),
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'Memuat ayat-ayat...',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : ListView.builder(
-                          padding: const EdgeInsets.all(20),
-                          itemCount: ayahs.length,
-                          itemBuilder: (context, index) {
-                            final ayah = ayahs[index];
-                            return Card(
-                              margin: const EdgeInsets.only(bottom: 16),
-                              elevation: 2,
-                              shadowColor: Colors.black.withOpacity(0.1),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Ayah number
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                      decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                          colors: [Color(0xFF2D5A5A), Color(0xFF4A6741)],
-                                        ),
-                                        borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: const Color(0xFF8FA68E).withValues(alpha: 0.1),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: Container(
+                    constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height * 0.6,
+                    ),
+                    child: isLoading
+                        ? SizedBox(
+                            height: 400,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: 64,
+                                    height: 64,
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [Color(0xFF8FA68E), Color(0xFF7A9B7A)],
                                       ),
-                                      child: Text(
-                                        'Ayat ${ayah.number}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: const Center(
+                                      child: CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                        strokeWidth: 3,
                                       ),
                                     ),
-                                    const SizedBox(height: 16),
-                                    // Arabic text
-                                    Container(
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[50],
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(color: Colors.grey[200]!),
-                                      ),
-                                      child: Text(
-                                        ayah.textArabic,
-                                        style: const TextStyle(
-                                          fontSize: 24,
-                                          height: 2.0,
-                                          fontFamily: 'Arabic',
-                                          color: Color(0xFF2D5A5A),
-                                        ),
-                                        textAlign: TextAlign.right,
-                                        textDirection: TextDirection.rtl,
-                                      ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  const Text(
+                                    'Memuat ayat-ayat suci...',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(0xFF2D5A5A),
+                                      fontWeight: FontWeight.w600,
                                     ),
-                                    const SizedBox(height: 12),
-                                    // Latin text
-                                    if (ayah.textLatin?.isNotEmpty == true) ...[
-                                      Text(
-                                        ayah.textLatin!,
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.grey[600],
-                                          height: 1.5,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: const Color(0xFF2D5A5A).withValues(alpha: 0.7),
+                                      fontFamily: 'Amiri',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: const EdgeInsets.all(20),
+                            itemCount: ayahs.length,
+                            separatorBuilder: (context, index) => const SizedBox(height: 16),
+                            itemBuilder: (context, index) {
+                              final ayah = ayahs[index];
+                              return Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.white,
+                                      const Color(0xFF8FA68E).withValues(alpha: 0.02),
                                     ],
-                                    // Indonesian translation
-                                    Text(
-                                      ayah.textIndonesian,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        height: 1.6,
-                                        color: Color(0xFF4A6741),
-                                      ),
-                                    ),
-                                    // Tafsir if available
-                                    if (ayah.tafsirIndonesian?.isNotEmpty == true) ...[
-                                      const SizedBox(height: 12),
-                                      Container(
-                                        padding: const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          color: Colors.blue[50],
-                                          borderRadius: BorderRadius.circular(8),
-                                          border: Border.all(color: Colors.blue[100]!),
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Tafsir:',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.blue[700],
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              ayah.tafsirIndonesian!,
-                                              style: TextStyle(
-                                                fontSize: 13,
-                                                color: Colors.blue[600],
-                                                height: 1.4,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                    
-                                    // Reflection buttons
-                                    const SizedBox(height: 16),
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: OutlinedButton.icon(
-                                            onPressed: () => _showAddReflectionModal(ayah),
-                                            icon: Icon(
-                                              Icons.edit_note,
-                                              size: 18,
-                                              color: Colors.teal[600],
-                                            ),
-                                            label: Text(
-                                              'Tulis Refleksi',
-                                              style: TextStyle(
-                                                color: Colors.teal[600],
-                                                fontSize: 13,
-                                              ),
-                                            ),
-                                            style: OutlinedButton.styleFrom(
-                                              side: BorderSide(color: Colors.teal[300]!),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
-                                              padding: const EdgeInsets.symmetric(vertical: 8),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: OutlinedButton.icon(
-                                            onPressed: () => _showAyahReflections(ayah),
-                                            icon: Icon(
-                                              Icons.visibility_outlined,
-                                              size: 18,
-                                              color: Colors.orange[600],
-                                            ),
-                                            label: Text(
-                                              'Lihat Refleksi',
-                                              style: TextStyle(
-                                                color: Colors.orange[600],
-                                                fontSize: 13,
-                                              ),
-                                            ),
-                                            style: OutlinedButton.styleFrom(
-                                              side: BorderSide(color: Colors.orange[300]!),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(8),
-                                              ),
-                                              padding: const EdgeInsets.symmetric(vertical: 8),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: const Color(0xFF8FA68E).withValues(alpha: 0.1),
+                                    width: 1,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFF8FA68E).withValues(alpha: 0.08),
+                                      blurRadius: 15,
+                                      offset: const Offset(0, 4),
                                     ),
                                   ],
                                 ),
-                              ),
-                            );
-                          },
-                        ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Enhanced Ayah Number
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 14, 
+                                          vertical: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            colors: [Color(0xFF8FA68E), Color(0xFF7A9B7A)],
+                                          ),
+                                          borderRadius: BorderRadius.circular(16),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Text(
+                                          'آية ${ayah.number}',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      
+                                      // Enhanced Arabic Text
+                                      Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.all(20),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              const Color(0xFF8FA68E).withValues(alpha: 0.03),
+                                              const Color(0xFF8FA68E).withValues(alpha: 0.08),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(16),
+                                          border: Border.all(
+                                            color: const Color(0xFF8FA68E).withValues(alpha: 0.2),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          ayah.textArabic,
+                                          style: const TextStyle(
+                                            fontSize: 26,
+                                            height: 2.2,
+                                            fontFamily: 'Amiri',
+                                            color: Color(0xFF2D5A5A),
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          textAlign: TextAlign.right,
+                                          textDirection: TextDirection.rtl,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      
+                                      // Latin text with enhanced styling
+                                      if (ayah.textLatin?.isNotEmpty == true) ...[
+                                        Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF7A9B7A).withValues(alpha: 0.05),
+                                            borderRadius: BorderRadius.circular(12),
+                                            border: Border.all(
+                                              color: const Color(0xFF7A9B7A).withValues(alpha: 0.15),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            ayah.textLatin!,
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontStyle: FontStyle.italic,
+                                              color: const Color(0xFF7A9B7A),
+                                              height: 1.6,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 12),
+                                      ],
+                                      
+                                      // Enhanced Indonesian translation
+                                      Text(
+                                        ayah.textIndonesian,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          height: 1.7,
+                                          color: Color(0xFF2D5A5A),
+                                          fontWeight: FontWeight.w500,
+                                          letterSpacing: 0.2,
+                                        ),
+                                      ),
+                                      
+                                      // Enhanced Tafsir
+                                      if (ayah.tafsirIndonesian?.isNotEmpty == true) ...[
+                                        const SizedBox(height: 16),
+                                        Container(
+                                          padding: const EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                              colors: [
+                                                const Color(0xFF2196F3).withValues(alpha: 0.05),
+                                                const Color(0xFF2196F3).withValues(alpha: 0.1),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(12),
+                                            border: Border.all(
+                                              color: const Color(0xFF2196F3).withValues(alpha: 0.2),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.lightbulb_outline_rounded,
+                                                    size: 18,
+                                                    color: const Color(0xFF2196F3),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    'Tafsir:',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: const Color(0xFF2196F3),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Text(
+                                                ayah.tafsirIndonesian!,
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: const Color(0xFF2196F3).withValues(alpha: 0.8),
+                                                  height: 1.5,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                      
+                                      // Enhanced Action Buttons
+                                      const SizedBox(height: 20),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    const Color(0xFF4CAF50).withValues(alpha: 0.1),
+                                                    const Color(0xFF4CAF50).withValues(alpha: 0.05),
+                                                  ],
+                                                ),
+                                                borderRadius: BorderRadius.circular(12),
+                                                border: Border.all(
+                                                  color: const Color(0xFF4CAF50).withValues(alpha: 0.3),
+                                                  width: 1,
+                                                ),
+                                              ),
+                                              child: Material(
+                                                color: Colors.transparent,
+                                                child: InkWell(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  onTap: () => _showAddReflectionModal(ayah),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                      vertical: 12,
+                                                      horizontal: 16,
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.edit_note_rounded,
+                                                          size: 20,
+                                                          color: const Color(0xFF4CAF50),
+                                                        ),
+                                                        const SizedBox(width: 8),
+                                                        Text(
+                                                          'Tulis Refleksi',
+                                                          style: TextStyle(
+                                                            color: const Color(0xFF4CAF50),
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    const Color(0xFFFF9800).withValues(alpha: 0.1),
+                                                    const Color(0xFFFF9800).withValues(alpha: 0.05),
+                                                  ],
+                                                ),
+                                                borderRadius: BorderRadius.circular(12),
+                                                border: Border.all(
+                                                  color: const Color(0xFFFF9800).withValues(alpha: 0.3),
+                                                  width: 1,
+                                                ),
+                                              ),
+                                              child: Material(
+                                                color: Colors.transparent,
+                                                child: InkWell(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  onTap: () => _showAyahReflections(ayah),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                      vertical: 12,
+                                                      horizontal: 16,
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.visibility_outlined,
+                                                          size: 20,
+                                                          color: const Color(0xFFFF9800),
+                                                        ),
+                                                        const SizedBox(width: 8),
+                                                        Text(
+                                                          'Lihat Refleksi',
+                                                          style: TextStyle(
+                                                            color: const Color(0xFFFF9800),
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+            
+            const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          ],
         ),
       ),
     );

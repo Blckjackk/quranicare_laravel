@@ -79,231 +79,454 @@ class _AddReflectionModalState extends State<AddReflectionModal> {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
       ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.9,
         constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.8,
+          maxHeight: MediaQuery.of(context).size.height * 0.85,
         ),
-        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.white,
+              Color(0xFFF8FFF8),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF8FA68E).withValues(alpha: 0.15),
+              blurRadius: 30,
+              offset: const Offset(0, 15),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
         child: Form(
           key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
-              Row(
-                children: [
-                  Icon(
-                    Icons.edit_note,
-                    color: Colors.teal[600],
-                    size: 28,
-                  ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Text(
-                      'Tulis Refleksi Ayat',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF2D5A5A),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Ayah Reference
+              // Enhanced Header
               Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.teal[50],
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.teal[200]!),
+                padding: const EdgeInsets.all(24),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF8FA68E), Color(0xFF7A9B7A)],
+                  ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Text(
-                      widget.ayahText,
-                      style: const TextStyle(
-                        fontFamily: 'Amiri',
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        height: 1.8,
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      textAlign: TextAlign.right,
+                      child: const Icon(
+                        Icons.edit_note_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.ayahTranslation,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[700],
-                        fontStyle: FontStyle.italic,
+                    const SizedBox(width: 16),
+                    const Expanded(
+                      child: Text(
+                        'Tulis Refleksi Ayat',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(
+                          Icons.close_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        padding: const EdgeInsets.all(8),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
 
-              // Form Fields
+              // Content
               Expanded(
-                child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Title Field
-                      const Text(
-                        'Judul Refleksi',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF2D5A5A),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        controller: _titleController,
-                        decoration: InputDecoration(
-                          hintText: 'Masukkan judul refleksi...',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      // Enhanced Ayah Reference
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              const Color(0xFF8FA68E).withValues(alpha: 0.05),
+                              const Color(0xFF8FA68E).withValues(alpha: 0.1),
+                            ],
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.teal[600]!),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: const Color(0xFF8FA68E).withValues(alpha: 0.2),
+                            width: 1,
                           ),
                         ),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Judul tidak boleh kosong';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-
-                      // Content Field
-                      const Text(
-                        'Isi Refleksi',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF2D5A5A),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        controller: _contentController,
-                        decoration: InputDecoration(
-                          hintText: 'Bagikan refleksi dan pemikiran Anda tentang ayat ini...',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.teal[600]!),
-                          ),
-                          alignLabelWithHint: true,
-                        ),
-                        maxLines: 5,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Isi refleksi tidak boleh kosong';
-                          }
-                          if (value.trim().length < 10) {
-                            return 'Refleksi minimal 10 karakter';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-
-                      // Mood Selection
-                      const Text(
-                        'Perasaan Setelah Membaca',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF2D5A5A),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: JournalService.getMoodOptions().map((mood) {
-                          final isSelected = _selectedMood == mood['value'];
-                          return FilterChip(
-                            label: Text(mood['label']!),
-                            selected: isSelected,
-                            onSelected: (selected) {
-                              setState(() {
-                                _selectedMood = selected ? mood['value'] : null;
-                              });
-                            },
-                            backgroundColor: Colors.grey[200],
-                            selectedColor: Colors.teal[100],
-                            checkmarkColor: Colors.teal[700],
-                            labelStyle: TextStyle(
-                              color: isSelected ? Colors.teal[700] : Colors.grey[700],
-                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.ayahText,
+                              style: const TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                height: 2.0,
+                                color: Color(0xFF2D5A5A),
+                              ),
+                              textAlign: TextAlign.right,
+                              textDirection: TextDirection.rtl,
                             ),
-                          );
-                        }).toList(),
+                            const SizedBox(height: 12),
+                            Container(
+                              width: double.infinity,
+                              height: 1,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.transparent,
+                                    const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                                    Colors.transparent,
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              widget.ayahTranslation,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                color: Color(0xFF2D5A5A),
+                                fontStyle: FontStyle.italic,
+                                height: 1.6,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 24),
+
+                      // Form Fields in Scrollable Area
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Enhanced Title Field
+                              const Text(
+                                'Judul Refleksi',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF2D5A5A),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              TextFormField(
+                                controller: _titleController,
+                                decoration: InputDecoration(
+                                  hintText: 'Masukkan judul refleksi...',
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: 14,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey[300]!,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFF8FA68E),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 14,
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Judul tidak boleh kosong';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
+
+                              // Enhanced Content Field
+                              const Text(
+                                'Isi Refleksi',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF2D5A5A),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              TextFormField(
+                                controller: _contentController,
+                                decoration: InputDecoration(
+                                  hintText: 'Bagikan refleksi dan pemikiran Anda tentang ayat ini...',
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: 14,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey[300]!,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFF8FA68E),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: const EdgeInsets.all(16),
+                                  alignLabelWithHint: true,
+                                ),
+                                maxLines: 5,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Isi refleksi tidak boleh kosong';
+                                  }
+                                  if (value.trim().length < 10) {
+                                    return 'Refleksi minimal 10 karakter';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
+
+                              // Enhanced Mood Selection
+                              const Text(
+                                'Perasaan Setelah Membaca',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF2D5A5A),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: JournalService.getMoodOptions().map((mood) {
+                                  final isSelected = _selectedMood == mood['value'];
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      gradient: isSelected 
+                                        ? const LinearGradient(
+                                            colors: [Color(0xFF8FA68E), Color(0xFF7A9B7A)]
+                                          )
+                                        : null,
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: isSelected 
+                                          ? Colors.transparent
+                                          : const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(20),
+                                        onTap: () {
+                                          setState(() {
+                                            _selectedMood = _selectedMood == mood['value'] ? null : mood['value'];
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 10,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: isSelected 
+                                              ? Colors.transparent
+                                              : Colors.white,
+                                            borderRadius: BorderRadius.circular(20),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              if (isSelected) ...[
+                                                const Icon(
+                                                  Icons.check_circle_rounded,
+                                                  size: 16,
+                                                  color: Colors.white,
+                                                ),
+                                                const SizedBox(width: 6),
+                                              ],
+                                              Text(
+                                                mood['label']!,
+                                                style: TextStyle(
+                                                  color: isSelected 
+                                                    ? Colors.white
+                                                    : const Color(0xFF8FA68E),
+                                                  fontWeight: isSelected 
+                                                    ? FontWeight.w600 
+                                                    : FontWeight.w500,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                              const SizedBox(height: 30),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
 
-              // Submit Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isSubmitting ? null : _submitReflection,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal[600],
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 2,
-                  ),
-                  child: _isSubmitting
-                      ? const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                              ),
-                            ),
-                            SizedBox(width: 12),
-                            Text('Menyimpan...'),
-                          ],
-                        )
-                      : const Text(
-                          'Simpan Refleksi',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
+              // Enhanced Submit Button
+              Container(
+                padding: const EdgeInsets.all(24),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF8FA68E), Color(0xFF7A9B7A)],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF8FA68E).withValues(alpha: 0.3),
+                          blurRadius: 15,
+                          offset: const Offset(0, 8),
                         ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: _isSubmitting ? null : _submitReflection,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 18),
+                          child: _isSubmitting
+                              ? const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                      ),
+                                    ),
+                                    SizedBox(width: 12),
+                                    Text(
+                                      'Menyimpan...',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.save_rounded,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'Simpan Refleksi',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                        letterSpacing: 0.3,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
