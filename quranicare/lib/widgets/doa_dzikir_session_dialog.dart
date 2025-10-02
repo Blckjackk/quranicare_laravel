@@ -81,7 +81,7 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
-                color: Color(0xFF2D5A5A),
+                color: Color(0xFF6B7D6A),
               ),
               textDirection: TextDirection.rtl,
             ),
@@ -148,7 +148,7 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF2D5A5A),
+                color: Color(0xFF6B7D6A),
               ),
               textAlign: TextAlign.center,
             ),
@@ -167,7 +167,7 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
                     end: Alignment.bottomRight,
                     colors: [
                       const Color(0xFF8FA68E).withOpacity(0.1),
-                      const Color(0xFFF0F8F8),
+                      const Color(0xFFF5F8F5),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
@@ -177,7 +177,7 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF2D5A5A).withOpacity(0.1),
+                      color: const Color(0xFF6B7D6A).withOpacity(0.1),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -210,7 +210,7 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
                       style: FontStyles.dzikrText.copyWith(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFF2D5A5A),
+                        color: const Color(0xFF6B7D6A),
                       ),
                     ),
                     
@@ -228,7 +228,7 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
                           style: const TextStyle(
                             fontSize: 15,
                             fontStyle: FontStyle.italic,
-                            color: Color(0xFF2D5A5A),
+                            color: Color(0xFF6B7D6A),
                             height: 1.5,
                             fontWeight: FontWeight.w500,
                           ),
@@ -263,7 +263,7 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF2D5A5A),
+                  color: Color(0xFF6B7D6A),
                 ),
               ),
               const SizedBox(height: 12),
@@ -280,7 +280,7 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
                       });
                     },
                     selectedColor: const Color(0xFF8FA68E).withOpacity(0.2),
-                    checkmarkColor: const Color(0xFF2D5A5A),
+                    checkmarkColor: const Color(0xFF6B7D6A),
                   );
                 }).toList(),
               ),
@@ -334,7 +334,7 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
                             style: const TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF2D5A5A),
+                              color: Color(0xFF6B7D6A),
                             ),
                           ),
                           Text(
@@ -360,7 +360,7 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF2D5A5A),
+                          color: Color(0xFF6B7D6A),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -388,14 +388,14 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2D5A5A).withOpacity(0.1),
+                  color: const Color(0xFF6B7D6A).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Row(
                   children: [
                     Icon(
                       Icons.lightbulb_outline,
-                      color: Color(0xFF2D5A5A),
+                      color: Color(0xFF6B7D6A),
                       size: 20,
                     ),
                     SizedBox(width: 8),
@@ -404,7 +404,7 @@ class _DoaDzikirSessionDialogState extends State<DoaDzikirSessionDialog> {
                         'Baca dzikir di atas, kemudian tap untuk menghitung',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Color(0xFF2D5A5A),
+                          color: Color(0xFF6B7D6A),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
