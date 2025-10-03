@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'activity_logger_service.dart';
+import 'auth_service.dart';
 
 class JournalData {
   final int id;
@@ -167,6 +168,58 @@ class JournalStats {
 class JournalService {
   static const String baseUrl = 'http://127.0.0.1:8000/api';
   final ActivityLoggerService _activityLogger = ActivityLoggerService();
+  final AuthService _authService = AuthService();
+
+  // Get user's journal entries (authenticated)
+  Future<List<JournalData>> getUserJournals({
+    int page = 1,
+    int perPage = 20,
+    String? tag,
+    String? mood,
+    bool? favorite,
+  }) async {
+    try {
+      // Build query parameters
+      final queryParams = <String, String>{
+        'page': page.toString(),
+        'per_page': perPage.toString(),
+      };
+      
+      if (tag != null) queryParams['tag'] = tag;
+      if (mood != null) queryParams['mood'] = mood;
+      if (favorite != null) queryParams['favorite'] = favorite.toString();
+      
+      final uri = Uri.parse('$baseUrl/journal').replace(queryParameters: queryParams);
+      
+      final headers = await _authService.getAuthHeaders();
+      final response = await http.get(uri, headers: headers);
+
+      print('📚 Getting user journals: ${response.statusCode}');
+      print('📚 Response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['success'] == true) {
+          final journalsData = data['data']['data'] as List; // Pagination format
+          final journals = journalsData
+              .map((json) => JournalData.fromJson(json))
+              .toList();
+          
+          print('📚 Successfully loaded ${journals.length} journals');
+          return journals;
+        } else {
+          throw Exception(data['message'] ?? 'Failed to load user journals');
+        }
+      } else if (response.statusCode == 401) {
+        throw Exception('Unauthorized. Please login first.');
+      } else {
+        throw Exception('Failed to load user journals: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ Error loading user journals: $e');
+      throw Exception('Error loading user journals: $e');
+    }
+  }
 
   // Get reflections for specific ayah (uses test endpoint - no auth required)
   Future<Map<String, dynamic>> getAyahReflections(int ayahId) async {
