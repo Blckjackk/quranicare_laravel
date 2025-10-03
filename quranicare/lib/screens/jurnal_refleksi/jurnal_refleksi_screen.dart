@@ -78,16 +78,25 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
   Future<void> _loadJournalHistory() async {
     setState(() => _isLoading = true);
     try {
-      final history = await _journalService.getRecentReflections(limit: 20);
+      // Use authenticated method to get user-specific journals
+      final history = await _journalService.getUserJournals(
+        page: 1,
+        perPage: 20,
+      );
       setState(() {
         _journalHistory = history;
         _isLoading = false;
       });
+      print('📚 Loaded ${history.length} user journals');
     } catch (e) {
       setState(() => _isLoading = false);
+      print('❌ Error loading journal history: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error loading journal history: $e')),
+          SnackBar(
+            content: Text('Error loading journal history: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }

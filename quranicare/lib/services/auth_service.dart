@@ -39,6 +39,11 @@ class AuthService {
     };
   }
 
+  // Public method to get authenticated headers
+  Future<Map<String, String>> getAuthHeaders() async {
+    return await _getHeaders();
+  }
+
   // User Login
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
