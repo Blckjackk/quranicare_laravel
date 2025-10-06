@@ -1,0 +1,77 @@
+# QuraniCare MTQMN Project Root .gitignore
+
+# Laravel Backend
+quranicare_be/.env
+quranicare_be/vendor/
+quranicare_be/storage/logs/*.log
+quranicare_be/storage/framework/cache/
+quranicare_be/storage/framework/sessions/
+quranicare_be/storage/framework/views/
+quranicare_be/bootstrap/cache/
+quranicare_be/node_modules/
+quranicare_be/public/storage
+quranicare_be/.phpunit.result.cache
+
+# Flutter specific (additional to quranicare/.gitignore)
+quranicare/build/
+quranicare/.dart_tool/
+
+# IDE dan Development Tools
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs dan temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.test
+
+# Database dumps
+*.sql
+*.sqlite
+*.db
+
+# Backup files
+backup/
+backups/
+*.backup
+
+# Documentation builds
+docs/_build/
+
+# Node modules (jika ada)
+node_modules/
+
+# Composer dependencies
+vendor/
+
+# Certificates dan keys (IMPORTANT!)
+*.pem
+*.key
+*.p12
+*.p8
+*.crt
+*.cer
+
+# Configuration files dengan sensitive data
+config/production.php
+config/local.php
