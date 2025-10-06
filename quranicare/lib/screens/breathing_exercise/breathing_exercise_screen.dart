@@ -984,10 +984,11 @@ class _BreathingAnimationScreenState extends State<BreathingAnimationScreen>
             
             // Breathing Animation
             Expanded(
-              child: Center(
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const SizedBox(height: 20),
                     // Dzikir Text
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 40),
@@ -1104,7 +1105,7 @@ class _BreathingAnimationScreenState extends State<BreathingAnimationScreen>
                       ),
                     ),
                     
-                    const SizedBox(height: 60),
+                    const SizedBox(height: 40),
                     
                     // Control Buttons
                     Row(
@@ -1188,6 +1189,7 @@ class _BreathingAnimationScreenState extends State<BreathingAnimationScreen>
                         ),
                       ],
                     ),
+                    const SizedBox(height: 20), // Add bottom padding
                   ],
                 ),
               ),

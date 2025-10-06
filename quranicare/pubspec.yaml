@@ -119,16 +119,16 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/Quranicare.jpg"
+  image_path: "assets/images/Logo Fix Quranicare.png"
   min_sdk_android: 21 # Required for adaptive icons
   
   # Android specific - adaptive icons untuk logo yang lebih besar
   adaptive_icon_background: "#FFFFFF"  # Background putih untuk kontras
-  adaptive_icon_foreground: "assets/images/Quranicare.jpg"
+  adaptive_icon_foreground: "assets/images/Logo Fix Quranicare.png"
   
   web:
     generate: true
-    image_path: "assets/images/Quranicare.jpg"
+    image_path: "assets/images/Logo Fix Quranicare.png"
     background_color: "#FFFFFF"
     theme_color: "#2E7D32"  # Warna hijau Islamic
   windows:

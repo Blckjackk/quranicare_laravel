@@ -249,26 +249,27 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F8F5),
       body: SafeArea(
-        child: Column(
-          children: [
-            // Header dengan gradasi seperti Sakinah Tracker
-            _buildHeader(),
-            const SizedBox(height: 20),
-            
-            // Calendar dengan mood indicators
-            Expanded(
-              child: Padding(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Header dengan gradasi seperti Sakinah Tracker
+              _buildHeader(),
+              const SizedBox(height: 20),
+              
+              // Calendar dengan mood indicators
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
                     _buildMoodCalendar(),
                     const SizedBox(height: 24),
                     _buildDailyMoodSection(),
+                    const SizedBox(height: 20), // Extra bottom padding
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

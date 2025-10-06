@@ -355,12 +355,12 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F8F5), // Natural green for relaxing audio atmosphere
+      backgroundColor: const Color(0xFFF0FDF4), // Light green background for relaxing audio atmosphere
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF6B7D6A)), // Natural green
+          icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF4CAF50)), // Green back arrow
           onPressed: () {
             if (_currentScreen == 3 || _currentScreen == 5) { // player screens
               _youtubeController?.dispose();
@@ -389,7 +389,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
         title: Text(
           _getScreenTitle(),
           style: const TextStyle(
-            color: Color(0xFF6B7D6A), // Natural green title
+            color: Color(0xFF4CAF50), // Green title
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -449,12 +449,12 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF8FA68E), Color(0xFF6B7D6A)], // Natural green gradient
+                colors: [Color(0xFF4CAF50), Color(0xFF4CAF50)], // Natural green gradient
               ),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF8FA68E).withOpacity(0.3), // Natural green shadow
+                  color: const Color(0xFF4CAF50).withOpacity(0.3), // Green shadow
                   blurRadius: 15,
                   offset: const Offset(0, 5),
                 ),
@@ -532,7 +532,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF6B7D6A), // Natural green title
+                                    color: Color(0xFF4CAF50), // Green title
                                   ),
                                 ),
                                 const SizedBox(height: 8),
@@ -550,12 +550,12 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                             width: 60,
                             height: 60,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF8FA68E).withOpacity(0.2), // Natural green background
+                              color: const Color(0xFF4CAF50).withOpacity(0.2), // Green background
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: const Icon(
                               Icons.library_music_rounded,
-                              color: Color(0xFF8FA68E), // Natural green icon
+                              color: Color(0xFF4CAF50), // Green icon
                               size: 30,
                             ),
                           ),
@@ -571,7 +571,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF8FA68E), // Natural green button
+                            color: const Color(0xFF4CAF50), // Green button
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Text(
@@ -621,7 +621,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: Color(0xFF6B7D6A), // Natural green title
+                                        color: Color(0xFF4CAF50), // Green title
                                       ),
                                     ),
                                     if (kIsWeb) ...[
@@ -665,12 +665,12 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                             width: 60,
                             height: 60,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF8FA68E).withOpacity(0.2),
+                              color: const Color(0xFF4CAF50).withOpacity(0.2),
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: const Icon(
                               Icons.menu_book_rounded,
-                              color: Color(0xFF8FA68E),
+                              color: Color(0xFF4CAF50),
                               size: 30,
                             ),
                           ),
@@ -686,7 +686,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF8FA68E),
+                            color: const Color(0xFF4CAF50),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Text(
@@ -714,7 +714,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
     if (_isLoadingCategories) {
       return const Center(
         child: CircularProgressIndicator(
-          color: Color(0xFF8FA68E), // Natural green loading
+          color: Color(0xFF4CAF50), // Natural green loading
         ),
       );
     }
@@ -735,7 +735,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF6B7D6A),
+                color: Color(0xFF4CAF50),
               ),
             ),
             const SizedBox(height: 8),
@@ -751,7 +751,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
             ElevatedButton(
               onPressed: _loadCategories,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF8FA68E),
+                backgroundColor: const Color(0xFF4CAF50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -768,7 +768,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
 
     return RefreshIndicator(
       onRefresh: _loadCategories,
-      color: const Color(0xFF8FA68E),
+      color: const Color(0xFF4CAF50),
       child: ListView.builder(
         padding: const EdgeInsets.all(20),
         itemCount: _categories.length,
@@ -789,7 +789,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF8FA68E).withOpacity(0.3),
+                      color: const Color(0xFF4CAF50).withOpacity(0.3),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -867,7 +867,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
     if (_isLoadingAudio) {
       return const Center(
         child: CircularProgressIndicator(
-          color: Color(0xFF8FA68E),
+          color: Color(0xFF4CAF50),
         ),
       );
     }
@@ -888,7 +888,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF6B7D6A),
+                color: Color(0xFF4CAF50),
               ),
             ),
             const SizedBox(height: 16),
@@ -899,7 +899,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF8FA68E),
+                backgroundColor: const Color(0xFF4CAF50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -922,7 +922,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
             Icon(
               Icons.music_note_outlined,
               size: 64,
-              color: const Color(0xFF8FA68E).withOpacity(0.6),
+              color: const Color(0xFF4CAF50).withOpacity(0.6),
             ),
             const SizedBox(height: 16),
             const Text(
@@ -930,7 +930,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF6B7D6A),
+                color: Color(0xFF4CAF50),
               ),
             ),
             const SizedBox(height: 8),
@@ -938,7 +938,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               'Audio akan segera tersedia',
               style: TextStyle(
                 fontSize: 14,
-                color: const Color(0xFF8FA68E).withOpacity(0.8),
+                color: const Color(0xFF4CAF50).withOpacity(0.8),
               ),
             ),
           ],
@@ -976,7 +976,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                     height: 60,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
-                      color: const Color(0xFF8FA68E).withOpacity(0.1),
+                      color: const Color(0xFF4CAF50).withOpacity(0.1),
                     ),
                     child: audio.isYouTubeAudio
                         ? ClipRRect(
@@ -987,7 +987,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                               errorBuilder: (context, error, stackTrace) {
                                 return const Icon(
                                   Icons.music_note,
-                                  color: Color(0xFF8FA68E),
+                                  color: Color(0xFF4CAF50),
                                   size: 30,
                                 );
                               },
@@ -995,7 +995,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                           )
                         : const Icon(
                             Icons.music_note,
-                            color: Color(0xFF8FA68E),
+                            color: Color(0xFF4CAF50),
                             size: 30,
                           ),
                   ),
@@ -1010,7 +1010,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF6B7D6A),
+                            color: Color(0xFF4CAF50),
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -1031,7 +1031,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                               Text(
                                 '•',
                                 style: TextStyle(
-                                  color: const Color(0xFF8FA68E).withOpacity(0.5),
+                                  color: const Color(0xFF4CAF50).withOpacity(0.5),
                                 ),
                               ),
                               const SizedBox(width: 8),
@@ -1040,7 +1040,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                               audio.formattedDuration,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: const Color(0xFF8FA68E).withOpacity(0.8),
+                                color: const Color(0xFF4CAF50).withOpacity(0.8),
                               ),
                             ),
                           ],
@@ -1053,12 +1053,12 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF8FA68E).withOpacity(0.1),
+                      color: const Color(0xFF4CAF50).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Icon(
                       Icons.play_arrow,
-                      color: Color(0xFF8FA68E),
+                      color: Color(0xFF4CAF50),
                       size: 24,
                     ),
                   ),
@@ -1144,7 +1144,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                 child: YoutubePlayer(
                   controller: _youtubeController!,
                   showVideoProgressIndicator: true,
-                  progressIndicatorColor: const Color(0xFF8FA68E),
+                  progressIndicatorColor: const Color(0xFF4CAF50),
                   onReady: () {
                     print('🎬 YouTube player ready!');
                     setState(() {
@@ -1168,13 +1168,13 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
             height: 200,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              color: const Color(0xFF8FA68E).withOpacity(0.1),
+              color: const Color(0xFF4CAF50).withOpacity(0.1),
             ),
             child: const Center(
               child: Icon(
                 Icons.music_note,
                 size: 64,
-                color: Color(0xFF8FA68E),
+                color: Color(0xFF4CAF50),
               ),
             ),
           ),
@@ -1190,7 +1190,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF6B7D6A),
+                  color: Color(0xFF4CAF50),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -1200,7 +1200,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   _selectedAudio!.artist!,
                   style: TextStyle(
                     fontSize: 16,
-                    color: const Color(0xFF8FA68E).withOpacity(0.8),
+                    color: const Color(0xFF4CAF50).withOpacity(0.8),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -1224,7 +1224,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   icon: Icon(
                     Icons.shuffle,
                     size: 24,
-                    color: const Color(0xFF8FA68E).withOpacity(0.3),
+                    color: const Color(0xFF4CAF50).withOpacity(0.3),
                   ),
                 ),
                 // Previous (disabled)
@@ -1233,7 +1233,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   icon: Icon(
                     Icons.skip_previous,
                     size: 32,
-                    color: const Color(0xFF8FA68E).withOpacity(0.3),
+                    color: const Color(0xFF4CAF50).withOpacity(0.3),
                   ),
                 ),
                 // Play/Pause
@@ -1243,11 +1243,11 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF8FA68E), Color(0xFF6B7D6A)],
+                      colors: [Color(0xFF4CAF50), Color(0xFF4CAF50)],
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF8FA68E).withOpacity(0.4),
+                        color: const Color(0xFF4CAF50).withOpacity(0.4),
                         blurRadius: 16,
                         offset: const Offset(0, 6),
                       ),
@@ -1268,7 +1268,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   icon: Icon(
                     Icons.skip_next,
                     size: 32,
-                    color: const Color(0xFF8FA68E).withOpacity(0.3),
+                    color: const Color(0xFF4CAF50).withOpacity(0.3),
                   ),
                 ),
                 // Stop
@@ -1277,7 +1277,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   icon: const Icon(
                     Icons.stop,
                     size: 24,
-                    color: Color(0xFF8FA68E),
+                    color: Color(0xFF4CAF50),
                   ),
                 ),
               ],
@@ -1296,14 +1296,14 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   '00:00',
                   style: TextStyle(
                     fontSize: 14,
-                    color: const Color(0xFF8FA68E).withOpacity(0.8),
+                    color: const Color(0xFF4CAF50).withOpacity(0.8),
                   ),
                 ),
                 Text(
                   _selectedAudio!.formattedDuration,
                   style: TextStyle(
                     fontSize: 14,
-                    color: const Color(0xFF8FA68E).withOpacity(0.8),
+                    color: const Color(0xFF4CAF50).withOpacity(0.8),
                   ),
                 ),
               ],
@@ -1323,7 +1323,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   icon: const Icon(Icons.refresh),
                   label: const Text('Coba Lagi'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8FA68E),
+                    backgroundColor: const Color(0xFF4CAF50),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -1342,7 +1342,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                   icon: const Icon(Icons.arrow_back),
                   label: const Text('Kembali ke Daftar Audio'),
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF8FA68E),
+                    foregroundColor: const Color(0xFF4CAF50),
                   ),
                 ),
               ],
@@ -1359,7 +1359,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
     if (_isLoadingQuran) {
       return const Center(
         child: CircularProgressIndicator(
-          color: Color(0xFF8FA68E),
+          color: Color(0xFF4CAF50),
         ),
       );
     }
@@ -1380,14 +1380,14 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF6B7D6A),
+                color: Color(0xFF4CAF50),
               ),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _loadQuranData,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF8FA68E),
+                backgroundColor: const Color(0xFF4CAF50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -1410,10 +1410,10 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
             margin: const EdgeInsets.all(20),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF8FA68E).withOpacity(0.1),
+              color: const Color(0xFF4CAF50).withOpacity(0.1),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: const Color(0xFF8FA68E).withOpacity(0.3),
+                color: const Color(0xFF4CAF50).withOpacity(0.3),
                 width: 1,
               ),
             ),
@@ -1421,7 +1421,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
               children: [
                 Icon(
                   Icons.info_outline,
-                  color: const Color(0xFF8FA68E),
+                  color: const Color(0xFF4CAF50),
                   size: 20,
                 ),
                 const SizedBox(width: 12),
@@ -1430,7 +1430,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                     'Mode Web: Audio murotal terbatas karena kebijakan browser.\nUntuk pengalaman terbaik, gunakan aplikasi mobile.',
                     style: TextStyle(
                       fontSize: 12,
-                      color: const Color(0xFF8FA68E).withOpacity(0.8),
+                      color: const Color(0xFF4CAF50).withOpacity(0.8),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -1458,7 +1458,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
             children: [
               const Icon(
                 Icons.person_rounded,
-                color: Color(0xFF8FA68E),
+                color: Color(0xFF4CAF50),
                 size: 24,
               ),
               const SizedBox(width: 12),
@@ -1467,7 +1467,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF6B7D6A),
+                  color: Color(0xFF4CAF50),
                 ),
               ),
               Expanded(
@@ -1487,7 +1487,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                         reciter.name,
                         style: const TextStyle(
                           fontSize: 14,
-                          color: Color(0xFF6B7D6A),
+                          color: Color(0xFF4CAF50),
                         ),
                       ),
                     );
@@ -1532,7 +1532,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                           height: 50,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xFF8FA68E), Color(0xFF6B7D6A)],
+                              colors: [Color(0xFF4CAF50), Color(0xFF4CAF50)],
                             ),
                             borderRadius: BorderRadius.circular(25),
                           ),
@@ -1558,7 +1558,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF6B7D6A),
+                                  color: Color(0xFF4CAF50),
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -1573,7 +1573,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                                 surah.englishNameTranslation,
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: const Color(0xFF8FA68E).withOpacity(0.7),
+                                  color: const Color(0xFF4CAF50).withOpacity(0.7),
                                 ),
                               ),
                             ],
@@ -1584,12 +1584,12 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF8FA68E).withOpacity(0.1),
+                            color: const Color(0xFF4CAF50).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: const Icon(
                             Icons.play_arrow,
-                            color: Color(0xFF8FA68E),
+                            color: Color(0xFF4CAF50),
                             size: 24,
                           ),
                         ),
@@ -1720,12 +1720,12 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF8FA68E), Color(0xFF6B7D6A)],
+                  colors: [Color(0xFF4CAF50), Color(0xFF4CAF50)],
                 ),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF8FA68E).withOpacity(0.3),
+                    color: const Color(0xFF4CAF50).withOpacity(0.3),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
                   ),
@@ -1807,7 +1807,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                 children: [
                   const Icon(
                     Icons.person_rounded,
-                    color: Color(0xFF8FA68E),
+                    color: Color(0xFF4CAF50),
                     size: 24,
                   ),
                   const SizedBox(width: 12),
@@ -1816,7 +1816,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF6B7D6A),
+                      color: Color(0xFF4CAF50),
                     ),
                   ),
                 ],
@@ -1844,10 +1844,10 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                         children: [
                           SliderTheme(
                             data: SliderTheme.of(context).copyWith(
-                              activeTrackColor: const Color(0xFF8FA68E),
-                              inactiveTrackColor: const Color(0xFF8FA68E).withOpacity(0.3),
-                              thumbColor: const Color(0xFF8FA68E),
-                              overlayColor: const Color(0xFF8FA68E).withOpacity(0.2),
+                              activeTrackColor: const Color(0xFF4CAF50),
+                              inactiveTrackColor: const Color(0xFF4CAF50).withOpacity(0.3),
+                              thumbColor: const Color(0xFF4CAF50),
+                              overlayColor: const Color(0xFF4CAF50).withOpacity(0.2),
                               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
                               trackHeight: 4,
                             ),
@@ -1868,14 +1868,14 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                                 _audioPlayerService.formatDuration(position),
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: const Color(0xFF8FA68E).withOpacity(0.8),
+                                  color: const Color(0xFF4CAF50).withOpacity(0.8),
                                 ),
                               ),
                               Text(
                                 _audioPlayerService.formatDuration(duration),
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: const Color(0xFF8FA68E).withOpacity(0.8),
+                                  color: const Color(0xFF4CAF50).withOpacity(0.8),
                                 ),
                               ),
                             ],
@@ -1902,7 +1902,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                     icon: Icon(
                       Icons.skip_previous,
                       size: 32,
-                      color: const Color(0xFF8FA68E).withOpacity(0.3),
+                      color: const Color(0xFF4CAF50).withOpacity(0.3),
                     ),
                   ),
                   // Play/Pause
@@ -1912,11 +1912,11 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF8FA68E), Color(0xFF6B7D6A)],
+                        colors: [Color(0xFF4CAF50), Color(0xFF4CAF50)],
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF8FA68E).withOpacity(0.4),
+                          color: const Color(0xFF4CAF50).withOpacity(0.4),
                           blurRadius: 16,
                           offset: const Offset(0, 6),
                         ),
@@ -1948,7 +1948,7 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
                     icon: Icon(
                       Icons.skip_next,
                       size: 32,
-                      color: const Color(0xFF8FA68E).withOpacity(0.3),
+                      color: const Color(0xFF4CAF50).withOpacity(0.3),
                     ),
                   ),
                 ],
@@ -1966,15 +1966,15 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
     switch (categoryName.toLowerCase()) {
       case 'nasheed':
       case 'musik islami':
-        return [const Color(0xFF8FA68E), const Color(0xFF6B7D6A)]; // Natural green
+        return [const Color(0xFF4CAF50), const Color(0xFF4CAF50)]; // Natural green
       case 'dzikir dan doa':
       case 'dzikir & doa':
-        return [const Color(0xFF6B7D6A), const Color(0xFF8FA68E)]; // Reversed natural green
+        return [const Color(0xFF4CAF50), const Color(0xFF4CAF50)]; // Reversed natural green
       case 'murottal':
       case 'murrotal':
-        return [const Color(0xFF8FA68E), const Color(0xFF6B7D6A)]; // Natural green
+        return [const Color(0xFF4CAF50), const Color(0xFF4CAF50)]; // Natural green
       default:
-        return [const Color(0xFF8FA68E), const Color(0xFF6B7D6A)]; // Default natural green
+        return [const Color(0xFF4CAF50), const Color(0xFF4CAF50)]; // Default natural green
     }
   }
 }
