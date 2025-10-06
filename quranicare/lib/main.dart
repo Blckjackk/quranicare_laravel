@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:quranicare/screens/splash_screen.dart';
-import 'firebase_options.dart';
-import 'test_firebase_screen.dart';
-import 'test_font_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/home/notification_screen.dart';
 import 'screens/mood_tracker_screen.dart';
 import 'screens/breathing_exercise/breathing_exercise_screen.dart';
-import 'screens/breathing_exercise/breathing_exercise_test_screen.dart';
 import 'screens/audio_relax/audio_relax_screen.dart';
 import 'screens/jurnal_refleksi/jurnal_refleksi_screen.dart';
 import 'screens/doa_dzikir_screen.dart';
@@ -26,9 +21,6 @@ import 'screens/daily_recap_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
   runApp(const MyApp());
 }
 
@@ -70,7 +62,6 @@ class MyApp extends StatelessWidget {
       // home: const HomeScreen(),
       routes: {
         '/home': (context) => const HomeScreen(),
-        '/firebase-test': (context) => const TestFirebaseScreen(),
         '/onboarding': (context) => const OnboardingScreen(),
         '/signin': (context) => const SignInScreen(),
         '/signup': (context) => const SignUpScreen(),
@@ -79,7 +70,6 @@ class MyApp extends StatelessWidget {
         '/notification': (context) => const NotificationScreen(),
         '/mood-tracker': (context) => const MoodTrackerScreen(),
         '/breathing-exercise': (context) => const BreathingExerciseScreen(),
-        '/breathing-test': (context) => const BreathingExerciseTestScreen(),
         '/audio-relax': (context) => const AudioRelaxScreen(),
         '/jurnal-refleksi': (context) => const JurnalRefleksiScreen(),
         '/doa-dzikir': (context) => const DoaDzikirScreen(),
@@ -88,7 +78,6 @@ class MyApp extends StatelessWidget {
         '/alquran': (context) => const AlQuranScreen(),
         '/admin-login': (context) => const AdminLoginScreen(),
         '/daily-recap': (context) => const DailyRecapScreen(),
-        '/test-font': (context) => const TestFontScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/verification') {
