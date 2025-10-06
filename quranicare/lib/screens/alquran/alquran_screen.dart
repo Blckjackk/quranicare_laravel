@@ -5,6 +5,15 @@ import '../../widgets/add_reflection_modal_simple.dart';
 import '../../widgets/reflection_list_widget.dart';
 import '../../utils/font_styles.dart';
 
+// SAFE SETSTATE UTILITY untuk mencegah setState setelah dispose
+mixin SafeSetStateMixin<T extends StatefulWidget> on State<T> {
+  void safeSetState(VoidCallback fn) {
+    if (mounted) {
+      setState(fn);
+    }
+  }
+}
+
 class AlQuranScreen extends StatefulWidget {
   const AlQuranScreen({super.key});
 
@@ -12,7 +21,7 @@ class AlQuranScreen extends StatefulWidget {
   State<AlQuranScreen> createState() => _AlQuranScreenState();
 }
 
-class _AlQuranScreenState extends State<AlQuranScreen> {
+class _AlQuranScreenState extends State<AlQuranScreen> with SafeSetStateMixin {
   List<SurahData> surahList = [];
   List<SurahData> filteredSurahList = [];
   bool isLoading = true;
@@ -27,18 +36,18 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
 
   Future<void> loadSurahs() async {
     try {
-      setState(() {
+      safeSetState(() {
         isLoading = true;
       });
       
       final surahs = await QuranService.getSurahs();
-      setState(() {
+      safeSetState(() {
         surahList = surahs;
         filteredSurahList = surahs;
         isLoading = false;
       });
     } catch (e) {
-      setState(() {
+      safeSetState(() {
         isLoading = false;
       });
       
@@ -54,7 +63,7 @@ class _AlQuranScreenState extends State<AlQuranScreen> {
   }
 
   void filterSurahs(String query) {
-    setState(() {
+    safeSetState(() {
       searchQuery = query;
       if (query.isEmpty) {
         filteredSurahList = surahList;
@@ -741,7 +750,7 @@ class SurahDetailScreen extends StatefulWidget {
   State<SurahDetailScreen> createState() => _SurahDetailScreenState();
 }
 
-class _SurahDetailScreenState extends State<SurahDetailScreen> {
+class _SurahDetailScreenState extends State<SurahDetailScreen> with SafeSetStateMixin {
   List<AyahData> ayahs = [];
   bool isLoading = true;
   final journal.JournalService _journalService = journal.JournalService();
@@ -754,17 +763,17 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
 
   Future<void> loadAyahs() async {
     try {
-      setState(() {
+      safeSetState(() {
         isLoading = true;
       });
       
       final response = await QuranService.getAyahs(widget.surah.number);
-      setState(() {
+      safeSetState(() {
         ayahs = response.ayahs;
         isLoading = false;
       });
     } catch (e) {
-      setState(() {
+      safeSetState(() {
         isLoading = false;
       });
       

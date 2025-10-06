@@ -4,6 +4,15 @@ import '../services/doa_dzikir_service.dart';
 import '../widgets/doa_dzikir_session_dialog.dart';
 import '../utils/font_styles.dart';
 
+// SAFE SETSTATE UTILITY untuk mencegah setState setelah dispose
+mixin SafeSetStateMixin<T extends StatefulWidget> on State<T> {
+  void safeSetState(VoidCallback fn) {
+    if (mounted) {
+      safeSetState(fn);
+    }
+  }
+}
+
 class DoaDzikirScreen extends StatefulWidget {
   const DoaDzikirScreen({super.key});
 
@@ -11,7 +20,7 @@ class DoaDzikirScreen extends StatefulWidget {
   State<DoaDzikirScreen> createState() => _DoaDzikirScreenState();
 }
 
-class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
+class _DoaDzikirScreenState extends State<DoaDzikirScreen> with SafeSetStateMixin {
   final DoaDzikirService _doaDzikirService = DoaDzikirService();
   List<DoaDzikir> _doaDzikirList = [];
   List<String> _groups = [];
@@ -33,7 +42,7 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
   Future<void> _loadInitialData() async {
     try {
       print('🟡 Starting to load initial data...');
-      setState(() {
+      safeSetState(() {
         _isLoading = true;
         _errorMessage = '';
       });
@@ -47,7 +56,7 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
       try {
         print('🟡 Loading groups...');
         final groups = await _doaDzikirService.getGroups();
-        setState(() {
+        safeSetState(() {
           _groups = groups;
         });
         print('🟡 Groups loaded: ${groups.length}');
@@ -59,7 +68,7 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
       try {
         print('🟡 Loading tags...');
         final tags = await _doaDzikirService.getTags();
-        setState(() {
+        safeSetState(() {
           _tags = tags;
         });
         print('🟡 Tags loaded: ${tags.length}');
@@ -68,16 +77,20 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
         // Continue without tags
       }
       
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        safeSetState(() {
+          _isLoading = false;
+        });
+      }
       print('🟢 Initial data load completed successfully');
     } catch (e) {
       print('❌ Error in _loadInitialData: $e');
-      setState(() {
-        _errorMessage = e.toString();
-        _isLoading = false;
-      });
+      if (mounted) {
+        safeSetState(() {
+          _errorMessage = e.toString();
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -85,7 +98,7 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
     try {
       print('🔵 _loadDoaDzikir called with showLoading: $showLoading');
       if (showLoading) {
-        setState(() {
+        safeSetState(() {
           _isLoading = true;
           _errorMessage = '';
         });
@@ -103,7 +116,7 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
       final doaDzikirData = result['doa_dzikir'];
       print('🔵 DoaDzikir data type: ${doaDzikirData.runtimeType}, length: ${doaDzikirData is List ? doaDzikirData.length : 'not list'}');
       
-      setState(() {
+      safeSetState(() {
         _doaDzikirList = result['doa_dzikir'] as List<DoaDzikir>;
         if (showLoading) _isLoading = false;
       });
@@ -111,7 +124,7 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
       print('🔵 State updated - list length: ${_doaDzikirList.length}');
     } catch (e) {
       print('❌ Error in _loadDoaDzikir: $e');
-      setState(() {
+      safeSetState(() {
         _errorMessage = e.toString();
         if (showLoading) _isLoading = false;
       });
@@ -136,7 +149,7 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
           // Search bar
           TextField(
             onChanged: (value) {
-              setState(() {
+              safeSetState(() {
                 _searchQuery = value;
               });
               _loadDoaDzikir();
@@ -167,7 +180,7 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
                   label: const Text('Unggulan'),
                   selected: _showFeaturedOnly,
                   onSelected: (bool selected) {
-                    setState(() {
+                    safeSetState(() {
                       _showFeaturedOnly = selected;
                     });
                     _loadDoaDzikir(showLoading: true);
@@ -183,7 +196,7 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
                   hint: const Text('Grup'),
                   value: _selectedGroup,
                   onChanged: (String? newValue) {
-                    setState(() {
+                    safeSetState(() {
                       _selectedGroup = newValue;
                     });
                     _loadDoaDzikir(showLoading: true);
@@ -209,7 +222,7 @@ class _DoaDzikirScreenState extends State<DoaDzikirScreen> {
                   hint: const Text('Tag'),
                   value: _selectedTag,
                   onChanged: (String? newValue) {
-                    setState(() {
+                    safeSetState(() {
                       _selectedTag = newValue;
                     });
                     _loadDoaDzikir(showLoading: true);
