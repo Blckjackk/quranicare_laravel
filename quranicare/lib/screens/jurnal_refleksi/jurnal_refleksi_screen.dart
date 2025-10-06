@@ -46,7 +46,6 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
 
   // Backend integration variables
   List<JournalData> _journalHistory = [];
-  List<AyahData> _availableAyahs = [];
   bool _isLoading = false;
   String? _selectedSurah;
   String? _selectedAyah;
@@ -106,7 +105,7 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
     try {
       // For now, we don't load ayahs here since we need specific ayah IDs
       // This method can be enhanced later when needed
-      setState(() => _availableAyahs = []);
+      setState(() => _isLoading = false);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
