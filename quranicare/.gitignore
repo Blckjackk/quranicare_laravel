@@ -43,3 +43,70 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# HARAM MODE ADDITIONS 😈
+# Auto-generated plugin files yang sering bermasalah
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+
+# Laravel Backend specific (jika ada)
+/quranicare_be/.env
+/quranicare_be/vendor/
+/quranicare_be/storage/logs/
+/quranicare_be/storage/framework/cache/
+/quranicare_be/storage/framework/sessions/
+/quranicare_be/storage/framework/views/
+/quranicare_be/bootstrap/cache/
+/quranicare_be/node_modules/
+
+# Firebase config files (optional - comment out jika ingin di-track)
+# android/app/google-services.json
+# ios/Runner/GoogleService-Info.plist
+
+# Generated APK/Bundle files
+*.apk
+*.aab
+*.ipa
+
+# Gradle cache dan build files
+android/.gradle/
+android/app/.cxx/
+android/local.properties
+
+# iOS build files
+ios/Flutter/flutter_export_environment.sh
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# Web build artifacts
+web/flutter_service_worker.js
+web/manifest.json
+web/version.json
+
+# Testing
+coverage/
+test_driver/
+
+# IDE dan editor files
+.vscode/settings.json
+.vscode/launch.json
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
