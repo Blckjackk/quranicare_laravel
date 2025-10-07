@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'activity_logger_service.dart';
 
 class ChatService {
-  final String baseUrl = "http://127.0.0.1:8000/api";
+  final String baseUrl = "https://quranicare-laravel.vercel.app/api/api";
   final ActivityLoggerService _activityLogger = ActivityLoggerService();
   
   DateTime? _sessionStart;

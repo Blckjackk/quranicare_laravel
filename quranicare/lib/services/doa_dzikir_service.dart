@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/doa_dzikir.dart';
 
 class DoaDzikirService {
-  static const String baseUrl = 'http://localhost:8000/api';
+  static const String baseUrl = 'https://quranicare-laravel.vercel.app/api/api';
 
   // Get all doa dzikir
   Future<Map<String, dynamic>> getAllDoaDzikir({
@@ -95,7 +95,7 @@ class DoaDzikirService {
     } catch (e) {
       print('❌ Service Exception: $e');
       if (e.toString().contains('SocketException') || e.toString().contains('TimeoutException')) {
-        throw Exception('Tidak dapat terhubung ke server. Pastikan server Laravel berjalan di http://localhost:8000');
+        throw Exception('Tidak dapat terhubung ke server. Pastikan koneksi internet stabil');
       }
       throw Exception('Error loading doa dzikir: $e');
     }

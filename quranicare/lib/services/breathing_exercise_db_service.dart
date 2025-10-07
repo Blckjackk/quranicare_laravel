@@ -3,8 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/breathing_exercise_db.dart';
 
 class BreathingExerciseService {
-  static const String baseUrl = 'http://10.0.2.2:8000/api'; // Android emulator
-  // static const String baseUrl = 'http://localhost:8000/api'; // iOS simulator
+  static const String baseUrl = 'https://quranicare-laravel.vercel.app/api/api'; // Production API
 
   // Fetch all breathing categories with exercises
   Future<List<BreathingCategoryDb>> getCategories() async {

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BreathingExerciseService {
-  static const String baseUrl = 'http://localhost:8000/api';
+  static const String baseUrl = 'https://quranicare-laravel.vercel.app/api/api';
   String? _token;
   static final BreathingExerciseService _instance = BreathingExerciseService._internal();
   

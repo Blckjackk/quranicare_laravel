@@ -1,4 +1,4 @@
-// This is a basic Flutter widget test.
+// QuraniCare widget tests
 //
 // To perform an interaction with a widget in your test, use the WidgetTester
 // utility in the flutter_test package. For example, you can send tap and scroll
@@ -11,20 +11,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:quranicare/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('QuraniCare app basic configuration test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that the app loads without crashing
+    expect(find.byType(MaterialApp), findsOneWidget);
+    
+    // Verify app title is set correctly
+    final MaterialApp app = tester.widget(find.byType(MaterialApp));
+    expect(app.title, 'QuraniCare');
+    
+    // Verify debug banner is disabled
+    expect(app.debugShowCheckedModeBanner, false);
+    
+    // Verify primary color
+    expect(app.theme?.primaryColor, const Color(0xFF2D5A5A));
+    
+    // Verify Material3 is enabled
+    expect(app.theme?.useMaterial3, true);
   });
 }
