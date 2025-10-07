@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'verification_screen.dart';
 import '../../utils/asset_manager.dart';
 import '../../services/auth_service.dart';
-import '../home_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -60,10 +58,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             );
             
-            // Navigate to home screen and clear stack
-            Navigator.pushAndRemoveUntil(
+            // Navigate to home screen and clear stack (same as login)
+            Navigator.pushNamedAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              '/home',
               (route) => false,
             );
           }
