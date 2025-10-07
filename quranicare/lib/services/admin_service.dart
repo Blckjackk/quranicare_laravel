@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/admin/admin.dart';
 
 class AdminService {
-  static const String baseUrl = 'https://quranicare-laravel.vercel.app/api/api/admin';
+  static const String baseUrl = 'https://quranicarelaravel-production.up.railway.app/api/admin';
   
   String? _token;
 

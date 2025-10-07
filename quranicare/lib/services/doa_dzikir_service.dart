@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/doa_dzikir.dart';
 
 class DoaDzikirService {
-  static const String baseUrl = 'https://quranicare-laravel.vercel.app/api/api';
+  static const String baseUrl = 'https://quranicarelaravel-production.up.railway.app/api';
 
   // Get all doa dzikir
   Future<Map<String, dynamic>> getAllDoaDzikir({

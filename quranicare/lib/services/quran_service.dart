@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class QuranService {
-  static const String baseUrl = 'https://quranicare-laravel.vercel.app/api/api';
+  static const String baseUrl = 'https://quranicarelaravel-production.up.railway.app/api';
   
   // Get all surahs
   static Future<List<SurahData>> getSurahs() async {

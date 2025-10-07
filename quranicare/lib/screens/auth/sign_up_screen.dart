@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'verification_screen.dart';
 import '../../utils/asset_manager.dart';
+import '../../services/auth_service.dart';
+import '../home_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -11,15 +13,18 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
+  final AuthService _authService = AuthService();
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -32,22 +37,61 @@ class _SignUpScreenState extends State<SignUpScreen> {
         _isLoading = true;
       });
 
-      // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
-      
-      setState(() {
-        _isLoading = false;
-      });
+      try {
+        // Call register API
+        final result = await _authService.register(
+          name: _nameController.text.isNotEmpty ? _nameController.text : _emailController.text.split('@').first,
+          email: _emailController.text,
+          password: _passwordController.text,
+          passwordConfirmation: _confirmPasswordController.text,
+        );
+        
+        setState(() {
+          _isLoading = false;
+        });
 
-      // Navigate to verification screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => VerificationScreen(
-            email: _emailController.text,
-          ),
-        ),
-      );
+        if (result['success'] == true) {
+          // Registration successful, go directly to home screen
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(result['message'] ?? 'Registration successful!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+            
+            // Navigate to home screen and clear stack
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+              (route) => false,
+            );
+          }
+        } else {
+          // Registration failed
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(result['message'] ?? 'Registration failed'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
     }
   }
 

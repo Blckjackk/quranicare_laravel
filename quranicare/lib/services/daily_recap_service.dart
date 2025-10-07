@@ -4,7 +4,7 @@ import 'activity_logger_service.dart';
 import 'auth_service.dart';
 
 class DailyRecapService {
-  static const String baseUrl = 'https://quranicare-laravel.vercel.app/api/api';
+  static const String baseUrl = 'https://quranicarelaravel-production.up.railway.app/api';
   final ActivityLoggerService _activityLogger = ActivityLoggerService();
   final AuthService _authService = AuthService();
   String? _token;

@@ -148,7 +148,7 @@ class JournalStats {
 }
 
 class JournalService {
-  static const String baseUrl = 'https://quranicare-laravel.vercel.app/api/api';
+  static const String baseUrl = 'https://quranicarelaravel-production.up.railway.app/api';
 
   // Get auth token from shared preferences
   Future<String?> _getAuthToken() async {

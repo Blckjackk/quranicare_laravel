@@ -5,7 +5,7 @@ import '../models/activity_summary.dart';
 import 'auth_service.dart';
 
 class SakinahTrackerService {
-  static const String baseUrl = 'https://quranicare-laravel.vercel.app/api/api';
+  static const String baseUrl = 'https://quranicarelaravel-production.up.railway.app/api';
   final AuthService _authService = AuthService();
   String? _token;
   static final SakinahTrackerService _instance = SakinahTrackerService._internal();

@@ -5,7 +5,7 @@ import '../widgets/mood_selector_widget.dart';
 
 class MoodService {
   // Base URL - sesuaikan dengan backend Anda
-  static const String baseUrl = 'https://quranicare-laravel.vercel.app/api/api';
+  static const String baseUrl = 'https://quranicarelaravel-production.up.railway.app/api';
   
   // Singleton pattern
   static final MoodService _instance = MoodService._internal();

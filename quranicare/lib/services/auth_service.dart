@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  static const String baseUrl = 'https://quranicare-laravel.vercel.app/api/api';
+  static const String baseUrl = 'https://quranicarelaravel-production.up.railway.app/api';
   String? _token;
 
   // Get stored token
@@ -234,5 +234,100 @@ class AuthService {
     print('🔑 AuthService: Token verification result: $isValid');
     
     return isValid;
+  }
+
+  // User Registration
+  Future<Map<String, dynamic>> register({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    try {
+      print('AuthService: Attempting registration for $email');
+      
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/register'),
+        headers: await _getHeaders(),
+        body: jsonEncode({
+          'name': name,
+          'email': email,
+          'password': password,
+          'password_confirmation': passwordConfirmation,
+        }),
+      );
+
+      print('AuthService: Registration response status: ${response.statusCode}');
+      print('AuthService: Registration response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        
+        // Handle both success: true and success: 1 cases
+        final isSuccess = data['success'] == true || 
+                         data['success'] == 1 || 
+                         data['success'] == 'true';
+        
+        if (isSuccess && data['data'] != null) {
+          // Try both 'token' and 'access_token' fields
+          final token = data['data']['token']?.toString() ?? 
+                       data['data']['access_token']?.toString();
+          
+          if (token != null) {
+            await saveToken(token);
+            print('AuthService: Registration successful, token saved');
+            
+            return {
+              'success': true,
+              'message': data['message']?.toString() ?? 'Registration successful',
+              'user': data['data']['user'],
+              'token': token,
+            };
+          }
+        }
+        
+        return {
+          'success': false,
+          'message': data['message']?.toString() ?? 'Registration failed - no token received',
+        };
+      } else if (response.statusCode == 422) {
+        // Validation errors (duplicate email, etc)
+        final data = jsonDecode(response.body);
+        String errorMessage = 'Registration failed';
+        
+        if (data['errors'] != null && data['errors'] is Map) {
+          final errors = data['errors'] as Map<String, dynamic>;
+          final errorMessages = <String>[];
+          errors.forEach((key, value) {
+            if (value is List && value.isNotEmpty) {
+              errorMessages.add(value.first.toString());
+            }
+          });
+          if (errorMessages.isNotEmpty) {
+            errorMessage = errorMessages.join(', ');
+          }
+        } else if (data['message'] != null) {
+          errorMessage = data['message'].toString();
+        }
+        
+        return {
+          'success': false,
+          'message': errorMessage,
+          'errors': data['errors'],
+        };
+      } else {
+        final data = jsonDecode(response.body);
+        return {
+          'success': false,
+          'message': data['message']?.toString() ?? 'Registration failed with status ${response.statusCode}',
+        };
+      }
+    } catch (e) {
+      print('AuthService: Registration error: $e');
+      return {
+        'success': false,
+        'message': 'Connection error: $e',
+      };
+    }
   }
 }

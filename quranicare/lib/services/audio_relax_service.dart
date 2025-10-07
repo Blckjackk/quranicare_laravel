@@ -5,7 +5,7 @@ import 'activity_logger_service.dart';
 
 class AudioRelaxService {
   // Production API endpoint
-  static const String baseUrl = 'https://quranicare-laravel.vercel.app/api/api';
+  static const String baseUrl = 'https://quranicarelaravel-production.up.railway.app/api';
   final ActivityLoggerService _activityLogger = ActivityLoggerService();
   
   // Track listening session data
