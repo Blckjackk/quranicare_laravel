@@ -50,7 +50,7 @@ class AuthService {
       print('AuthService: Attempting login for $email');
       
       final response = await http.post(
-        Uri.parse('$baseUrl/auth/login'),
+        Uri.parse('$baseUrl/login'),
         headers: await _getHeaders(),
         body: jsonEncode({
           'email': email,
@@ -146,7 +146,7 @@ class AuthService {
   Future<Map<String, dynamic>> logout() async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/auth/logout'),
+        Uri.parse('$baseUrl/logout'),
         headers: await _getHeaders(),
       );
 
@@ -178,10 +178,10 @@ class AuthService {
       print('🌐 AuthService: Making getProfile request...');
       final headers = await _getHeaders();
       print('🌐 AuthService: Request headers: $headers');
-      print('🌐 AuthService: Request URL: $baseUrl/user/profile');
+      print('🌐 AuthService: Request URL: $baseUrl/me');
       
       final response = await http.get(
-        Uri.parse('$baseUrl/user/profile'),
+        Uri.parse('$baseUrl/me'),
         headers: headers,
       );
 
@@ -247,7 +247,7 @@ class AuthService {
       print('AuthService: Attempting registration for $email');
       
       final response = await http.post(
-        Uri.parse('$baseUrl/auth/register'),
+        Uri.parse('$baseUrl/register'),
         headers: await _getHeaders(),
         body: jsonEncode({
           'name': name,
