@@ -405,218 +405,113 @@ class _MoodSpinnerWidgetState extends State<MoodSpinnerWidget>
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Make widget responsive to available space
-        final availableWidth = constraints.maxWidth;
-        final availableHeight = constraints.maxHeight;
-        
-        // Calculate optimal sizes based on available space
-        final wheelSize = math.min(availableWidth * 0.8, availableHeight * 0.7).clamp(200.0, 280.0);
-        final totalHeight = math.min(availableHeight, wheelSize + 120);
-        
-        return Container(
-          width: availableWidth,
-          height: totalHeight,
-          child: Column(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Spinner Wheel - Simple and Clean
+        Container(
+          width: 220,
+          height: 220,
+          child: Stack(
+            alignment: Alignment.center,
             children: [
-              // Spinner Wheel
-              Expanded(
-                flex: 3,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    _buildSpinnerWheel(wheelSize),
-                    
-                    // Disabled overlay
-                    if (!widget.canSpin)
-                    Container(
-                      width: wheelSize,
-                      height: wheelSize,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.grey.withValues(alpha: 0.4),
-                      ),
-                      child: Center(
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: const Text(
-                            '🔒',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ),
-                      ),
-                    ),
-                    
-                    // Center pointer/indicator
-                    Positioned(
-                      top: wheelSize * 0.05,
-                      child: Container(
-                        width: wheelSize * 0.1,
-                        height: wheelSize * 0.1,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: widget.canSpin ? Colors.red : Colors.grey,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.keyboard_arrow_down,
-                          color: Colors.white,
-                          size: wheelSize * 0.08,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _buildSpinnerWheel(220),
               
-              // Bottom content - flexible
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // Instruction Text
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: widget.canSpin && !_isSpinning
-                              ? const Color(0xFF16A34A).withValues(alpha: 0.1)
-                              : Colors.grey.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: widget.canSpin && !_isSpinning
-                                ? const Color(0xFF16A34A)
-                                : Colors.grey,
-                            width: 1.5,
+              // Disabled overlay
+              if (!widget.canSpin)
+                Container(
+                  width: 220,
+                  height: 220,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey.withValues(alpha: 0.6),
+                  ),
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
                           ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              widget.canSpin && !_isSpinning
-                                  ? (_isSpinning ? Icons.hourglass_empty : Icons.touch_app)
-                                  : Icons.check_circle,
-                              color: widget.canSpin && !_isSpinning
-                                  ? const Color(0xFF16A34A)
-                                  : Colors.grey,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 6),
-                            Flexible(
-                              child: Text(
-                                widget.canSpin && !_isSpinning
-                                    ? (_isSpinning ? 'Menunggu hasil...' : 'Seret roda untuk pilih')
-                                    : 'Sudah memilih hari ini',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: widget.canSpin && !_isSpinning
-                                      ? const Color(0xFF16A34A)
-                                      : Colors.grey,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
+                        ],
+                      ),
+                      child: const Text(
+                        '🔒 Selesai',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey,
                         ),
                       ),
-                      
-                      // Selected mood display
-                      if (_selectedMoodIndex != null)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: _moods[_selectedMoodIndex!].color.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: _moods[_selectedMoodIndex!].color,
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                _moods[_selectedMoodIndex!].emoji,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                              const SizedBox(width: 6),
-                              Flexible(
-                                child: Text(
-                                  _moods[_selectedMoodIndex!].label,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: _moods[_selectedMoodIndex!].color,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        
-                      if (!widget.canSpin && _selectedMoodIndex == null)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.orange.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: Colors.orange,
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.check_circle,
-                                color: Colors.orange,
-                                size: 14,
-                              ),
-                              const SizedBox(width: 6),
-                              const Flexible(
-                                child: Text(
-                                  'Sudah memilih mood hari ini',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.orange,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                    ),
+                  ),
+                ),
+              
+              // Center pointer/indicator
+              Positioned(
+                top: 10,
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: widget.canSpin ? const Color(0xFF8FA68E) : Colors.grey,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
                     ],
+                  ),
+                  child: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Colors.white,
+                    size: 18,
                   ),
                 ),
               ),
             ],
           ),
-        );
-      },
+        ),
+        
+        const SizedBox(height: 20),
+        
+        // Instruction Text - Simplified
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: widget.canSpin && !_isSpinning
+                ? const Color(0xFF8FA68E).withValues(alpha: 0.1)
+                : Colors.grey.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: widget.canSpin && !_isSpinning
+                  ? const Color(0xFF8FA68E)
+                  : Colors.grey,
+              width: 1.5,
+            ),
+          ),
+          child: Text(
+            widget.canSpin && !_isSpinning
+                ? (_isSpinning ? 'Menunggu hasil...' : 'Seret roda untuk pilih')
+                : 'Sudah memilih hari ini',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: widget.canSpin && !_isSpinning
+                  ? const Color(0xFF8FA68E)
+                  : Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
     );
   }
 }

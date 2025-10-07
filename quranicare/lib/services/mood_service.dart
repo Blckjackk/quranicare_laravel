@@ -35,11 +35,12 @@ class MoodService {
     try {
       final url = Uri.parse('$baseUrl/mood');
       
+      final now = moodTime ?? DateTime.now();
       final body = {
         'mood_type': mood.type,
         'notes': notes,
         'mood_date': (moodDate ?? DateTime.now()).toIso8601String().split('T')[0],
-        'mood_time': (moodTime ?? DateTime.now()).toIso8601String().split('T')[1].split('.')[0],
+        'mood_time': '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}',
       };
 
       final response = await http.post(
@@ -82,11 +83,12 @@ class MoodService {
     try {
       final url = Uri.parse('$baseUrl/mood');
       
+      final now = moodTime ?? DateTime.now();
       final body = {
         'mood_type': moodType,
         'notes': notes,
         'mood_date': (moodDate ?? DateTime.now()).toIso8601String().split('T')[0],
-        'mood_time': (moodTime ?? DateTime.now()).toIso8601String().split('T')[1].split('.')[0],
+        'mood_time': '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}',
       };
 
       if (isDebugMode) {

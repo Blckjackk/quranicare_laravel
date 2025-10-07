@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../widgets/mood_spinner_widget.dart';
 import '../services/mood_service.dart';
 import '../services/auth_service.dart';
-import 'dart:math' as math;
 
 class MoodTrackerScreen extends StatefulWidget {
   const MoodTrackerScreen({super.key});
@@ -127,23 +126,33 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
       
       if (userToken == null) {
         _showErrorSnackBar('Tidak ada token autentikasi. Silakan login kembali.');
+        setState(() {
+          _isLoading = false;
+        });
         return;
       }
       
       print('💾 Saving mood: ${_selectedMood!.type} (${_selectedMood!.label})');
+      print('🔐 Using token: ${userToken.substring(0, 20)}...');
       
       final result = await _moodService.saveMoodByType(
         token: userToken,
         moodType: _selectedMood!.type,
         moodDate: DateTime.now(),
         moodTime: DateTime.now(),
-        notes: 'Dipilih menggunakan spinner wheel',
+        notes: 'Dipilih menggunakan spinner wheel - ${_selectedMood!.label}',
       );
 
       print('📋 Save result: ${result['success']} - ${result['message']}');
+      if (result.containsKey('status_code')) {
+        print('🔍 HTTP Status: ${result['status_code']}');
+      }
+      if (result.containsKey('errors')) {
+        print('❌ Errors: ${result['errors']}');
+      }
 
       if (result['success']) {
-        _showSuccessSnackBar('Mood "${_selectedMood!.label}" berhasil disimpan!');
+        _showSuccessSnackBar('Mood "${_selectedMood!.label}" berhasil disimpan! 🎉');
         
         // Update state to prevent multiple selections
         setState(() {
@@ -406,71 +415,16 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
                           Container(
                             child: Column(
                               children: [
-                                // Mood Spinner Widget - responsive container
-                                LayoutBuilder(
-                                  builder: (context, constraints) {
-                                    final availableWidth = constraints.maxWidth;
-                                    final containerWidth = availableWidth - 40; // 20px margin each side
-                                    final containerHeight = math.min(containerWidth * 0.8, 280.0).toDouble(); // Responsive height
-                                    
-                                    return Container(
-                                      height: containerHeight,
-                                      margin: const EdgeInsets.symmetric(horizontal: 20),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withValues(alpha: 0.95),
-                                        borderRadius: BorderRadius.circular(30),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withValues(alpha: 0.1),
-                                            blurRadius: 25,
-                                            offset: const Offset(0, 15),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Stack(
-                                        children: [
-                                          // Background Spin Emote
-                                          Positioned.fill(
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(30),
-                                              child: Opacity(
-                                                opacity: 0.1,
-                                                child: Image.asset(
-                                                  'assets/images/Spin Emote.png',
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (context, error, stackTrace) {
-                                                    return Container(
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(0xFF8FA68E).withValues(alpha: 0.05),
-                                                        borderRadius: BorderRadius.circular(30),
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          // Spinner Widget
-                                          Center(
-                                            child: ConstrainedBox(
-                                              constraints: BoxConstraints(
-                                                maxWidth: containerWidth - 40,
-                                                maxHeight: containerHeight - 40,
-                                              ),
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(30),
-                                                child: MoodSpinnerWidget(
-                                                  onMoodSelected: _onMoodSelected,
-                                                  initialMood: _selectedMood,
-                                                  canSpin: _canSelectMood,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
+                                // Mood Spinner Widget - clean design
+                                Container(
+                                  height: 300,
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                                  child: MoodSpinnerWidget(
+                                    onMoodSelected: _onMoodSelected,
+                                    initialMood: _selectedMood,
+                                    canSpin: _canSelectMood,
+                                  ),
                                 ),
 
                                 const SizedBox(height: 20),

@@ -48,14 +48,23 @@ class AuthService {
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       print('AuthService: Attempting login for $email');
+      print('AuthService: Using URL: $baseUrl/login');
+      
+      final uri = Uri.parse('$baseUrl/login');
+      final headers = await _getHeaders();
+      final body = jsonEncode({
+        'email': email,
+        'password': password,
+      });
+      
+      print('AuthService: URI: $uri');
+      print('AuthService: Headers: $headers');
+      print('AuthService: Body: $body');
       
       final response = await http.post(
-        Uri.parse('$baseUrl/login'),
-        headers: await _getHeaders(),
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
+        uri,
+        headers: headers,
+        body: body,
       );
 
       print('AuthService: Response status: ${response.statusCode}');
@@ -135,10 +144,27 @@ class AuthService {
       }
     } catch (e) {
       print('AuthService: Login error: $e');
-      return {
-        'success': false,
-        'message': 'Connection error: $e',
-      };
+      print('AuthService: Error type: ${e.runtimeType}');
+      
+      if (e.toString().contains('Connection refused')) {
+        return {
+          'success': false,
+          'message': 'Cannot connect to server. Please check your internet connection and try again.',
+          'error_type': 'connection_refused',
+        };
+      } else if (e.toString().contains('SocketException')) {
+        return {
+          'success': false,
+          'message': 'Network error. Please check your internet connection.',
+          'error_type': 'socket_exception',
+        };
+      } else {
+        return {
+          'success': false,
+          'message': 'Connection error: $e',
+          'error_type': 'general_error',
+        };
+      }
     }
   }
 
