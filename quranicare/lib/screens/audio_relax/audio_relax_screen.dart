@@ -56,22 +56,46 @@ class _AudioRelaxScreenState extends State<AudioRelaxScreen> with TickerProvider
     try {
       setState(() {
         _isLoadingQuran = true;
+        _errorMessage = '';
       });
 
+      print('🕌 Loading Quran data...');
       final surahs = await _quranService.getAllSurahs();
       final reciters = QuranApiService.getReciters();
+      
+      print('✅ Successfully loaded ${surahs.length} surahs and ${reciters.length} reciters');
       
       setState(() {
         _quranSurahs = surahs;
         _reciters = reciters;
         _selectedReciter = reciters.first; // Default reciter
         _isLoadingQuran = false;
+        _errorMessage = ''; // Clear any previous errors
       });
     } catch (e) {
-      setState(() {
-        _errorMessage = e.toString();
-        _isLoadingQuran = false;
-      });
+      print('❌ Error loading Quran data: $e');
+      
+      // Try to use fallback data
+      try {
+        final reciters = QuranApiService.getReciters();
+        final fallbackSurahs = await _quranService.getAllSurahs(); // This has built-in fallback
+        
+        setState(() {
+          _quranSurahs = fallbackSurahs;
+          _reciters = reciters;
+          _selectedReciter = reciters.first;
+          _isLoadingQuran = false;
+          _errorMessage = ''; // Clear error if fallback works
+        });
+        
+        print('✅ Using fallback data successfully');
+      } catch (fallbackError) {
+        print('❌ Fallback also failed: $fallbackError');
+        setState(() {
+          _errorMessage = 'Koneksi internet bermasalah. Mohon coba lagi.';
+          _isLoadingQuran = false;
+        });
+      }
     }
   }
 

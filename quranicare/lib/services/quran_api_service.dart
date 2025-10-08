@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter/foundation.dart'; // For kIsWeb
 
 class QuranApiService {
   // Use different endpoints based on platform
@@ -44,43 +43,49 @@ class QuranApiService {
 
   /// Get list of all surahs
   Future<List<QuranSurah>> getAllSurahs() async {
+    print('🕌 QuranApiService: Starting to fetch surahs from api.alquran.cloud...');
+    
     try {
-      // For web platform, we'll handle CORS issues
-      if (kIsWeb) {
-        print('🌐 Running on web platform - using fallback data');
-        return _getFallbackSurahData();
-      }
-
+      // Always try api.alquran.cloud first as requested
+      print('🌐 Fetching from api.alquran.cloud/v1/surah');
+      
       final response = await http.get(
         Uri.parse('$baseUrl/surah'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'User-Agent': 'QuraniCare/1.0',
         },
       ).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () {
-          print('⏱️ Request timeout - using fallback data');
-          throw Exception('Request timeout');
-        },
+        const Duration(seconds: 15),
       );
+
+      print('📡 API Response Status: ${response.statusCode}');
+      print('📡 API Response Headers: ${response.headers}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        print('📊 API Response Data: ${data.toString().substring(0, 200)}...');
+        
         if (data['code'] == 200 && data['data'] != null) {
           final List<dynamic> surahsData = data['data'];
+          print('✅ Successfully loaded ${surahsData.length} surahs from API');
           return surahsData.map((surah) => QuranSurah.fromJson(surah)).toList();
+        } else {
+          print('⚠️ API returned unsuccessful code: ${data['code']}');
         }
+      } else {
+        print('❌ API request failed with status: ${response.statusCode}');
+        print('❌ Response body: ${response.body}');
       }
       
-      print('❌ API failed with status ${response.statusCode} - using fallback data');
-      return _getFallbackSurahData();
-      
     } catch (e) {
-      print('❌ Error fetching surahs: $e - using fallback data');
-      // Return fallback data instead of throwing error
-      return _getFallbackSurahData();
+      print('❌ Exception fetching from api.alquran.cloud: $e');
+      print('🔧 Error type: ${e.runtimeType}');
     }
+    
+    print('📱 Falling back to local data as API is not accessible');
+    return _getFallbackSurahData();
   }
 
   /// Fallback surah data when API is not accessible
@@ -203,63 +208,41 @@ class QuranApiService {
     ];
   }
 
-  /// Get audio URL for specific surah and reciter
+  /// Get audio URL for specific surah and reciter (FULL SURAH, not per ayah)
   Future<String?> getSurahAudioUrl(int surahNumber, String reciterId) async {
-    try {
-      // For web platform, return pre-constructed URL
-      if (kIsWeb) {
-        print('🌐 Web platform - constructing direct audio URL');
-        return _constructDirectAudioUrl(surahNumber, reciterId);
-      }
-
-      final response = await http.get(
-        Uri.parse('$baseUrl/surah/$surahNumber/$reciterId'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      ).timeout(
-        const Duration(seconds: 10),
-        onTimeout: () {
-          print('⏱️ Request timeout - using direct URL construction');
-          throw Exception('Request timeout');
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['code'] == 200 && data['data'] != null) {
-          final ayahs = data['data']['ayahs'] as List;
-          if (ayahs.isNotEmpty) {
-            return ayahs.first['audio'] as String?;
-          }
-        }
-      }
-      
-      // Fallback to direct URL construction
-      return _constructDirectAudioUrl(surahNumber, reciterId);
-      
-    } catch (e) {
-      print('❌ Error getting surah audio URL: $e - using fallback URL');
-      return _constructDirectAudioUrl(surahNumber, reciterId);
-    }
+    print('🎵 QuranApiService: Getting FULL SURAH audio URL for Surah $surahNumber with reciter $reciterId');
+    
+    // Always use direct full surah audio URLs for better reliability
+    // These URLs contain complete surah recitation from beginning to end
+    final fullSurahAudioUrl = _constructFullSurahAudioUrl(surahNumber, reciterId);
+    
+    // Get surah info for logging
+    final surahData = _getFallbackSurahData().where((s) => s.number == surahNumber).firstOrNull;
+    final surahName = surahData?.name ?? 'Unknown';
+    final reciterName = availableReciters.where((r) => r.id == reciterId).firstOrNull?.name ?? 'Unknown';
+    
+    print('✅ FULL SURAH AUDIO: $surahName by $reciterName');
+    print('🔗 Audio URL: $fullSurahAudioUrl');
+    print('📖 This will play the complete surah from start to finish');
+    
+    return fullSurahAudioUrl;
   }
 
-  /// Construct direct audio URL when API is not accessible
-  String _constructDirectAudioUrl(int surahNumber, String reciterId) {
-    // For web platform, use alternative audio sources that work better
-    // These are known working URLs for complete surah recitations
+  /// Construct full surah audio URL (complete surah recitation)
+  String _constructFullSurahAudioUrl(int surahNumber, String reciterId) {
+    // Use reliable CDN sources for COMPLETE SURAH recitations
+    // These URLs contain the entire surah from beginning to end
     
     final paddedSurahNumber = surahNumber.toString().padLeft(3, '0');
+    print('🎯 Constructing full surah audio URL for surah $paddedSurahNumber with reciter $reciterId');
     
-    // Use alternative CDN sources for web platform
+    // Primary sources for FULL SURAH audio (mp3quran.net)
     if (reciterId == 'ar.alafasy') {
-      // Try different formats for Alafasy
       return 'https://server8.mp3quran.net/afs/$paddedSurahNumber.mp3';
     } else if (reciterId == 'ar.abdurrahmaansudais') {
       return 'https://server7.mp3quran.net/sds/$paddedSurahNumber.mp3';
     } else if (reciterId == 'ar.saoodshuraym') {
-      return 'https://server7.mp3quran.net/shur/$paddedSurahNumber.mp3';
+      return 'https://server7.mp3quran.net/shur/$paddedSurahNumber.mp3';  
     } else if (reciterId == 'ar.mahermuaiqly') {
       return 'https://server12.mp3quran.net/maher/$paddedSurahNumber.mp3';
     } else if (reciterId == 'ar.hudhaify') {
@@ -268,46 +251,66 @@ class QuranApiService {
       return 'https://server10.mp3quran.net/ajm/$paddedSurahNumber.mp3';
     }
     
-    // Default fallback to Alafasy
+    // Alternative sources for full surah (quran.ksu.edu.sa - very reliable)
+    if (reciterId.contains('alafasy')) {
+      return 'https://quran.ksu.edu.sa/ayat/mp3/128/alafasy/$paddedSurahNumber.mp3';
+    } else if (reciterId.contains('sudais')) {
+      return 'https://quran.ksu.edu.sa/ayat/mp3/128/sudais/$paddedSurahNumber.mp3';
+    }
+    
+    // Default fallback to Alafasy full surah (most reliable)
     return 'https://server8.mp3quran.net/afs/$paddedSurahNumber.mp3';
   }
 
+
+
   /// Get complete surah with verses and audio
   Future<QuranSurahDetail?> getSurahDetail(int surahNumber, String reciterId) async {
+    print('📖 QuranApiService: Getting surah detail for Surah $surahNumber with reciter $reciterId from api.alquran.cloud');
+    
     try {
-      // For web platform, handle CORS limitation
-      if (kIsWeb) {
-        print('🌐 Web platform - using fallback surah detail');
-        return _getFallbackSurahDetail(surahNumber, reciterId);
-      }
+      // Always try api.alquran.cloud first as requested
+      print('🌐 Fetching surah detail from api.alquran.cloud/v1/surah/$surahNumber/$reciterId');
 
       final response = await http.get(
         Uri.parse('$baseUrl/surah/$surahNumber/$reciterId'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'User-Agent': 'QuraniCare/1.0',
         },
       ).timeout(
-        const Duration(seconds: 10),
+        const Duration(seconds: 15),
         onTimeout: () {
-          print('⏱️ Request timeout - using fallback detail');
+          print('⏱️ Request timeout after 15 seconds');
           throw Exception('Request timeout');
         },
       );
 
+      print('📡 Detail API Response Status: ${response.statusCode}');
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        print('📊 Detail API Response: ${data.toString().length} characters received');
+        
         if (data['code'] == 200 && data['data'] != null) {
+          print('✅ Successfully loaded surah detail from API');
           return QuranSurahDetail.fromJson(data['data']);
+        } else {
+          print('⚠️ Detail API returned unsuccessful code: ${data['code']}');
         }
+      } else {
+        print('❌ Detail API request failed with status: ${response.statusCode}');
+        print('❌ Response: ${response.body.substring(0, 200)}...');
       }
       
-      return _getFallbackSurahDetail(surahNumber, reciterId);
-      
     } catch (e) {
-      print('❌ Error getting surah detail: $e - using fallback');
-      return _getFallbackSurahDetail(surahNumber, reciterId);
+      print('❌ Exception getting surah detail from api.alquran.cloud: $e');
+      print('🔧 Error type: ${e.runtimeType}');
     }
+    
+    print('🔄 Falling back to local surah detail construction');
+    return _getFallbackSurahDetail(surahNumber, reciterId);
   }
 
   /// Fallback surah detail when API is not accessible
@@ -315,7 +318,7 @@ class QuranApiService {
     final surahData = _getFallbackSurahData().where((s) => s.number == surahNumber).firstOrNull;
     if (surahData == null) return null;
 
-    final audioUrl = _constructDirectAudioUrl(surahNumber, reciterId);
+    final fullSurahAudioUrl = _constructFullSurahAudioUrl(surahNumber, reciterId);
     
     return QuranSurahDetail(
       number: surahData.number,
@@ -327,8 +330,8 @@ class QuranApiService {
       ayahs: [
         QuranAyah(
           number: 1,
-          text: 'Audio only mode - verses not available offline',
-          audio: audioUrl,
+          text: 'Full Surah Audio - ${surahData.name} (${surahData.englishName})',
+          audio: fullSurahAudioUrl,
           numberInSurah: 1,
         ),
       ],
@@ -453,7 +456,7 @@ class QuranSurahDetail {
   }
 
   String get fullAudioUrl {
-    // Return the first ayah's audio URL (which contains the full surah)
+    // Return the full surah audio URL (complete surah recitation)
     return ayahs.isNotEmpty ? ayahs.first.audio : '';
   }
 }
