@@ -3,9 +3,10 @@ import 'package:http/http.dart' as http;
 import '../models/doa_dzikir.dart';
 
 class DoaDzikirService {
-  static const String baseUrl = 'https://quranicarelaravel-production.up.railway.app/api';
+  static const String externalApiUrl = 'https://equran.id/api/doa';
+  static const String baseUrl = 'https://quranicarelaravel-production.up.railway.app/api'; // For other methods
 
-  // Get all doa dzikir
+  // Get all doa dzikir from external API equran.id
   Future<Map<String, dynamic>> getAllDoaDzikir({
     String? grup,
     String? tag,
@@ -15,75 +16,97 @@ class DoaDzikirService {
     int perPage = 15,
   }) async {
     try {
-      Map<String, String> queryParams = {
-        'page': page.toString(),
-        'per_page': perPage.toString(),
-      };
-
-      if (grup != null && grup.isNotEmpty) {
-        queryParams['grup'] = grup;
-      }
-
-      if (tag != null && tag.isNotEmpty) {
-        queryParams['tag'] = tag;
-      }
-
-      if (search != null && search.isNotEmpty) {
-        queryParams['search'] = search;
-      }
-
-      if (featured == true) {
-        queryParams['featured'] = 'true';
-      }
-
-      final uri = Uri.parse('$baseUrl/dzikir-doa').replace(queryParameters: queryParams);
-      print('🔥 Requesting URL: $uri');
+      print('🕌 Fetching doa from equran.id API: $externalApiUrl');
       
       final response = await http.get(
-        uri,
+        Uri.parse(externalApiUrl),
         headers: {
-          'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'User-Agent': 'QuraniCare/1.0',
         },
-      ).timeout(const Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 8));
 
-      print('🔥 Response Status: ${response.statusCode}');
-      print('🔥 Response Body Length: ${response.body.length}');
+      print('✅ Response Status: ${response.statusCode}');
+      print('� Response Body Length: ${response.body.length} characters');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        print('🔥 Parsed JSON success: ${data['success']}');
+        print('� External API Response Status: ${data['status']}');
+        print('🕌 Total doa available: ${data['total']}');
         
-        if (data['success'] == true) {
-          final doaDzikirData = data['doa_dzikir'];
-          print('🔥 DoaDzikir data type: ${doaDzikirData.runtimeType}');
-          print('🔥 DoaDzikir data length: ${doaDzikirData is List ? doaDzikirData.length : 'not list'}');
+        if (data['status'] == 'success') {
+          final doaData = data['data'] as List;
+          print('� Raw doa count: ${doaData.length}');
           
           List<DoaDzikir> doaDzikirList = [];
           
-          if (doaDzikirData != null && doaDzikirData is List) {
-            for (int i = 0; i < doaDzikirData.length; i++) {
-              try {
-                final item = doaDzikirData[i];
-                final doaDzikir = DoaDzikir.fromJson(item as Map<String, dynamic>);
-                doaDzikirList.add(doaDzikir);
-                if (i < 2) print('🔥 Successfully parsed item $i: ${doaDzikir.nama}');
-              } catch (e) {
-                print('❌ Error parsing DoaDzikir item $i: $e');
-                print('❌ Item data: ${doaDzikirData[i]}');
+          // Convert equran.id format to our DoaDzikir format
+          for (int i = 0; i < doaData.length; i++) {
+            try {
+              final item = doaData[i];
+              
+              // Map equran.id fields to our DoaDzikir model
+              final convertedItem = {
+                'id': item['id'],
+                'nama': item['nama'],
+                'grup': item['grup'],
+                'ar': item['ar'],
+                'idn': item['idn'],
+                'tentang': item['tentang'] ?? '',
+                'tags': item['tag'] ?? [], // equran.id uses 'tag' field
+                'tr': item['tr'] ?? '', // transliterasi
+                'sumber': 'Al-Quran & As-Sunnah',
+                'is_favorite': false,
+                'created_at': DateTime.now().toIso8601String(),
+              };
+              
+              final doaDzikir = DoaDzikir.fromJson(convertedItem);
+              
+              // Apply client-side filtering if needed
+              bool shouldInclude = true;
+              
+              // Search filter
+              if (search != null && search.isNotEmpty) {
+                final searchLower = search.toLowerCase();
+                shouldInclude = doaDzikir.nama.toLowerCase().contains(searchLower) ||
+                               doaDzikir.grup.toLowerCase().contains(searchLower) ||
+                               doaDzikir.ar.toLowerCase().contains(searchLower) ||
+                               doaDzikir.idn.toLowerCase().contains(searchLower);
               }
+              
+              if (shouldInclude) {
+                doaDzikirList.add(doaDzikir);
+              }
+              
+              if (i < 3) print('� Converted item $i: ${doaDzikir.nama}');
+            } catch (e) {
+              print('❌ Error converting doa item $i: $e');
+              continue;
             }
           }
           
-          print('🔥 Final list length: ${doaDzikirList.length}');
+          // Apply pagination
+          final startIndex = (page - 1) * perPage;
+          final endIndex = startIndex + perPage;
+          final paginatedList = doaDzikirList.length > startIndex 
+              ? doaDzikirList.sublist(startIndex, 
+                  endIndex > doaDzikirList.length ? doaDzikirList.length : endIndex)
+              : <DoaDzikir>[];
+          
+          print('� Final filtered list: ${paginatedList.length}/${doaDzikirList.length}');
           
           return {
-            'doa_dzikir': doaDzikirList,
-            'pagination': data['pagination'] ?? {},
+            'doa_dzikir': paginatedList,
+            'pagination': {
+              'current_page': page,
+              'per_page': perPage,
+              'total': doaDzikirList.length,
+              'last_page': (doaDzikirList.length / perPage).ceil(),
+            },
           };
         } else {
-          final errorMsg = data['message'] ?? 'Failed to load doa dzikir';
-          print('❌ API returned success=false: $errorMsg');
+          final errorMsg = data['message'] ?? 'Failed to load doa from external API';
+          print('❌ External API returned error: $errorMsg');
           throw Exception(errorMsg);
         }
       } else {
