@@ -8,7 +8,7 @@ import '../utils/font_styles.dart';
 mixin SafeSetStateMixin<T extends StatefulWidget> on State<T> {
   void safeSetState(VoidCallback fn) {
     if (mounted) {
-      safeSetState(fn);
+      setState(fn); // FIX: gunakan setState bukan safeSetState untuk menghindari infinite recursion
     }
   }
 }

@@ -47,17 +47,19 @@ class DoaDzikirService {
               
               // Map equran.id fields to our DoaDzikir model
               final convertedItem = {
-                'id': item['id'],
-                'nama': item['nama'],
-                'grup': item['grup'],
-                'ar': item['ar'],
-                'idn': item['idn'],
+                'id': item['id'] ?? 0,
+                'nama': item['nama'] ?? '',
+                'grup': item['grup'] ?? 'Umum',
+                'ar': item['ar'] ?? '',
+                'idn': item['idn'] ?? '',
                 'tentang': item['tentang'] ?? '',
-                'tags': item['tag'] ?? [], // equran.id uses 'tag' field
+                'tag': item['tag'] ?? [], // equran.id uses 'tag' field
                 'tr': item['tr'] ?? '', // transliterasi
-                'sumber': 'Al-Quran & As-Sunnah',
-                'is_favorite': false,
+                'api_id': item['id'] ?? 0,
+                'is_active': true,
+                'is_featured': false,
                 'created_at': DateTime.now().toIso8601String(),
+                'updated_at': DateTime.now().toIso8601String(),
               };
               
               final doaDzikir = DoaDzikir.fromJson(convertedItem);
