@@ -927,11 +927,24 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
     setState(() => _isLoading = true);
     
     try {
-      // For now, create a simple entry without backend integration
-      // This can be enhanced later to use createAyahReflection when we have ayah IDs
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Refleksi berhasil disimpan! (Demo mode)')),
+      // Get selected surah info
+      final selectedSurahData = availableSurahs.firstWhere(
+        (surah) => surah['number'].toString() == _selectedSurah,
       );
+      
+      // Create a mock ayah ID (for now, since we don't have real ayah IDs from equran.id integration)
+      // This can be enhanced when we have proper ayah ID mapping
+      final mockAyahId = (selectedSurahData['number'] as int) * 1000 + int.parse(_selectedAyah!);
+      
+      // Use the real API to create ayah reflection
+      final journalData = await _journalService.createAyahReflection(
+        ayahId: mockAyahId,
+        title: _titleController.text,
+        content: _contentController.text,
+        tags: ['alquran', 'refleksi', 'tadabbur'],
+      );
+      
+      print('✅ Refleksi Al-Quran berhasil disimpan: ${journalData.title}');
       
       // Clear form
       _titleController.clear();
@@ -947,12 +960,19 @@ class _JurnalRefleksiScreenState extends State<JurnalRefleksiScreen> {
       _loadJournalHistory();
       
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Refleksi berhasil disimpan!')),
+        SnackBar(
+          content: Text('Barakallahu fiik! Refleksi "${journalData.title}" berhasil disimpan'),
+          backgroundColor: Colors.green,
+        ),
       );
     } catch (e) {
       setState(() => _isLoading = false);
+      print('❌ Error saving journal alquran: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
+        SnackBar(
+          content: Text('Gagal menyimpan refleksi: ${e.toString().replaceAll('Exception: ', '')}'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }

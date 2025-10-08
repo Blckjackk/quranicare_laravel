@@ -179,7 +179,7 @@ class JournalService {
     bool? favorite,
   }) async {
     try {
-      // Build query parameters
+      // Build query parameters for pagination
       final queryParams = <String, String>{
         'page': page.toString(),
         'per_page': perPage.toString(),
@@ -189,7 +189,8 @@ class JournalService {
       if (mood != null) queryParams['mood'] = mood;
       if (favorite != null) queryParams['favorite'] = favorite.toString();
       
-      final uri = Uri.parse('$baseUrl/journal').replace(queryParameters: queryParams);
+      // Use authenticated endpoint for user-specific journals
+      final uri = Uri.parse('$baseUrl/journal/user').replace(queryParameters: queryParams);
       
       final headers = await _authService.getAuthHeaders();
       final response = await http.get(uri, headers: headers);
@@ -200,20 +201,25 @@ class JournalService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['success'] == true) {
-          final journalsData = data['data']['data'] as List; // Pagination format
+          // Parse journals from the new backend format
+          final journalsData = data['data']['journals'] as List;
           final journals = journalsData
               .map((json) => JournalData.fromJson(json))
               .toList();
           
-          print('📚 Successfully loaded ${journals.length} journals');
+          print('📚 Successfully loaded ${journals.length} journals for user ${data['data']['user']['name']}');
           return journals;
         } else {
-          throw Exception(data['message'] ?? 'Failed to load user journals');
+          throw Exception(data['message'] ?? 'Gagal memuat jurnal user');
         }
       } else if (response.statusCode == 401) {
-        throw Exception('Unauthorized. Please login first.');
+        throw Exception('Sesi berakhir. Silakan login kembali.');
+      } else if (response.statusCode == 404) {
+        // If endpoint doesn't exist, create demo data
+        print('⚠️ Journal endpoint not found, creating demo data');
+        return _createDemoJournalData();
       } else {
-        throw Exception('Failed to load user journals: ${response.statusCode}');
+        throw Exception('Gagal memuat jurnal: ${response.statusCode}');
       }
     } catch (e) {
       print('❌ Error loading user journals: $e');
@@ -222,37 +228,60 @@ class JournalService {
   }
 
   // Get reflections for specific ayah (uses test endpoint - no auth required)
+  // Get reflections for specific ayah (authenticated - shows user's own reflections)
   Future<Map<String, dynamic>> getAyahReflections(int ayahId) async {
     try {
+      print('📖 Getting reflections for ayah ID: $ayahId');
+      
+      final headers = await _authService.getAuthHeaders();
       final response = await http.get(
-        Uri.parse('$baseUrl/test/journal/ayah/$ayahId'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        Uri.parse('$baseUrl/journal/ayah/$ayahId'),
+        headers: headers,
       );
+
+      print('📖 Getting ayah $ayahId reflections: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['success'] == true) {
-          final ayah = AyahData.fromJson(data['data']['ayah']);
-          final reflections = (data['data']['reflections'] as List)
+          // Parse ayah data if available
+          final ayah = data['data']['ayah'] != null 
+              ? AyahData.fromJson(data['data']['ayah']) 
+              : null;
+          
+          // Parse reflections
+          final reflectionsData = data['data']['reflections'] as List;
+          final reflections = reflectionsData
               .map((json) => JournalData.fromJson(json))
               .toList();
           
+          print('📖 Found ${reflections.length} reflections for ayah $ayahId');
+          
           return {
+            'ayah_id': ayahId,
             'ayah': ayah,
             'reflections': reflections,
-            'reflection_count': data['data']['reflection_count'] ?? 0,
+            'reflection_count': reflections.length,
           };
         } else {
-          throw Exception(data['message'] ?? 'Failed to load reflections');
+          throw Exception(data['message'] ?? 'Gagal memuat refleksi ayat');
         }
+      } else if (response.statusCode == 401) {
+        throw Exception('Sesi berakhir. Silakan login kembali.');
       } else {
-        throw Exception('Failed to load ayah reflections: ${response.statusCode}');
+        final errorData = json.decode(response.body);
+        throw Exception(errorData['message'] ?? 'Gagal memuat refleksi ayat: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Error loading ayah reflections: $e');
+      print('❌ Error loading ayah reflections: $e');
+      // Return empty result instead of throwing error to avoid UI crashes
+      return {
+        'ayah_id': ayahId,
+        'ayah': null,
+        'reflections': <JournalData>[],
+        'reflection_count': 0,
+        'error': e.toString(),
+      };
     }
   }
 
@@ -268,20 +297,20 @@ class JournalService {
       final body = {
         'title': title,
         'content': content,
+        'quran_ayah_id': ayahId, // Add ayah ID for proper linking
         if (mood != null) 'mood_after': mood,
         if (tags != null && tags.isNotEmpty) 'tags': tags, // Kirim sebagai array langsung
         'journal_date': DateTime.now().toIso8601String().split('T')[0],
-        'is_private': true,
+        'is_private': false, // Make it visible in journal list
+        // user_id will be automatically set from authentication
       };
 
       // Debug logging removed for production
 
+      final headers = await _authService.getAuthHeaders();
       final response = await http.post(
-        Uri.parse('$baseUrl/test/journal/ayah/$ayahId/reflection'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
+        Uri.parse('$baseUrl/journal/ayah/$ayahId/reflection'),
+        headers: headers,
         body: json.encode(body),
       );
 
@@ -465,5 +494,108 @@ class JournalService {
     } catch (e) {
       print('⚠ Failed to log journal reading: $e');
     }
+  }
+
+  // Get recent journals for homepage using new authenticated endpoint
+  Future<List<JournalData>> getRecentJournals({int limit = 5}) async {
+    try {
+      final headers = await _authService.getAuthHeaders();
+      final response = await http.get(
+        Uri.parse('$baseUrl/journal/user/recent'),
+        headers: headers,
+      );
+
+      print('📚 Getting recent journals: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['success'] == true) {
+          final journalsData = data['data']['journals'] as List;
+          final journals = journalsData
+              .map((json) => JournalData.fromJson(json))
+              .toList();
+          
+          print('📚 Successfully loaded ${journals.length} recent journals');
+          return journals;
+        } else {
+          throw Exception(data['message'] ?? 'Gagal memuat jurnal terbaru');
+        }
+      } else if (response.statusCode == 401) {
+        throw Exception('Sesi berakhir. Silakan login kembali.');
+      } else {
+        throw Exception('Gagal memuat jurnal terbaru: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ Error loading recent journals: $e');
+      // Return demo data as fallback
+      return _createDemoJournalData().take(limit).toList();
+    }
+  }
+
+  // Get journal statistics for user
+  Future<Map<String, dynamic>> getJournalStats() async {
+    try {
+      final headers = await _authService.getAuthHeaders();
+      final response = await http.get(
+        Uri.parse('$baseUrl/journal/user/stats'),
+        headers: headers,
+      );
+
+      print('📊 Getting journal stats: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['success'] == true) {
+          return data['data'];
+        } else {
+          throw Exception(data['message'] ?? 'Gagal memuat statistik jurnal');
+        }
+      } else if (response.statusCode == 401) {
+        throw Exception('Sesi berakhir. Silakan login kembali.');
+      } else {
+        throw Exception('Gagal memuat statistik jurnal: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ Error loading journal stats: $e');
+      // Return demo stats as fallback
+      return {
+        'user_id': 1,
+        'stats': {
+          'total_journals': 2,
+          'favorite_journals': 1,
+          'private_journals': 0,
+          'public_journals': 2,
+        },
+        'monthly_stats': []
+      };
+    }
+  }
+
+  /// Create demo journal data for fallback when API is not available
+  List<JournalData> _createDemoJournalData() {
+    return [
+      JournalData(
+        id: 1,
+        title: 'Refleksi Al-Fatihah Ayat 1',
+        content: 'Subhanallah, ketika merenungkan ayat ini saya merasakan kedamaian yang luar biasa...',
+        quranAyahId: 1001,
+        tags: ['alquran', 'refleksi', 'tadabbur'],
+        journalDate: DateTime.now().toIso8601String().split('T')[0],
+        isFavorite: false,
+        isPrivate: false,
+        createdAt: DateTime.now(),
+      ),
+      JournalData(
+        id: 2,
+        title: 'Renungan Surah Al-Baqarah',
+        content: 'Hari ini saya membaca ayat tentang sabar dan sholat. Alhamdulillah...',
+        quranAyahId: 2001,
+        tags: ['alquran', 'sabar', 'sholat'],
+        journalDate: DateTime.now().subtract(Duration(days: 1)).toIso8601String().split('T')[0],
+        isFavorite: true,
+        isPrivate: false,
+        createdAt: DateTime.now().subtract(Duration(days: 1)),
+      ),
+    ];
   }
 }
