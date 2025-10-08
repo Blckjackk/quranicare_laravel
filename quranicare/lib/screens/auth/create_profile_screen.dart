@@ -277,7 +277,7 @@ class _CreateProfileScreenState extends State<CreateProfileScreen> {
                           controller: _nameController,
                           textAlign: TextAlign.center,
                           decoration: const InputDecoration(
-                            hintText: 'Ahmad Izzuddin Azzam',
+                            hintText: 'Nama Kamu',
                             hintStyle: TextStyle(
                               color: Color(0xFF8FA68E),
                               fontSize: 16,

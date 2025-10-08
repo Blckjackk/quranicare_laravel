@@ -171,25 +171,36 @@ class AuthService {
   // User Logout
   Future<Map<String, dynamic>> logout() async {
     try {
+      print('AuthService: Starting logout process...');
+      
       final response = await http.post(
-        Uri.parse('$baseUrl/logout'),
+        Uri.parse('$baseUrl/auth/logout'),
         headers: await _getHeaders(),
       );
 
+      print('AuthService: Logout response status: ${response.statusCode}');
+      print('AuthService: Logout response body: ${response.body}');
+
+      // Clear local token regardless of API response
       await clearToken();
       
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 401) {
+        // 401 means token already expired/invalid, which is fine for logout
+        print('AuthService: Logout successful');
         return {
           'success': true,
           'message': 'Logged out successfully',
         };
       } else {
+        print('AuthService: Logout API error: ${response.statusCode}');
+        // Still return success since we cleared local token
         return {
-          'success': false,
-          'message': 'Logout failed',
+          'success': true,
+          'message': 'Logged out locally (server unavailable)',
         };
       }
     } catch (e) {
+      print('AuthService: Logout error: $e');
       await clearToken(); // Clear token anyway
       return {
         'success': true,
@@ -356,4 +367,6 @@ class AuthService {
       };
     }
   }
+
+
 }

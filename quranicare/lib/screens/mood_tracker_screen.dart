@@ -134,6 +134,7 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
       
       print('💾 Saving mood: ${_selectedMood!.type} (${_selectedMood!.label})');
       print('🔐 Using token: ${userToken.substring(0, 20)}...');
+      print('📅 Mood date: ${DateTime.now()}');
       
       final result = await _moodService.saveMoodByType(
         token: userToken,
@@ -152,6 +153,7 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen>
       }
 
       if (result['success']) {
+        print('✅ Mood saved successfully! API Response: ${result['data']}');
         _showSuccessSnackBar('Mood "${_selectedMood!.label}" berhasil disimpan! 🎉');
         
         // Update state to prevent multiple selections

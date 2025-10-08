@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../utils/asset_manager.dart';
 import '../services/auth_service.dart';
+import '../services/user_profile_service.dart';
 // import '../profile_screen.dart';
 // TODO: Update the import path below if profile_screen.dart exists elsewhere, e.g.:
 
@@ -21,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   
   // Auth service and user data
   final AuthService _authService = AuthService();
+  final UserProfileService _profileService = UserProfileService();
   String _userName = 'User'; // will be loaded from database
   bool _isLoadingUser = true;
 
@@ -129,6 +131,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       final isLoggedIn = await _authService.isLoggedIn();
       print('🔑 isLoggedIn result: $isLoggedIn');
       
+      // Debug: Check current stored token
+      final currentToken = await _authService.getToken();
+      print('🔐 Current stored token: ${currentToken != null ? 'EXISTS (${currentToken.substring(0, 30)}...)' : 'NULL'}');
+      
       if (!isLoggedIn) {
         print('❌ User not logged in, setting as Guest');
         setState(() {
@@ -138,30 +144,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         return;
       }
       
-      print('📡 Fetching user profile from API...');
-      final result = await _authService.getProfile();
-      print('📡 API Response: $result');
+      print('📡 Fetching user profile from /me API using UserProfileService...');
+      print('� Testing UserProfileService connection...');
+      final connectionTest = await _profileService.testConnection();
+      print('🔧 UserProfileService connection test result: $connectionTest');
       
-      if (result['success'] == true && result['user'] != null) {
-        final user = result['user'];
+      final userData = await _profileService.getUserProfile();
+      print('📡 UserProfileService API Response: $userData');
+      
+      if (userData != null) {
         print('👤 User data received:');
-        print('   - ID: ${user['id']}');
-        print('   - Name: ${user['name']}');
-        print('   - Email: ${user['email']}');
-        print('   - Username: ${user['username']}');
-        print('   - Full user object: $user');
+        print('   - ID: ${userData['id']}');
+        print('   - Name: ${userData['name']}');
+        print('   - Email: ${userData['email']}');
+        print('   - Gender: ${userData['gender']}');
+        print('   - Full user object: $userData');
         
         setState(() {
-          // Prioritize 'name' field from database
-          _userName = user['name'] ?? user['username'] ?? 'User';
+          _userName = userData['name'] ?? 'User';
           _isLoadingUser = false;
         });
         print('✅ User loaded successfully: $_userName');
       } else {
-        print('❌ Failed to load profile:');
-        print('   - Success: ${result['success']}');
-        print('   - Message: ${result['message']}');
-        print('   - User data: ${result['user']}');
+        print('❌ Failed to load profile from /me endpoint');
         
         setState(() {
           _userName = 'User'; // Fallback if profile fetch fails
@@ -294,25 +299,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   const SizedBox(height: 4),
-                                  const Text(
-                                    'Assalamualaikum',
-                                    style: TextStyle(
-                                      fontSize: 22, // Increased from 16
-                                      color: Colors.white70,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Text(
-                                    _isLoadingUser 
-                                        ? 'Memuat...' 
-                                        : _userName == 'Guest' 
-                                            ? 'Tamu' 
-                                            : _userName,
-                                    style: const TextStyle(
-                                      fontSize: 32, // Increased from 26
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      letterSpacing: 0.5,
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        const TextSpan(
+                                          text: 'Assalamualaikum\n',
+                                          style: TextStyle(
+                                            fontSize: 22,
+                                            color: Colors.white70,
+                                            fontWeight: FontWeight.w500,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: _isLoadingUser 
+                                              ? 'Memuat...' 
+                                              : _userName == 'Guest' 
+                                                  ? 'Tamu' 
+                                                  : _userName,
+                                          style: const TextStyle(
+                                            fontSize: 32,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],

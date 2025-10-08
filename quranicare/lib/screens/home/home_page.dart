@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../services/user_profile_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,6 +10,44 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  final UserProfileService _profileService = UserProfileService();
+  String _userName = 'Loading...';
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      print('👤 Loading user profile for home page...');
+      final userData = await _profileService.getUserProfile();
+      
+      if (userData != null && mounted) {
+        setState(() {
+          _userName = userData['name'] ?? 'User';
+          _isLoading = false;
+        });
+        print('✅ Profile loaded for home page: $_userName');
+      } else if (mounted) {
+        setState(() {
+          _userName = 'User';
+          _isLoading = false;
+        });
+        print('⚠️ Failed to load profile for home page, using fallback');
+      }
+    } catch (e) {
+      print('❌ Error loading profile for home page: $e');
+      if (mounted) {
+        setState(() {
+          _userName = 'User';
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   void _onBottomNavTap(int index) {
     setState(() {
@@ -78,9 +117,11 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // Greeting Text
-                    const Text(
-                      'Assalamualaikum Ahmad....',
-                      style: TextStyle(
+                    Text(
+                      _isLoading 
+                          ? 'Assalamualaikum...' 
+                          : 'Assalamualaikum $_userName',
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF2D5A5A),

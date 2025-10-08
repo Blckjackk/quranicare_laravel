@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../services/user_profile_service.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -11,15 +12,63 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmationController = TextEditingController();
   bool _isLoading = false;
+  bool _isLoadingProfile = true;
+  
+  final UserProfileService _profileService = UserProfileService();
+  String _fullName = 'Loading...';
+  Map<String, dynamic>? _userProfile;
 
   @override
   void initState() {
     super.initState();
-    // Initialize with current user data
-    _usernameController.text = 'Azzam Struggle';
-    _phoneController.text = '087867099987';
-    _emailController.text = 'azzamtugel@gmail.com';
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      print('👤 Loading user profile for edit screen...');
+      final userData = await _profileService.getUserProfile();
+      
+      if (userData != null && mounted) {
+        setState(() {
+          _userProfile = userData;
+          _fullName = userData['name'] ?? 'User';
+          
+          // Populate form fields with real data
+          _usernameController.text = userData['name'] ?? '';
+          _phoneController.text = userData['phone'] ?? ''; // Assuming phone field exists
+          _emailController.text = userData['email'] ?? '';
+          
+          _isLoadingProfile = false;
+        });
+        print('✅ Profile loaded for edit screen: $_fullName');
+      } else if (mounted) {
+        // Fallback to hardcoded data
+        setState(() {
+          _fullName = 'User';
+          _usernameController.text = 'Azzam Struggle';
+          _phoneController.text = '087867099987';
+          _emailController.text = 'azzamtugel@gmail.com';
+          _isLoadingProfile = false;
+        });
+        print('⚠️ Failed to load profile for edit screen, using fallback');
+      }
+    } catch (e) {
+      print('❌ Error loading profile for edit screen: $e');
+      if (mounted) {
+        // Fallback to hardcoded data
+        setState(() {
+          _fullName = 'User';
+          _usernameController.text = 'Azzam Struggle';
+          _phoneController.text = '087867099987';
+          _emailController.text = 'azzamtugel@gmail.com';
+          _isLoadingProfile = false;
+        });
+      }
+    }
   }
 
   @override
@@ -27,25 +76,112 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _usernameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
+    _passwordController.dispose();
+    _passwordConfirmationController.dispose();
     super.dispose();
   }
 
   void _updateProfile() async {
+    // Validate required fields
+    if (_usernameController.text.trim().isEmpty) {
+      _showErrorMessage('Nama tidak boleh kosong');
+      return;
+    }
+    
+    if (_emailController.text.trim().isEmpty) {
+      _showErrorMessage('Email tidak boleh kosong');
+      return;
+    }
+
+    // Validate password confirmation if password is provided
+    if (_passwordController.text.trim().isNotEmpty) {
+      if (_passwordController.text != _passwordConfirmationController.text) {
+        _showErrorMessage('Password dan konfirmasi password tidak sama');
+        return;
+      }
+      if (_passwordController.text.length < 6) {
+        _showErrorMessage('Password harus minimal 6 karakter');
+        return;
+      }
+    }
+
     setState(() {
       _isLoading = true;
     });
 
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      print('📤 Updating profile...');
+      
+      final result = await _profileService.updateProfile(
+        name: _usernameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim().isEmpty ? null : _passwordController.text.trim(),
+        passwordConfirmation: _passwordConfirmationController.text.trim().isEmpty ? null : _passwordConfirmationController.text.trim(),
+      );
 
-    setState(() {
-      _isLoading = false;
-    });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
 
-    // Show success message
+        if (result['success'] == true) {
+          // Use the Islamic message from API response if available
+          String successMessage = result['message'] ?? 'Barakallahu fiik! Profile berhasil diperbarui';
+          if (result['alhamdulillah'] != null) {
+            successMessage = result['alhamdulillah'];
+          }
+          
+          _showSuccessMessage(successMessage);
+          
+          // Refresh profile data
+          await _loadUserProfile();
+          
+          // Navigate back
+          Navigator.pop(context);
+        } else {
+          String errorMessage = result['message'] ?? 'Update failed';
+          
+          // Use Islamic guidance messages if available
+          if (result['bismillah'] != null) {
+            errorMessage = '${result['message']}\n${result['bismillah']}';
+          } else if (result['istighfar'] != null) {
+            errorMessage = '${result['message']}\n${result['istighfar']}';
+          }
+          
+          // Handle validation errors
+          if (result['errors'] != null) {
+            final errors = result['errors'] as Map<String, dynamic>;
+            final errorMessages = <String>[];
+            
+            errors.forEach((key, value) {
+              if (value is List && value.isNotEmpty) {
+                errorMessages.add(value.first.toString());
+              }
+            });
+            
+            if (errorMessages.isNotEmpty) {
+              errorMessage = '${result['message'] ?? 'Validation failed'}\n${errorMessages.join(', ')}';
+            }
+          }
+          
+          _showErrorMessage(errorMessage);
+        }
+      }
+    } catch (e) {
+      print('❌ Error updating profile: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        _showErrorMessage('Terjadi kesalahan: $e');
+      }
+    }
+  }
+
+  void _showSuccessMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Profile berhasil diperbarui'),
+        content: Text(message),
         backgroundColor: const Color(0xFF16A34A),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
@@ -54,7 +190,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
     );
 
-    Navigator.pop(context);
+  }
+
+  void _showErrorMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
   }
 
   @override
@@ -198,14 +346,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       const SizedBox(height: 30),
 
                       // Name (Display only)
-                      const Text(
-                        'Ahmad Izzuddin Azzam',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF2D5A5A),
-                        ),
-                      ),
+                      _isLoadingProfile
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2D5A5A)),
+                              ),
+                            )
+                          : Text(
+                              _fullName,
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2D5A5A),
+                              ),
+                            ),
 
                       const SizedBox(height: 40),
 
@@ -234,6 +391,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         controller: _emailController,
                         icon: Icons.email_outlined,
                         keyboardType: TextInputType.emailAddress,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Password Field (Optional)
+                      _buildInputField(
+                        label: 'New Password (Optional)',
+                        controller: _passwordController,
+                        icon: Icons.lock_outline,
+                        isPassword: true,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Password Confirmation Field (Optional)
+                      _buildInputField(
+                        label: 'Confirm Password',
+                        controller: _passwordConfirmationController,
+                        icon: Icons.lock_reset_outlined,
+                        isPassword: true,
                       ),
 
                       const SizedBox(height: 60),
@@ -289,6 +466,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     required TextEditingController controller,
     required IconData icon,
     TextInputType? keyboardType,
+    bool isPassword = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,6 +495,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: TextFormField(
             controller: controller,
             keyboardType: keyboardType,
+            obscureText: isPassword,
             style: const TextStyle(
               fontSize: 16,
               color: Color(0xFF2D5A5A),

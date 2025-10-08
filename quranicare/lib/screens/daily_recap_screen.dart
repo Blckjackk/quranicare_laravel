@@ -82,13 +82,23 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
       
       setState(() {
         if (response != null && response['success'] == true && response['data'] != null) {
+          print('🔍 Raw response data: ${response['data']}');
           _dailyRecap = DailyMoodRecap.fromJson(response['data']);
           _hasUserData = _dailyRecap!.moodEntries.isNotEmpty;
           print('✅ Daily mood data loaded: ${_dailyRecap!.moodEntries.length} entries');
+          
+          // Debug: Print mood entries details
+          if (_dailyRecap!.moodEntries.isNotEmpty) {
+            print('📊 Mood entries details:');
+            for (var entry in _dailyRecap!.moodEntries) {
+              print('   - ${entry.moodType} (Score: ${entry.moodScore}) ${entry.moodEmoji} at ${entry.timestamp.toString().split(' ')[1]}');
+            }
+          }
         } else {
           _dailyRecap = null;
           _hasUserData = false;
           print('📝 No mood data found for this date');
+          print('🔍 Response details: success=${response?['success']}, data=${response?['data']}');
         }
       });
     } catch (e) {
@@ -114,9 +124,12 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
       setState(() {
         _calendarMoodData = {};
         if (response != null) {
+          print('🗓️ Monthly overview response: $response');
           final overview = MonthlyOverview.fromJson(response);
+          print('📊 Calendar data entries: ${overview.calendarData.length}');
           overview.calendarData.forEach((date, moodData) {
             _calendarMoodData[date] = moodData.moodScore;
+            print('📍 Date $date: mood score ${moodData.moodScore}, entries: ${moodData.entryCount}');
           });
           print('✅ Calendar data loaded: ${_calendarMoodData.length} days with data');
         } else {
@@ -561,52 +574,49 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
   }
 
   Widget _buildDailyMoodSection() {
-    return Expanded(
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF6B7D6A).withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header section
-            Row(
-              children: [
-                const Icon(
-                  Icons.mood,
-                  color: Color(0xFF8FA68E),
-                  size: 24,
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF6B7D6A).withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Header section
+          Row(
+            children: [
+              const Icon(
+                Icons.mood,
+                color: Color(0xFF8FA68E),
+                size: 24,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Mood ${DateFormat('dd MMMM', 'id').format(_selectedDate)}',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF6B7D6A),
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  'Mood ${DateFormat('dd MMMM', 'id').format(_selectedDate)}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF6B7D6A),
-                  ),
-                ),
-              ],
-            ),
-            
-            const SizedBox(height: 16),
+              ),
+            ],
+          ),
+          
+          const SizedBox(height: 16),
 
-            // Mood entries atau pesan kosong
-            Expanded(
-              child: _buildMoodContent(),
-            ),
-          ],
-        ),
+          // Mood entries atau pesan kosong
+          _buildMoodContent(),
+        ],
       ),
     );
   }

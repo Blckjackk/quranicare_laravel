@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../services/auth_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -12,6 +13,109 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _reminderNotifications = true;
   bool _moodNotifications = false;
   bool _dailyRecapNotifications = true;
+  bool _isLoggingOut = false;
+  
+  final AuthService _authService = AuthService();
+
+  /// Handle logout process
+  Future<void> _handleLogout() async {
+    // Show confirmation dialog
+    final shouldLogout = await _showLogoutConfirmation();
+    if (!shouldLogout) return;
+
+    setState(() {
+      _isLoggingOut = true;
+    });
+
+    try {
+      print('🔐 Starting logout process...');
+      
+      // Call logout API
+      final result = await _authService.logout();
+      
+      if (result['success'] == true) {
+        print('✅ Logout successful');
+        
+        // Navigate to signin screen and clear all previous routes
+        if (mounted) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            '/signin',
+            (route) => false,
+          );
+        }
+      } else {
+        print('❌ Logout failed: ${result['message']}');
+        _showErrorMessage('Logout failed: ${result['message'] ?? 'Unknown error'}');
+      }
+    } catch (e) {
+      print('❌ Logout error: $e');
+      _showErrorMessage('Logout error: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoggingOut = false;
+        });
+      }
+    }
+  }
+
+  /// Show logout confirmation dialog
+  Future<bool> _showLogoutConfirmation() async {
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text(
+            'Konfirmasi Logout',
+            style: TextStyle(
+              color: Color(0xFF2D5A5A),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: const Text(
+            'Apakah Anda yakin ingin keluar dari aplikasi?',
+            style: TextStyle(color: Color(0xFF6B7D6A)),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text(
+                'Batal',
+                style: TextStyle(color: Color(0xFF6B7D6A)),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF8FA68E),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              child: const Text(
+                'Logout',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+  }
+
+  /// Show error message
+  void _showErrorMessage(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,6 +280,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         subtitle: 'Informasi lebih lanjut tentang aplikasi',
                         icon: Icons.help_outline,
                         onTap: () => _showAboutDialog(),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Logout Button
+                      _buildSettingItem(
+                        title: _isLoggingOut ? 'Logging Out...' : 'Logout',
+                        subtitle: 'Keluar dari akun Anda',
+                        icon: Icons.logout,
+                        onTap: _isLoggingOut ? null : _handleLogout,
+                        isDestructive: true,
                       ),
 
                       const SizedBox(height: 40),

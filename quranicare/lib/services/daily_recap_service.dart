@@ -110,24 +110,53 @@ class DailyRecapService {
       
       final targetDate = date ?? DateTime.now();
       final formattedDate = targetDate.toIso8601String().split('T')[0]; // YYYY-MM-DD format
-      final url = Uri.parse('$baseUrl/daily-recap/$formattedDate');
+      final url = Uri.parse('$baseUrl/mood-daily/$formattedDate');
       
-      print('🔍 Fetching daily recap for: $formattedDate');
+      print('🔍 Fetching daily mood data for: $formattedDate');
       print('🔑 Using token: ${_token != null ? 'YES' : 'NO'}');
       print('📡 URL: $url');
       
       final response = await http.get(url, headers: _headers);
       
-      print('📊 Daily recap response status: ${response.statusCode}');
-      print('📋 Daily recap response body: ${response.body}');
-      
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['success'] == true && data['data'] != null) {
-          print('✅ Daily recap loaded successfully');
+          print('✅ Daily mood data loaded successfully with ${data['data']['moods']?.length ?? 0} entries');
+          print('📦 Raw mood data from API: ${data['data']['moods']}');
+          
+          // Transform data untuk kompatibilitas dengan MoodEntry model
+          List<dynamic> moodEntries = (data['data']['moods'] ?? []).map((mood) {
+            // Map emoji based on mood type (sesuai dengan MoodSpinnerWidget)
+            Map<String, String> moodEmojis = {
+              'senang': '�',
+              'biasa_saja': '😐',
+              'sedih': '�',
+              'marah': '😡',
+              'murung': '�',
+            };
+            
+            var entry = {
+              'id': mood['id'] ?? 0,
+              'mood_type': mood['type'] ?? '',
+              'mood_label': mood['type']?.toString().toUpperCase() ?? '',
+              'mood_emoji': moodEmojis[mood['type']] ?? '😐',
+              'mood_score': (mood['level'] ?? 0).toDouble(),
+              'notes': mood['note'],
+              'timestamp': mood['created_at'] ?? DateTime.now().toIso8601String(),
+            };
+            print('🔄 Transformed mood entry: $entry');
+            return entry;
+          }).toList();
+          
           return {
             'success': true,
-            'data': data['data'],
+            'data': {
+              'date': formattedDate,
+              'mood_entries': moodEntries,
+              'daily_stats': data['data']['statistics'],
+              'weekly_context': {},
+              'insights': {},
+            },
           };
         }
       } else if (response.statusCode == 401) {
@@ -302,37 +331,85 @@ class DailyRecapService {
     }
   }
 
-  /// Get monthly overview for calendar
+  /// Get monthly overview for calendar - menggunakan API mood-calendar
   Future<Map<String, dynamic>?> getMonthlyOverview(int year, int month) async {
     try {
       await initialize(); // Ensure token is loaded
       
-      final url = Uri.parse('$baseUrl/monthly-overview/$year/$month');
+      final url = Uri.parse('$baseUrl/mood-calendar/$year/$month');
       
-      print('🔍 Fetching monthly overview for: $year-$month');
+      print('�️ Fetching mood calendar for: $year-$month');
       print('🔑 Using token: ${_token != null ? 'YES' : 'NO'}');
       print('📡 URL: $url');
       
       final response = await http.get(url, headers: _headers);
       
-      print('📊 Monthly overview response status: ${response.statusCode}');
-      print('📋 Monthly overview response body: ${response.body}');
-      
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['success'] == true && data['data'] != null) {
-          print('✅ Monthly overview loaded successfully');
-          return data['data'];
+          print('✅ Mood calendar loaded successfully');
+          // Transform data untuk kompatibilitas dengan UI yang ada
+          Map<String, dynamic> transformedData = {
+            'year': data['data']['year'],
+            'month': data['data']['month'],
+            'calendar_data': {},
+            'monthly_stats': {
+              'total_days_with_mood': data['data']['total_days_with_mood'],
+              'total_mood_entries': data['data']['total_mood_entries'],
+            },
+          };
+          
+          // Transform calendar_data format untuk kompatibilitas dengan MonthlyOverview.fromJson
+          Map<String, dynamic> apiCalendarData = data['data']['calendar_data'] ?? {};
+          Map<String, dynamic> calendarData = {};
+          
+          // Map emoji based on mood type (sesuai dengan MoodSpinnerWidget)
+          Map<String, String> moodEmojis = {
+            'senang': '�',
+            'biasa_saja': '😐',
+            'sedih': '�',
+            'marah': '😡',
+            'murung': '�',
+          };
+
+          apiCalendarData.forEach((date, dayData) {
+            // Transform mood entries untuk kompatibilitas dengan MoodEntry model
+            List<Map<String, dynamic>> transformedEntries = [];
+            if (dayData['moods'] != null) {
+              for (var mood in dayData['moods']) {
+                transformedEntries.add({
+                  'id': mood['id'] ?? 0,
+                  'mood_type': mood['type'] ?? '',
+                  'mood_label': mood['type']?.toString().toUpperCase() ?? '',
+                  'mood_emoji': moodEmojis[mood['type']] ?? '😐',
+                  'mood_score': (mood['level'] ?? 0).toDouble(),
+                  'notes': mood['note'],
+                  'timestamp': mood['created_at'] ?? DateTime.now().toIso8601String(),
+                });
+              }
+            }
+            
+            // Format sesuai dengan yang diharapkan MonthlyOverview model
+            calendarData[date] = {
+              'mood_score': (dayData['average_level'] ?? 0.0).toDouble(),
+              'mood_count': dayData['mood_count'] ?? 0,
+              'dominant_mood': dayData['dominant_mood'] ?? '',
+              'entries': transformedEntries,
+            };
+          });
+          
+          transformedData['calendar_data'] = calendarData;
+          return transformedData;
         }
       } else if (response.statusCode == 401) {
-        print('🔐 Unauthorized access for monthly overview - token may be invalid');
+        print('🔐 Unauthorized access for mood calendar - token may be invalid');
         await initialize(); // Try to refresh token
       } else if (response.statusCode == 404) {
-        print('📅 No monthly data found - returning empty structure');
+        print('📅 No mood calendar data found - returning empty structure');
       }
       
       // Return empty data for fallback
-      print('⚠️ Using fallback data for monthly overview');
+      print('⚠️ Using fallback data for mood calendar');
       return {
         'year': year,
         'month': month,
@@ -340,7 +417,7 @@ class DailyRecapService {
         'monthly_stats': {},
       };
     } catch (e) {
-      print('❌ Error getting monthly overview: $e');
+      print('❌ Error getting mood calendar: $e');
       // Return empty data for fallback
       return {
         'year': year,

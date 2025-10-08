@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   final AuthService _authService = AuthService();
-  String _userName = 'Ahmad';
+  String _userName = '';
   bool _isLoadingUser = true;
 
   @override

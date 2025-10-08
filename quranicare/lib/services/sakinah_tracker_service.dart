@@ -93,18 +93,18 @@ class SakinahTrackerService {
           return ActivitySummary.fromJson(data['data']);
         }
       } else if (response.statusCode == 401) {
-        print('🔐 Unauthorized monthly recap access');
-        return null; // Return null instead of mock
+        print('🔐 Unauthorized monthly recap access - using fallback');
+        return _createEmptyActivitySummary(year, month);
       } else if (response.statusCode == 404) {
-        print('📊 No monthly recap data found for $year-$month');
-        return null; // Return null instead of mock
+        print('📊 No monthly recap data found for $year-$month - using empty data');
+        return _createEmptyActivitySummary(year, month);
       }
       
-      print('⚠️ No valid monthly recap data');
-      return null;
+      print('⚠️ No valid monthly recap data - using fallback');
+      return _createEmptyActivitySummary(year, month);
     } catch (e) {
       print('❌ Network error getting monthly recap: $e');
-      return null; // Return null instead of mock
+      return _createEmptyActivitySummary(year, month);
     }
   }
 
@@ -218,6 +218,15 @@ class SakinahTrackerService {
     }
   }
 
-  // Helper methods for generating realistic mock data (kept for reference if needed)
-  // Note: Mock data methods removed to ensure only real database data is shown
+  // Helper method to create empty activity summary for fallback
+  ActivitySummary _createEmptyActivitySummary(int year, int month) {
+    return ActivitySummary(
+      totalActivities: 0,
+      activeDays: 0,
+      averageActivitiesPerDay: 0.0,
+      activityTypeCount: {},
+      monthlyStats: {},
+      streaks: [],
+    );
+  }
 }

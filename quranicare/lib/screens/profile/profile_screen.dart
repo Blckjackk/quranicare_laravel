@@ -3,6 +3,7 @@ import '../daily_recap_screen.dart';
 import 'sakinah_tracker_screen.dart';
 import 'edit_profile_screen.dart';
 import 'settings_screen.dart';
+import '../../services/user_profile_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,6 +14,42 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _showLogoutDialog = false;
+  final UserProfileService _profileService = UserProfileService();
+  String _userName = 'Loading...';
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      print('👤 Loading user profile for profile screen...');
+      final userData = await _profileService.getUserProfile();
+      
+      if (userData != null) {
+        setState(() {
+          _userName = userData['name'] ?? 'User';
+          _isLoading = false;
+        });
+        print('✅ Profile loaded: $_userName');
+      } else {
+        setState(() {
+          _userName = 'User';
+          _isLoading = false;
+        });
+        print('⚠️ Failed to load profile, using fallback');
+      }
+    } catch (e) {
+      print('❌ Error loading profile: $e');
+      setState(() {
+        _userName = 'User';
+        _isLoading = false;
+      });
+    }
+  }
 
   void _showLogoutConfirmation() {
     setState(() {
@@ -252,14 +289,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   
                   const SizedBox(height: 16),
                   
-                  const Text(
-                    'Ahmad Izzuddin Azzam',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2D5A5A),
-                    ),
-                  ),
+                  _isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2D5A5A)),
+                        ),
+                      )
+                    : Text(
+                        _userName,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF2D5A5A),
+                        ),
+                      ),
                 ],
               ),
 
