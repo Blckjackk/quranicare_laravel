@@ -202,7 +202,7 @@ class _SakinahTrackerScreenState extends State<SakinahTrackerScreen> {
                       ),
                       const Expanded(
                         child: Text(
-                          'Sakinah Tracker',
+                          'Daily Recap',
                           style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,

@@ -17,7 +17,7 @@ import 'screens/auth/verification_screen.dart';
 import 'screens/auth/forgot_password_screen.dart';
 import 'screens/auth/create_profile_screen.dart';
 import 'screens/admin/admin_login_screen.dart';
-import 'screens/daily_recap_screen.dart';
+import 'screens/profile/sakinah_tracker_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
         '/qalbu-chat': (context) => const QalbuChatScreen(),
         '/alquran': (context) => const AlQuranScreen(),
         '/admin-login': (context) => const AdminLoginScreen(),
-        '/daily-recap': (context) => const DailyRecapScreen(),
+        '/daily-recap': (context) => const SakinahTrackerScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/verification') {

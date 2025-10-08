@@ -271,7 +271,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      // Daily Recap Button (First in order)
+                      // Daily Recap Button (First in order) - now goes to activity tracking
                       _buildProfileMenuItem(
                         icon: Icons.calendar_today_outlined,
                         title: 'Daily Recap',
@@ -279,7 +279,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const DailyRecapScreen(),
+                              builder: (context) => const SakinahTrackerScreen(),
                             ),
                           );
                         },
@@ -287,7 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       const SizedBox(height: 16),
 
-                      // Sakinah Tracker Button (Second in order)
+                      // Sakinah Tracker Button (Second in order) - now goes to mood recap
                       _buildProfileMenuItem(
                         icon: Icons.favorite_outline,
                         title: 'Sakinah Tracker',
@@ -295,7 +295,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SakinahTrackerScreen(),
+                              builder: (context) => const DailyRecapScreen(),
                             ),
                           );
                         },

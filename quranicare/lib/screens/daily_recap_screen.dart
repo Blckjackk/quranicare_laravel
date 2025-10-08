@@ -149,7 +149,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
           foregroundColor: const Color(0xFF6B7D6A),
           elevation: 0,
           title: const Text(
-            'Daily Recap',
+            'Sakinah Tracker',
             style: TextStyle(
               color: Color(0xFF6B7D6A),
               fontWeight: FontWeight.w600,
@@ -187,7 +187,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
           foregroundColor: const Color(0xFF6B7D6A),
           elevation: 0,
           title: const Text(
-            'Daily Recap',
+            'Sakinah Tracker',
             style: TextStyle(
               color: Color(0xFF6B7D6A),
               fontWeight: FontWeight.w600,
@@ -319,7 +319,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Daily Recap',
+                  'Sakinah Tracker',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -329,7 +329,7 @@ class _DailyRecapScreenState extends State<DailyRecapScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Rekam jejak mood harian Anda',
+                  'Pantau aktivitas harian Anda',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white.withValues(alpha: 0.8),
